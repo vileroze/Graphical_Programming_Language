@@ -1,0 +1,10 @@
+C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\assessment\GraphicalProgrammingLanguage\GraphicalProgrammingLanguage\bin\Debug\GraphicalProgrammingLanguage.exe.config
+C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\assessment\GraphicalProgrammingLanguage\GraphicalProgrammingLanguage\bin\Debug\GraphicalProgrammingLanguage.exe
+C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\assessment\GraphicalProgrammingLanguage\GraphicalProgrammingLanguage\bin\Debug\GraphicalProgrammingLanguage.pdb
+C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\assessment\GraphicalProgrammingLanguage\GraphicalProgrammingLanguage\obj\Debug\GraphicalProgrammingLanguage.csproj.AssemblyReference.cache
+C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\assessment\GraphicalProgrammingLanguage\GraphicalProgrammingLanguage\obj\Debug\GraphicalProgrammingLanguage.Form1.resources
+C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\assessment\GraphicalProgrammingLanguage\GraphicalProgrammingLanguage\obj\Debug\GraphicalProgrammingLanguage.Properties.Resources.resources
+C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\assessment\GraphicalProgrammingLanguage\GraphicalProgrammingLanguage\obj\Debug\GraphicalProgrammingLanguage.csproj.GenerateResource.cache
+C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\assessment\GraphicalProgrammingLanguage\GraphicalProgrammingLanguage\obj\Debug\GraphicalProgrammingLanguage.csproj.CoreCompileInputs.cache
+C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\assessment\GraphicalProgrammingLanguage\GraphicalProgrammingLanguage\obj\Debug\GraphicalProgrammingLanguage.exe
+C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\assessment\GraphicalProgrammingLanguage\GraphicalProgrammingLanguage\obj\Debug\GraphicalProgrammingLanguage.pdb
