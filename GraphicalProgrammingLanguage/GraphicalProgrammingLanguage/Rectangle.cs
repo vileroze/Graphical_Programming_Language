@@ -33,8 +33,8 @@ namespace GraphicalProgrammingLanguage
         {
             Pen p = new Pen(Color.Black, 2);
             SolidBrush b = new SolidBrush(colour);
-            g.FillRectangle(b, x-width, y-height, width, height);
-            g.DrawRectangle(p, x-width, y-height, width, height);
+            g.FillRectangle(b, x, y, width, height);
+            g.DrawRectangle(p, x - (width), y - (height), width * 2, height * 2);
         }
         public override string ToString() //all classes inherit from object and ToString() is abstract in object
         {
