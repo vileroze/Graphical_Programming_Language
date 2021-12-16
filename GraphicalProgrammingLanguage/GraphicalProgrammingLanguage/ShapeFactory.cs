@@ -23,6 +23,11 @@ namespace GraphicalProgrammingLanguage
                 return new Rectangle();
 
             }
+            else if (shapeType.Equals("TRIANGLE"))
+            {
+                return new Triangle();
+
+            }
             else
             {
                 //if we get here then what has been passed in is inkown so throw an appropriate exception
