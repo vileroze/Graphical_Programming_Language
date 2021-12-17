@@ -21,6 +21,8 @@ namespace GraphicalProgrammingLanguage
         public static int penX; //X-coordinate of MOVETO
         public static int penY; //Y-coordinate of MOVETO
         int keyIndex; //for 'keyword' index
+        int keywordCharIndex = 0;
+        int lineNumber;
 
 
         public Form1()
@@ -30,8 +32,9 @@ namespace GraphicalProgrammingLanguage
 
         private void runCode_Click(object sender, EventArgs e)
         {
-            shapes.Clear();
-            keyIndex = 0;
+            shapes.Clear(); //clear arraylist before execution
+            keyIndex = 0; //helps find 'keyword' index
+
             ShapeFactory factory = new ShapeFactory();
             string code = codeArea.Text; //stores text from textBox
             string[] codeSplit = code.Split(new Char[] { ',', ' ', '\n' }, //s[lit the stored 'code'
@@ -56,89 +59,101 @@ namespace GraphicalProgrammingLanguage
 
             foreach (var keyword in codeSplitArrayList)
             {
-                //check if keyword is one of the possible 'commands'
-                if (possibleCommands.Contains(keyword))
+                if (keyword.GetType() == typeof(string))
                 {
-                    //find index of keyword in codeSplitArrayList
-                    int keywordIndex = codeSplitArrayList.IndexOf(keyword, keyIndex);
+                    //find index of keyword character in inputBox
+                    keywordCharIndex = (codeArea.Text.ToUpper()).IndexOf(((String)keyword).ToUpper());
 
-                    //finds the specific keyword
-                    if ((String)keyword == "MOVETO")
+                    //find line number
+                    lineNumber = codeArea.GetLineFromCharIndex(keywordCharIndex);
+                    //check if keyword is one of the possible 'commands'
+                    if (possibleCommands.Contains(keyword))
                     {
-                        //next two elements must be numbers
-                        if ((codeSplitArrayList[keywordIndex + 1].GetType() == typeof(int)) && (codeSplitArrayList[keywordIndex + 2].GetType() == typeof(int)))
+                        //find index of keyword in codeSplitArrayList
+                        int keywordIndex = codeSplitArrayList.IndexOf(keyword, keyIndex);
+
+                        //finds the specific keyword
+                        if ((String)keyword == "MOVETO")
+                        {
+                            //next two elements must be numbers
+                            if ((codeSplitArrayList[keywordIndex + 1].GetType() == typeof(int)) && (codeSplitArrayList[keywordIndex + 2].GetType() == typeof(int)))
+                            {
+                                //increase if 'keyword' is 'possibleCommand'
+                                keyIndex = keywordIndex + 1;
+
+                                penX = (int)codeSplitArrayList[keywordIndex + 1];
+                                penY = (int)codeSplitArrayList[keywordIndex + 2];
+                            }
+                            else
+                            //display error message
+                            {
+                                codeArea.Text += "\n Wrong number of params in MOVETO on line: " + (lineNumber + 1) + " (required: 2 [x,y])";
+                            }
+                        }
+
+                        if ((String)keyword == "CIRCLE")
+                        {
+                            //next two elements must be numbers
+                            if (codeSplitArrayList[keywordIndex + 1].GetType() == typeof(int))
+                            {
+                                //increase if 'keyword' is 'possibleCommand'
+                                keyIndex = keywordIndex + 1;
+
+                                s = factory.getShape((String)keyword); //return a shape
+                                Color circleColour = Color.Transparent;
+                                s.set(circleColour, penX, penY, (int)codeSplitArrayList[keywordIndex + 1]);
+                                shapes.Add(s); //add the shape to arraylist
+                            }
+                            else
+                            //display error message
+                            {
+                                codeArea.Text += "\n wrong number of parameters in CIRCLE on line: " + (lineNumber + 1) + " (required: 1 [radius])";
+                            }
+                        }
+
+                        if ((String)keyword == "RECTANGLE")
+                        {
+                            //next two elements must be numbers
+                            if (codeSplitArrayList[keywordIndex + 1].GetType() == typeof(int) && codeSplitArrayList[keywordIndex + 2].GetType() == typeof(int))
+                            {
+                                //increase if 'keyword' is 'possibleCommand'
+                                keyIndex = keywordIndex + 1;
+
+                                s = factory.getShape((String)keyword); //return a shape
+                                Color circleColour = Color.Transparent;
+                                s.set(circleColour, penX, penY, (int)codeSplitArrayList[keywordIndex + 1], (int)codeSplitArrayList[keywordIndex + 2]);
+                                shapes.Add(s); //add the shape to arraylist
+                            }
+                            else
+                            //display error message
+                            {
+                                codeArea.Text += "\nWrong number of parameters in RECTANGLE on line: " + (lineNumber + 1) + " (required: 2 [width, height])";
+                            }
+                        }
+
+                        if ((String)keyword == "TRIANGLE")
                         {
                             //increase if 'keyword' is 'possibleCommand'
                             keyIndex = keywordIndex + 1;
 
-                            penX = (int)codeSplitArrayList[keywordIndex + 1];
-                            penY = (int)codeSplitArrayList[keywordIndex + 2];
-                        }
-                        else
-                        //display error message
-                        {
-                            codeArea.Text += "\n Wrong number of params in MOVETO (required: 2 [x,y])";
-                        }
-                    }
-
-                    if ((String)keyword == "CIRCLE")
-                    {
-                        //next two elements must be numbers
-                        if (codeSplitArrayList[keywordIndex + 1].GetType() == typeof(int))
-                        {
-                            //increase if 'keyword' is 'possibleCommand'
-                            keyIndex = keywordIndex + 1;
-
-                            s = factory.getShape((String)keyword); //return a shape
-                            Color circleColour = Color.Transparent;
-                            s.set(circleColour, penX, penY, (int)codeSplitArrayList[keywordIndex + 1]);
-                            shapes.Add(s); //add the shape to arraylist
-                        }
-                        else
-                        //display error message
-                        {
-                            codeArea.Text += "\n wrong number of parameters in CIRCLE (required: 1 [radius])";
+                            //next two elements must be numbers
+                            if (codeSplitArrayList[keywordIndex + 1].GetType() == typeof(int) && codeSplitArrayList[keywordIndex + 2].GetType() == typeof(int))
+                            {
+                                s = factory.getShape((String)keyword); //return a shape
+                                Color circleColour = Color.Transparent;
+                                s.set(circleColour, penX, penY, (int)codeSplitArrayList[keywordIndex + 1], (int)codeSplitArrayList[keywordIndex + 2]);
+                                shapes.Add(s); //add the shape to arraylist
+                            }
+                            else
+                            //display error message
+                            {
+                                codeArea.Text += "\nWrong number of parameters else in TRIANGLE on line: " + (lineNumber + 1) + " (required: 2 [height, base])";
+                            }
                         }
                     }
-
-                    if ((String)keyword == "RECTANGLE")
+                    else
                     {
-                        //next two elements must be numbers
-                        if (codeSplitArrayList[keywordIndex + 1].GetType() == typeof(int) && codeSplitArrayList[keywordIndex + 2].GetType() == typeof(int))
-                        {
-                            //increase if 'keyword' is 'possibleCommand'
-                            keyIndex = keywordIndex + 1;
-
-                            s = factory.getShape((String)keyword); //return a shape
-                            Color circleColour = Color.Transparent;
-                            s.set(circleColour, penX, penY, (int)codeSplitArrayList[keywordIndex + 1], (int)codeSplitArrayList[keywordIndex + 2]);
-                            shapes.Add(s); //add the shape to arraylist
-                        }
-                        else
-                        //display error message
-                        {
-                            codeArea.Text += "\nWrong number of parameters in RECTANGLE (required: 2 [width, height])";
-                        }
-                    }
-
-                    if ((String)keyword == "TRIANGLE")
-                    {
-                        //increase if 'keyword' is 'possibleCommand'
-                        keyIndex = keywordIndex + 1;
-
-                        //next two elements must be numbers
-                        if (codeSplitArrayList[keywordIndex + 1].GetType() == typeof(int) && codeSplitArrayList[keywordIndex + 2].GetType() == typeof(int))
-                        {
-                            s = factory.getShape((String)keyword); //return a shape
-                            Color circleColour = Color.Transparent;
-                            s.set(circleColour, penX, penY, (int)codeSplitArrayList[keywordIndex + 1], (int)codeSplitArrayList[keywordIndex + 2]);
-                            shapes.Add(s); //add the shape to arraylist
-                        }
-                        else
-                        //display error message
-                        {
-                            codeArea.Text += "\nWrong number of parameters else in TRIANGLE (required: 2 [height, base])";
-                        }
+                        codeArea.Text += "\n  Unrecognized keyword on line: " + (lineNumber + 1);
                     }
                 }
             }
