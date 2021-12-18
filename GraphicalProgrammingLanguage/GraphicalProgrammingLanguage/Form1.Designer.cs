@@ -34,17 +34,17 @@ namespace GraphicalProgrammingLanguage
             this.runCode = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.codeArea = new System.Windows.Forms.RichTextBox();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.DrawingArea = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DrawingArea = new System.Windows.Forms.PictureBox();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.DrawingArea)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.DrawingArea)).BeginInit();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // commandLine
@@ -90,26 +90,6 @@ namespace GraphicalProgrammingLanguage
             this.codeArea.Size = new System.Drawing.Size(368, 509);
             this.codeArea.TabIndex = 3;
             this.codeArea.Text = "";
-            // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.Color.Transparent;
-            this.panel2.Controls.Add(this.DrawingArea);
-            this.panel2.Location = new System.Drawing.Point(398, 51);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(834, 580);
-            this.panel2.TabIndex = 1;
-            // 
-            // DrawingArea
-            // 
-            this.DrawingArea.BackColor = System.Drawing.Color.Silver;
-            this.DrawingArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.DrawingArea.Location = new System.Drawing.Point(3, 14);
-            this.DrawingArea.Name = "DrawingArea";
-            this.DrawingArea.Size = new System.Drawing.Size(828, 560);
-            this.DrawingArea.TabIndex = 0;
-            this.DrawingArea.TabStop = false;
-            this.DrawingArea.Paint += new System.Windows.Forms.PaintEventHandler(this.DrawingArea_Paint);
             // 
             // menuStrip1
             // 
@@ -161,6 +141,26 @@ namespace GraphicalProgrammingLanguage
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(153, 34);
             this.exitToolStripMenuItem.Text = "Exit";
             // 
+            // DrawingArea
+            // 
+            this.DrawingArea.BackColor = System.Drawing.Color.Silver;
+            this.DrawingArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.DrawingArea.Location = new System.Drawing.Point(3, 14);
+            this.DrawingArea.Name = "DrawingArea";
+            this.DrawingArea.Size = new System.Drawing.Size(828, 560);
+            this.DrawingArea.TabIndex = 0;
+            this.DrawingArea.TabStop = false;
+            this.DrawingArea.Paint += new System.Windows.Forms.PaintEventHandler(this.DrawingArea_Paint);
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.Color.Transparent;
+            this.panel2.Controls.Add(this.DrawingArea);
+            this.panel2.Location = new System.Drawing.Point(398, 51);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(834, 580);
+            this.panel2.TabIndex = 1;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -177,10 +177,10 @@ namespace GraphicalProgrammingLanguage
             this.Text = "Graphical Programming Language";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.DrawingArea)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.DrawingArea)).EndInit();
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -190,14 +190,14 @@ namespace GraphicalProgrammingLanguage
         private System.Windows.Forms.TextBox commandLine;
         private System.Windows.Forms.Button runCode;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.PictureBox DrawingArea;
-        private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.RichTextBox codeArea;
+        private System.Windows.Forms.PictureBox DrawingArea;
+        private System.Windows.Forms.Panel panel2;
     }
 }
 

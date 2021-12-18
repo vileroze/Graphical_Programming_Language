@@ -28,6 +28,11 @@ namespace GraphicalProgrammingLanguage
                 return new Triangle();
 
             }
+            else if (shapeType.Equals("DRAWTO"))
+            {
+                return new DrawTo();
+
+            }
             else
             {
                 //if we get here then what has been passed in is inkown so throw an appropriate exception

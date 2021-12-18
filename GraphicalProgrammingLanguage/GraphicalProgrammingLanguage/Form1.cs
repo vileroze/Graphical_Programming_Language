@@ -20,9 +20,16 @@ namespace GraphicalProgrammingLanguage
 
         public static int penX; //X-coordinate of MOVETO
         public static int penY; //Y-coordinate of MOVETO
+
+        public static int drawToX = 0;//X1-coordinate of DRAWTO
+        public static int drawToY = 0;//Y1-coordinate of DRAWTO
+
+        public static int drawFromX = 0;//X2-coordinate of DRAWTO
+        public static int drawFromY = 0;//Y2-coordinate of DRAWTO
+
         int keyIndex; //for 'keyword' index
-        int keywordCharIndex = 0;
-        int lineNumber;
+        int keywordCharIndex = 0; //HELPS FIND LINE NUMBER
+        int lineNumber; //STORES line number
 
 
         public Form1()
@@ -87,7 +94,7 @@ namespace GraphicalProgrammingLanguage
                             else
                             //display error message
                             {
-                                codeArea.Text += "\n Wrong number of params in MOVETO on line: " + (lineNumber + 1) + " (required: 2 [x,y])";
+                                codeArea.Text += "\nWrong number of params in MOVETO on line: " + (lineNumber + 1) + " (required: 2 [x,y])";
                             }
                         }
 
@@ -107,7 +114,7 @@ namespace GraphicalProgrammingLanguage
                             else
                             //display error message
                             {
-                                codeArea.Text += "\n wrong number of parameters in CIRCLE on line: " + (lineNumber + 1) + " (required: 1 [radius])";
+                                codeArea.Text += "\nWrong number of parameters in CIRCLE on line: " + (lineNumber + 1) + " (required: 1 [radius])";
                             }
                         }
 
@@ -150,10 +157,52 @@ namespace GraphicalProgrammingLanguage
                                 codeArea.Text += "\nWrong number of parameters else in TRIANGLE on line: " + (lineNumber + 1) + " (required: 2 [height, base])";
                             }
                         }
+
+                        if ((String)keyword == "DRAWTO")
+                        {
+                            keyIndex = keywordIndex + 1;
+                            try
+                            {
+                                //next two elements must be numbers
+                                if (codeSplitArrayList[keywordIndex + 1].GetType() == typeof(int) && codeSplitArrayList[keywordIndex + 2].GetType() == typeof(int))
+                                {
+                                    //starting point for the line if a 'moveTo' exists before 
+                                    drawFromX = penX;
+                                    drawFromY = penY;
+
+                                    //starting point for the line from parameter
+                                    drawToX = (int)codeSplitArrayList[keywordIndex + 1];
+                                    drawToY = (int)codeSplitArrayList[keywordIndex + 2];
+
+                                    //acts as moveto 
+                                    penX = drawToX;
+                                    penY = drawToY;
+
+                                    s = factory.getShape((String)keyword);
+                                    Color circleColour = Color.Transparent;
+                                    s.set(circleColour, drawFromX, drawFromY, drawToX, drawToY);
+                                    shapes.Add(s);
+
+                                    //stores previous end point to be used for next line's starting point
+                                    drawFromX = drawToX;
+                                    drawFromY = drawToY;
+                                }
+                                else
+                                {
+                                    //errorDisplay.Text += "\nMissing parameters else in DRAWTO on line: " + (lineNumber + 1) + " (expected: [height, base])";
+                                }
+
+                            }
+                            catch (System.ArgumentOutOfRangeException)
+                            {
+                                //Point textBoxLocation = inputBox.GetPositionFromCharIndex(keywordIndex);
+                                //errorDisplay.Text += "\nMissing parameters in DRAWTO on line : " + (lineNumber + 1);
+                            }
+                        }
                     }
                     else
                     {
-                        codeArea.Text += "\n  Unrecognized keyword on line: " + (lineNumber + 1);
+                        codeArea.Text += "\nUnrecognized keyword on line: " + (lineNumber + 1);
                     }
                 }
             }
