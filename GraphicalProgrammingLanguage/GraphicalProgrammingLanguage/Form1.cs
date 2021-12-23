@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,10 @@ namespace GraphicalProgrammingLanguage
 {
     public partial class Form1 : Form
     {
+
+        OpenFileDialog fileExplorer = new OpenFileDialog();
+        SaveFileDialog saveFile = new SaveFileDialog();
+
         Shape s;
         ShapeFactory factory = new ShapeFactory(); //to return the shapes 
         ArrayList shapes = new ArrayList(); //stores shapes
@@ -68,7 +73,7 @@ namespace GraphicalProgrammingLanguage
             {
                 if (keyword.GetType() == typeof(string))
                 {
-                    //find index of keyword character in inputBox
+                    //find index of keyword character in codeArea
                     keywordCharIndex = (codeArea.Text.ToUpper()).IndexOf(((String)keyword).ToUpper());
 
                     //find line number
@@ -195,7 +200,7 @@ namespace GraphicalProgrammingLanguage
                             }
                             catch (System.ArgumentOutOfRangeException)
                             {
-                                //Point textBoxLocation = inputBox.GetPositionFromCharIndex(keywordIndex);
+                                //Point textBoxLocation = codeArea.GetPositionFromCharIndex(keywordIndex);
                                 //errorDisplay.Text += "\nMissing parameters in DRAWTO on line : " + (lineNumber + 1);
                             }
                         }
@@ -232,6 +237,94 @@ namespace GraphicalProgrammingLanguage
                     codeArea.Text += "\ninvalid shape in array"; //will never run as shape factory does not return invalid shapes
                 }
             }
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (StreamWriter outputFile = File.CreateText(fileExplorer.FileName))
+                {
+                    // Write the info to the file. 
+                    outputFile.WriteLine(codeArea.Text);
+                    outputFile.Close();
+
+                    String filename = Path.GetFileName(fileExplorer.FileName);
+                    String mssg = "Work saved to : " + filename;
+                    mssg += "\nLocation: " + fileExplorer.FileName;
+                    MessageBox.Show(mssg, "ALERT");
+                }
+            }
+            catch (System.ArgumentException)
+            {
+                saveFile.RestoreDirectory = true;
+                saveFile.Title = "Where do you want to save your work?";
+                saveFile.InitialDirectory = @"C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\";
+                saveFile.Filter = "Text|*.txt|All|*.*";
+                try
+                {
+                    if (saveFile.ShowDialog() == DialogResult.OK)
+                    {
+                        StreamWriter fWriter = File.CreateText(saveFile.FileName);
+                        fWriter.WriteLine(codeArea.Text);
+                        fWriter.Close();
+
+                        String filename = Path.GetFileName(saveFile.FileName);
+                        String mssg = "Work saved to : " + filename;
+                        mssg += "\nLocation: " + saveFile.FileName;
+
+                        MessageBox.Show(mssg, "ALERT");
+                    }
+                }
+                catch (IOException)
+                {
+                    MessageBox.Show("Error", "IO exception");
+                }
+            }
+        }
+
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fileExplorer.Filter = "Text|*.txt|All|*.*";
+            fileExplorer.Title = "Choose your file";
+            fileExplorer.FilterIndex = 1;
+            fileExplorer.InitialDirectory = @"C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\";
+            fileExplorer.RestoreDirectory = true;
+            try
+            {
+                if (fileExplorer.ShowDialog() == DialogResult.OK)
+                {
+                    codeArea.Text = "";
+                    //String filename = Path.GetFileName(fileExplorer.FileName);
+                    StreamReader s = File.OpenText(fileExplorer.FileName);
+                    do
+                    {
+                        String line = s.ReadLine();
+                        if (line == null) break;
+                        codeArea.Text += line;
+                        codeArea.AppendText(Environment.NewLine);
+                    } while (true);
+                    s.Close();
+                }
+            }
+
+            catch (System.ArgumentException)
+            {
+                MessageBox.Show("NO FILE CHOSEN", "ERROR");
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show("FILE NOT FOUND", "ALERT ");
+            }
+            catch (IOException)
+            {
+                MessageBox.Show("IO exception", "ERROR");
+            }
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

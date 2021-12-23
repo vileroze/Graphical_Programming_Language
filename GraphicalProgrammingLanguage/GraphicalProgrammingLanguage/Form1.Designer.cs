@@ -41,6 +41,7 @@ namespace GraphicalProgrammingLanguage
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DrawingArea = new System.Windows.Forms.PictureBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.panel1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DrawingArea)).BeginInit();
@@ -53,7 +54,7 @@ namespace GraphicalProgrammingLanguage
             this.commandLine.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.commandLine.Font = new System.Drawing.Font("Cascadia Mono", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.commandLine.ForeColor = System.Drawing.SystemColors.Window;
-            this.commandLine.Location = new System.Drawing.Point(9, 539);
+            this.commandLine.Location = new System.Drawing.Point(9, 600);
             this.commandLine.Name = "commandLine";
             this.commandLine.Size = new System.Drawing.Size(228, 26);
             this.commandLine.TabIndex = 1;
@@ -61,7 +62,7 @@ namespace GraphicalProgrammingLanguage
             // runCode
             // 
             this.runCode.Font = new System.Drawing.Font("Microsoft Tai Le", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.runCode.Location = new System.Drawing.Point(243, 529);
+            this.runCode.Location = new System.Drawing.Point(243, 591);
             this.runCode.Name = "runCode";
             this.runCode.Size = new System.Drawing.Size(134, 45);
             this.runCode.TabIndex = 1;
@@ -76,7 +77,7 @@ namespace GraphicalProgrammingLanguage
             this.panel1.Controls.Add(this.commandLine);
             this.panel1.Location = new System.Drawing.Point(3, 51);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(388, 580);
+            this.panel1.Size = new System.Drawing.Size(388, 642);
             this.panel1.TabIndex = 0;
             // 
             // codeArea
@@ -87,7 +88,7 @@ namespace GraphicalProgrammingLanguage
             this.codeArea.ForeColor = System.Drawing.SystemColors.Window;
             this.codeArea.Location = new System.Drawing.Point(9, 14);
             this.codeArea.Name = "codeArea";
-            this.codeArea.Size = new System.Drawing.Size(368, 509);
+            this.codeArea.Size = new System.Drawing.Size(368, 571);
             this.codeArea.TabIndex = 3;
             this.codeArea.Text = "";
             // 
@@ -101,7 +102,7 @@ namespace GraphicalProgrammingLanguage
             this.menuStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1244, 33);
+            this.menuStrip1.Size = new System.Drawing.Size(1640, 33);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -122,24 +123,27 @@ namespace GraphicalProgrammingLanguage
             this.saveToolStripMenuItem.Image = global::GraphicalProgrammingLanguage.Properties.Resources.Save_icon;
             this.saveToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(153, 34);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.saveToolStripMenuItem.Text = "Save";
+            this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // loadToolStripMenuItem
             // 
             this.loadToolStripMenuItem.Image = global::GraphicalProgrammingLanguage.Properties.Resources.open_file_icon;
             this.loadToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(153, 34);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.loadToolStripMenuItem.Text = "Load";
+            this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Image = global::GraphicalProgrammingLanguage.Properties.Resources.Log_Out_icon;
             this.exitToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(153, 34);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(270, 34);
             this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // DrawingArea
             // 
@@ -147,7 +151,7 @@ namespace GraphicalProgrammingLanguage
             this.DrawingArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.DrawingArea.Location = new System.Drawing.Point(3, 14);
             this.DrawingArea.Name = "DrawingArea";
-            this.DrawingArea.Size = new System.Drawing.Size(828, 560);
+            this.DrawingArea.Size = new System.Drawing.Size(1122, 493);
             this.DrawingArea.TabIndex = 0;
             this.DrawingArea.TabStop = false;
             this.DrawingArea.Paint += new System.Windows.Forms.PaintEventHandler(this.DrawingArea_Paint);
@@ -155,17 +159,27 @@ namespace GraphicalProgrammingLanguage
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.Transparent;
+            this.panel2.Controls.Add(this.richTextBox1);
             this.panel2.Controls.Add(this.DrawingArea);
             this.panel2.Location = new System.Drawing.Point(398, 51);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(834, 580);
+            this.panel2.Size = new System.Drawing.Size(1137, 642);
             this.panel2.TabIndex = 1;
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.BackColor = System.Drawing.Color.DarkGray;
+            this.richTextBox1.Location = new System.Drawing.Point(4, 513);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(1121, 123);
+            this.richTextBox1.TabIndex = 1;
+            this.richTextBox1.Text = "";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1244, 637);
+            this.ClientSize = new System.Drawing.Size(1640, 699);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
@@ -198,6 +212,7 @@ namespace GraphicalProgrammingLanguage
         private System.Windows.Forms.RichTextBox codeArea;
         private System.Windows.Forms.PictureBox DrawingArea;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }
 
