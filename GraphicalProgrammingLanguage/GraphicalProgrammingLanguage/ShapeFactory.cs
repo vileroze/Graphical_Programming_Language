@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GraphicalProgrammingLanguage
 {
-    class ShapeFactory
+    public class ShapeFactory
     {
         public Shape getShape(String shapeType)// parameter for shape passed
         {

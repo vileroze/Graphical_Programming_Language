@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GraphicalProgrammingLanguage
 {
-    abstract class Shape : ShapeInterface
+    public abstract class Shape : ShapeInterface
     {
         protected Color colour; //shape's colour
         protected int x, y; //not I could use c# properties for this
