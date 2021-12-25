@@ -38,10 +38,11 @@ namespace GraphicalProgrammingLanguage
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.DrawingArea = new System.Windows.Forms.PictureBox();
+            this.drawingArea = new System.Windows.Forms.PictureBox();
             this.errorDisplayBox = new System.Windows.Forms.RichTextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.DrawingArea)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.drawingArea)).BeginInit();
             this.SuspendLayout();
             // 
             // commandLine
@@ -50,21 +51,21 @@ namespace GraphicalProgrammingLanguage
             this.commandLine.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.commandLine.Font = new System.Drawing.Font("Cascadia Mono", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.commandLine.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.commandLine.Location = new System.Drawing.Point(11, 419);
-            this.commandLine.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.commandLine.Location = new System.Drawing.Point(11, 563);
+            this.commandLine.Margin = new System.Windows.Forms.Padding(2);
             this.commandLine.Name = "commandLine";
-            this.commandLine.Size = new System.Drawing.Size(153, 20);
+            this.commandLine.Size = new System.Drawing.Size(211, 20);
             this.commandLine.TabIndex = 1;
             this.commandLine.KeyDown += new System.Windows.Forms.KeyEventHandler(this.commandLine_KeyDown);
             // 
             // runCode
             // 
             this.runCode.Font = new System.Drawing.Font("Microsoft Tai Le", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.runCode.Location = new System.Drawing.Point(169, 418);
-            this.runCode.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.runCode.Location = new System.Drawing.Point(226, 539);
+            this.runCode.Margin = new System.Windows.Forms.Padding(2);
             this.runCode.Name = "runCode";
-            this.runCode.Size = new System.Drawing.Size(89, 29);
-            this.runCode.TabIndex = 1;
+            this.runCode.Size = new System.Drawing.Size(119, 68);
+            this.runCode.TabIndex = 2;
             this.runCode.Text = "EXECUTE";
             this.runCode.UseVisualStyleBackColor = true;
             this.runCode.Click += new System.EventHandler(this.runCode_Click);
@@ -73,12 +74,12 @@ namespace GraphicalProgrammingLanguage
             // 
             this.codeArea.BackColor = System.Drawing.Color.White;
             this.codeArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.codeArea.Font = new System.Drawing.Font("Cascadia Mono", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.codeArea.Font = new System.Drawing.Font("Cascadia Mono", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.codeArea.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.codeArea.Location = new System.Drawing.Point(11, 42);
-            this.codeArea.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.codeArea.Margin = new System.Windows.Forms.Padding(2);
             this.codeArea.Name = "codeArea";
-            this.codeArea.Size = new System.Drawing.Size(247, 373);
+            this.codeArea.Size = new System.Drawing.Size(334, 479);
             this.codeArea.TabIndex = 3;
             this.codeArea.Text = "";
             // 
@@ -92,7 +93,7 @@ namespace GraphicalProgrammingLanguage
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
-            this.menuStrip1.Size = new System.Drawing.Size(1037, 30);
+            this.menuStrip1.Size = new System.Drawing.Size(1292, 30);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -135,50 +136,64 @@ namespace GraphicalProgrammingLanguage
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
-            // DrawingArea
+            // drawingArea
             // 
-            this.DrawingArea.BackColor = System.Drawing.Color.MistyRose;
-            this.DrawingArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.DrawingArea.Location = new System.Drawing.Point(262, 42);
-            this.DrawingArea.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.DrawingArea.Name = "DrawingArea";
-            this.DrawingArea.Size = new System.Drawing.Size(764, 333);
-            this.DrawingArea.TabIndex = 0;
-            this.DrawingArea.TabStop = false;
-            this.DrawingArea.Paint += new System.Windows.Forms.PaintEventHandler(this.DrawingArea_Paint);
+            this.drawingArea.BackColor = System.Drawing.Color.MistyRose;
+            this.drawingArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.drawingArea.Location = new System.Drawing.Point(358, 42);
+            this.drawingArea.Margin = new System.Windows.Forms.Padding(2);
+            this.drawingArea.Name = "drawingArea";
+            this.drawingArea.Size = new System.Drawing.Size(923, 479);
+            this.drawingArea.TabIndex = 0;
+            this.drawingArea.TabStop = false;
+            this.drawingArea.Paint += new System.Windows.Forms.PaintEventHandler(this.DrawingArea_Paint);
             // 
             // errorDisplayBox
             // 
-            this.errorDisplayBox.BackColor = System.Drawing.Color.DarkGray;
+            this.errorDisplayBox.BackColor = System.Drawing.Color.LightGray;
+            this.errorDisplayBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.errorDisplayBox.ForeColor = System.Drawing.Color.Red;
-            this.errorDisplayBox.Location = new System.Drawing.Point(262, 379);
-            this.errorDisplayBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.errorDisplayBox.Location = new System.Drawing.Point(358, 525);
+            this.errorDisplayBox.Margin = new System.Windows.Forms.Padding(2);
             this.errorDisplayBox.Name = "errorDisplayBox";
-            this.errorDisplayBox.Size = new System.Drawing.Size(764, 68);
-            this.errorDisplayBox.TabIndex = 1;
+            this.errorDisplayBox.ReadOnly = true;
+            this.errorDisplayBox.Size = new System.Drawing.Size(923, 82);
+            this.errorDisplayBox.TabIndex = 3;
             this.errorDisplayBox.Text = "";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.LightGray;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(362, 503);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(74, 16);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Error List:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1037, 454);
+            this.ClientSize = new System.Drawing.Size(1292, 618);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.errorDisplayBox);
             this.Controls.Add(this.runCode);
-            this.Controls.Add(this.DrawingArea);
+            this.Controls.Add(this.drawingArea);
             this.Controls.Add(this.commandLine);
             this.Controls.Add(this.codeArea);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Graphical Programming Language";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.DrawingArea)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.drawingArea)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -193,8 +208,9 @@ namespace GraphicalProgrammingLanguage
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.RichTextBox codeArea;
-        private System.Windows.Forms.PictureBox DrawingArea;
+        private System.Windows.Forms.PictureBox drawingArea;
         private System.Windows.Forms.RichTextBox errorDisplayBox;
+        private System.Windows.Forms.Label label1;
     }
 }
 

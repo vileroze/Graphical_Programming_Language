@@ -26,42 +26,70 @@ namespace GraphicalProgrammingLanguage
             InitializeComponent();
         }
 
+        public void startProgram( String input)
+        {
+            parser.shapes.Clear();
+            parser.charIndex = 0;
+            errorDisplayBox.Text = "";
+            parser.keyIndex = 0;
+            string code = input;
+            string[] codeSplit = code.Split(new Char[] {' ', ',', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+
+            
+            //string[] codeSplit = code.Split('\n');
+            string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE" };
+
+            //return array list and store in variable
+            var returnedArrayList = parser.returnArrayList(codeSplit);
+
+            //check keyword
+            parser.checkForKeywords(codeArea, possibleCommands, returnedArrayList, errorDisplayBox, drawingArea);
+        }
+
         private void runCode_Click(object sender, EventArgs e)
         {
+
             String commandLineInput = commandLine.Text; //reads the command in the 'commandLine'
 
             if (commandLineInput.Equals("run", StringComparison.InvariantCultureIgnoreCase))
             {
                 String codeAreaInput = codeArea.Text;
-                parser.shapes.Clear();
-                errorDisplayBox.Text = "";
-                parser.keyIndex = 0;
-                string code = codeAreaInput;
-                string[] codeSplit = code.Split(new Char[] { ',', ' ', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE" };
-
-                //return array list and store in variable
-                var returnedArrayList = parser.returnArrayList(codeSplit);
-
-                //check keyword
-                parser.checkForKeywords(codeArea, possibleCommands, returnedArrayList, errorDisplayBox, DrawingArea);
+                startProgram(codeAreaInput);
             }
             else if (commandLineInput.Equals("clear", StringComparison.InvariantCultureIgnoreCase))
             {
                 parser.shapes.Clear();
-                DrawingArea.Refresh();
+                drawingArea.Refresh();
 
             }
             else if (commandLineInput.Equals("reset", StringComparison.InvariantCultureIgnoreCase))
             {
                 CommandParser.penX = 0;
                 CommandParser.penY = 0;
-                DrawingArea.Refresh();
+                drawingArea.Refresh();
 
             }
-            else if (string.IsNullOrWhiteSpace(commandLineInput) && commandLine.Text.Length > 0)
+            else if ((string.IsNullOrWhiteSpace(commandLineInput) && commandLine.Text.Length > 0) || commandLine.Text == "")
             {
-                commandLine.Text = "no command given";
+                errorDisplayBox.Text += "\nNo command given on the command parser (try: run, clear, reset)";
+            }
+            else
+            {
+                startProgram(commandLineInput);
+            }
+        }
+
+        private void commandLine_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                //peforms click operation of runCode button
+                runCode.PerformClick();
+
+                // these last two lines will stop the beep sound
+                e.SuppressKeyPress = true;
+                e.Handled = true;
             }
         }
 
@@ -76,7 +104,6 @@ namespace GraphicalProgrammingLanguage
         }
 
 
-
         //-----------------------MENU ITEMS------------------------------------------
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -89,9 +116,9 @@ namespace GraphicalProgrammingLanguage
                     outputFile.Close();
 
                     String filename = Path.GetFileName(fileExplorer.FileName);
-                    String mssg = "Work saved to : " + filename;
-                    mssg += "\nLocation: " + fileExplorer.FileName;
-                    MessageBox.Show(mssg, "ALERT");
+                    String message = "Work saved to : " + filename;
+                    message += "\nLocation: " + fileExplorer.FileName;
+                    MessageBox.Show(message, "ALERT");
                 }
             }
             catch (System.ArgumentException)
@@ -109,10 +136,10 @@ namespace GraphicalProgrammingLanguage
                         fWriter.Close();
 
                         String filename = Path.GetFileName(saveFile.FileName);
-                        String mssg = "Work saved to : " + filename;
-                        mssg += "\nLocation: " + saveFile.FileName;
+                        String message = "Work saved to : " + filename;
+                        message += "\nLocation: " + saveFile.FileName;
 
-                        MessageBox.Show(mssg, "ALERT");
+                        MessageBox.Show(message, "ALERT");
                     }
                 }
                 catch (IOException)
@@ -148,33 +175,21 @@ namespace GraphicalProgrammingLanguage
 
             catch (System.ArgumentException)
             {
-                MessageBox.Show("NO FILE CHOSEN", "ERROR");
+                MessageBox.Show("NO FILE CHOSEN !!", "ALERT");
             }
             catch (FileNotFoundException)
             {
-                MessageBox.Show("FILE NOT FOUND", "ALERT ");
+                MessageBox.Show("FILE NOT FOUND !!", "ERROR");
             }
             catch (IOException)
             {
-                MessageBox.Show("IO exception", "ERROR");
+                MessageBox.Show("Something went wrong, try again !!", "ERROR");
             }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Exit();
-        }
-
-        private void commandLine_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                runCode.PerformClick();
-
-                // these last two lines will stop the beep sound
-                e.SuppressKeyPress = true;
-                e.Handled = true;
-            }
         }
     }
 }
