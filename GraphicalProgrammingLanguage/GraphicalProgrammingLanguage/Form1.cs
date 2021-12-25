@@ -19,64 +19,68 @@ namespace GraphicalProgrammingLanguage
         SaveFileDialog saveFile = new SaveFileDialog();
 
         CommandParser parser = new CommandParser();
-
+        Dictionary<int, string> dictionary = new Dictionary<int, string>();
 
         public Form1()
         {
             InitializeComponent();
         }
 
-        public void startProgram( String input)
+        public void startExecution( String input)
         {
-            parser.shapes.Clear();
-            parser.charIndex = 0;
-            errorDisplayBox.Text = "";
-            parser.keyIndex = 0;
+            parser.shapes.Clear(); //clears array
+            errorDisplayBox.Text = ""; //clears error messages
             string code = input;
-            string[] codeSplit = code.Split(new Char[] {' ', ',', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            dictionary.Clear();
 
+            string[] codeSpitArray = code.Split(new char[] { '\n' });
 
-            
-            //string[] codeSplit = code.Split('\n');
+            // line number is one
+            int lineNumber = 1;
+            foreach (string line in codeSpitArray)
+            {
+                // add the entire line as value and the lineNumber as index
+                dictionary.Add(lineNumber, line);
+                lineNumber++;
+            }
+
+            // stores all possible commands
             string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE" };
 
-            //return array list and store in variable
-            var returnedArrayList = parser.returnArrayList(codeSplit);
-
-            //check keyword
-            parser.checkForKeywords(codeArea, possibleCommands, returnedArrayList, errorDisplayBox, drawingArea);
+            // main execution part of the program (see xml file for full specifications)
+            parser.checkForKeywords(possibleCommands, dictionary, errorDisplayBox, drawingArea);
         }
 
         private void runCode_Click(object sender, EventArgs e)
         {
-
             String commandLineInput = commandLine.Text; //reads the command in the 'commandLine'
 
             if (commandLineInput.Equals("run", StringComparison.InvariantCultureIgnoreCase))
             {
                 String codeAreaInput = codeArea.Text;
-                startProgram(codeAreaInput);
+                startExecution(codeAreaInput);
             }
             else if (commandLineInput.Equals("clear", StringComparison.InvariantCultureIgnoreCase))
             {
+                //clears all the sahpes in the array then refreshes the pictureBox so everything dissapears
                 parser.shapes.Clear();
                 drawingArea.Refresh();
-
             }
             else if (commandLineInput.Equals("reset", StringComparison.InvariantCultureIgnoreCase))
             {
+                //resets moveto position to (0,0)
                 CommandParser.penX = 0;
                 CommandParser.penY = 0;
                 drawingArea.Refresh();
-
             }
             else if ((string.IsNullOrWhiteSpace(commandLineInput) && commandLine.Text.Length > 0) || commandLine.Text == "")
             {
-                errorDisplayBox.Text += "\nNo command given on the command parser (try: run, clear, reset)";
+                errorDisplayBox.Text = "\nNo command given on the command parser (try: run, clear, reset)";
             }
             else
             {
-                startProgram(commandLineInput);
+                //runs the command like a multiline command
+                startExecution(commandLineInput);
             }
         }
 
@@ -98,9 +102,10 @@ namespace GraphicalProgrammingLanguage
             //draws a 3 by 3 rectangle to help visualize the current position of the 'Moveto' object
             parser.drawCurrMoveToPos(e, CommandParser.penX, CommandParser.penY);
 
-            //draw all shapes stored in the 'shapes' arralist
             CommandParser.draw = e.Graphics;
-            parser.drawShapes(parser.shapes, parser.s, CommandParser.draw);
+
+            //draw all shapes stored in the 'shapes' arralist
+            parser.drawShapes(parser.shapes, parser.shape, CommandParser.draw);
         }
 
 
@@ -109,6 +114,7 @@ namespace GraphicalProgrammingLanguage
         {
             try
             {
+                //checks if a file is open and if its is, saves it to the same file 
                 using (StreamWriter outputFile = File.CreateText(fileExplorer.FileName))
                 {
                     // Write the info to the file. 
@@ -123,12 +129,15 @@ namespace GraphicalProgrammingLanguage
             }
             catch (System.ArgumentException)
             {
+                //prompts user to save file, if no file is open
                 saveFile.RestoreDirectory = true;
                 saveFile.Title = "Where do you want to save your work?";
                 saveFile.InitialDirectory = @"C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\";
+                //saves file filter type
                 saveFile.Filter = "Text|*.txt|All|*.*";
                 try
                 {
+                    //displays dialog box and checks if user has selected a file
                     if (saveFile.ShowDialog() == DialogResult.OK)
                     {
                         StreamWriter fWriter = File.CreateText(saveFile.FileName);
@@ -137,8 +146,8 @@ namespace GraphicalProgrammingLanguage
 
                         String filename = Path.GetFileName(saveFile.FileName);
                         String message = "Work saved to : " + filename;
+                        //displays the location where the file was saved
                         message += "\nLocation: " + saveFile.FileName;
-
                         MessageBox.Show(message, "ALERT");
                     }
                 }
@@ -151,23 +160,26 @@ namespace GraphicalProgrammingLanguage
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //filters for only text files
             fileExplorer.Filter = "Text|*.txt|All|*.*";
+            //title for fie explorer
             fileExplorer.Title = "Choose your file";
             fileExplorer.FilterIndex = 1;
             fileExplorer.InitialDirectory = @"C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\";
+            //remembers last visited directory
             fileExplorer.RestoreDirectory = true;
             try
             {
                 if (fileExplorer.ShowDialog() == DialogResult.OK)
                 {
-                    codeArea.Text = "";
+                    codeArea.Text = ""; //clears text box before loading file contents
                     StreamReader s = File.OpenText(fileExplorer.FileName);
                     do
                     {
                         String line = s.ReadLine();
-                        if (line == null) break;
+                        if (line == null) break; //breaks if end of file
                         codeArea.Text += line;
-                        codeArea.AppendText(Environment.NewLine);
+                        codeArea.AppendText(Environment.NewLine); // new line starting points are preserved
                     } while (true);
                     s.Close();
                 }
@@ -189,6 +201,7 @@ namespace GraphicalProgrammingLanguage
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //closes application
             Application.Exit();
         }
     }

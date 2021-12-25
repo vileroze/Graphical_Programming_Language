@@ -32,7 +32,6 @@ namespace GraphicalProgrammingLanguage
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.commandLine = new System.Windows.Forms.TextBox();
             this.runCode = new System.Windows.Forms.Button();
-            this.codeArea = new System.Windows.Forms.RichTextBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -41,6 +40,7 @@ namespace GraphicalProgrammingLanguage
             this.drawingArea = new System.Windows.Forms.PictureBox();
             this.errorDisplayBox = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.codeArea = new System.Windows.Forms.RichTextBox();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.drawingArea)).BeginInit();
             this.SuspendLayout();
@@ -51,7 +51,7 @@ namespace GraphicalProgrammingLanguage
             this.commandLine.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.commandLine.Font = new System.Drawing.Font("Cascadia Mono", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.commandLine.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.commandLine.Location = new System.Drawing.Point(11, 563);
+            this.commandLine.Location = new System.Drawing.Point(11, 581);
             this.commandLine.Margin = new System.Windows.Forms.Padding(2);
             this.commandLine.Name = "commandLine";
             this.commandLine.Size = new System.Drawing.Size(211, 20);
@@ -61,27 +61,14 @@ namespace GraphicalProgrammingLanguage
             // runCode
             // 
             this.runCode.Font = new System.Drawing.Font("Microsoft Tai Le", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.runCode.Location = new System.Drawing.Point(226, 539);
+            this.runCode.Location = new System.Drawing.Point(226, 575);
             this.runCode.Margin = new System.Windows.Forms.Padding(2);
             this.runCode.Name = "runCode";
-            this.runCode.Size = new System.Drawing.Size(119, 68);
+            this.runCode.Size = new System.Drawing.Size(119, 32);
             this.runCode.TabIndex = 2;
             this.runCode.Text = "EXECUTE";
             this.runCode.UseVisualStyleBackColor = true;
             this.runCode.Click += new System.EventHandler(this.runCode_Click);
-            // 
-            // codeArea
-            // 
-            this.codeArea.BackColor = System.Drawing.Color.White;
-            this.codeArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.codeArea.Font = new System.Drawing.Font("Cascadia Mono", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.codeArea.ForeColor = System.Drawing.SystemColors.InactiveCaptionText;
-            this.codeArea.Location = new System.Drawing.Point(11, 42);
-            this.codeArea.Margin = new System.Windows.Forms.Padding(2);
-            this.codeArea.Name = "codeArea";
-            this.codeArea.Size = new System.Drawing.Size(334, 479);
-            this.codeArea.TabIndex = 3;
-            this.codeArea.Text = "";
             // 
             // menuStrip1
             // 
@@ -150,7 +137,7 @@ namespace GraphicalProgrammingLanguage
             // 
             // errorDisplayBox
             // 
-            this.errorDisplayBox.BackColor = System.Drawing.Color.LightGray;
+            this.errorDisplayBox.BackColor = System.Drawing.Color.OldLace;
             this.errorDisplayBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.errorDisplayBox.ForeColor = System.Drawing.Color.Red;
             this.errorDisplayBox.Location = new System.Drawing.Point(358, 525);
@@ -166,23 +153,32 @@ namespace GraphicalProgrammingLanguage
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.LightGray;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(362, 503);
+            this.label1.Location = new System.Drawing.Point(360, 529);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(74, 16);
             this.label1.TabIndex = 4;
             this.label1.Text = "Error List:";
+            // 
+            // codeArea
+            // 
+            this.codeArea.Font = new System.Drawing.Font("Cascadia Code SemiBold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.codeArea.Location = new System.Drawing.Point(12, 42);
+            this.codeArea.Name = "codeArea";
+            this.codeArea.Size = new System.Drawing.Size(341, 528);
+            this.codeArea.TabIndex = 5;
+            this.codeArea.Text = "";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1292, 618);
+            this.Controls.Add(this.codeArea);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.errorDisplayBox);
             this.Controls.Add(this.runCode);
             this.Controls.Add(this.drawingArea);
             this.Controls.Add(this.commandLine);
-            this.Controls.Add(this.codeArea);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -207,10 +203,10 @@ namespace GraphicalProgrammingLanguage
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem loadToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.RichTextBox codeArea;
         private System.Windows.Forms.PictureBox drawingArea;
         private System.Windows.Forms.RichTextBox errorDisplayBox;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.RichTextBox codeArea;
     }
 }
 

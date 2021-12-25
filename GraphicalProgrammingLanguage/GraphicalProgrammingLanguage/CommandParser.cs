@@ -11,16 +11,13 @@ namespace GraphicalProgrammingLanguage
 {
     public class CommandParser
     {
-        ArrayList codeSplitArrayList = new ArrayList();
 
         //Form1 ko varaible haru
         ShapeFactory factory = new ShapeFactory(); //to return the shapes 
         public ArrayList shapes = new ArrayList(); //stores shapes
-        public Shape s;
+        public Shape shape;
 
-        int charindex = 0;
-        public static int unrecognizedKeywordlineNumber;
-        public static int lineNumber;
+        //public static int lineNumber;
 
         public static int penX; //X-coordinate of MOVETO
         public static int penY; //Y-coordinate of MOVETO
@@ -31,282 +28,259 @@ namespace GraphicalProgrammingLanguage
         public static int drawFromX = 0;//X2-coordinate of DRAWTO
         public static int drawFromY = 0;//Y2-coordinate of DRAWTO
 
-        public int keyIndex; //for 'keyword' index
-
         public static Graphics draw;
 
-        //-------------------
-        public int charIndex;
-
-
-        //takes an arry of string and converts it into arraylist by parsing required string to integer
-        public ArrayList returnArrayList(string[] codeSplit)
+        public void checkForKeywords(string[] possibleCommands, Dictionary<int, string> dictionary, RichTextBox errorDisplayBox, PictureBox drawingArea)
         {
-            //starting(inputBox, errorDisplayBox);
-            for (int index = 0; index < codeSplit.Length; index++)
+            //flag to break the outer foreach loop
+            int breakLoopFlag = 0;
+            foreach (KeyValuePair<int, string> pair in dictionary)
             {
-                try
-                {
-                    if (int.Parse(codeSplit[index]) >= 0)
-                    {
-                        codeSplitArrayList.Add(int.Parse(codeSplit[index]));
-                    }
-                }
-                catch (System.FormatException)
-                {
-                    codeSplitArrayList.Add(codeSplit[index].ToUpper());
-                }
-            }
-            return codeSplitArrayList;
-        }
-
-        public void checkForKeywords(RichTextBox inputBox, string[] possibleCommands, ArrayList returnedArrayList, RichTextBox errorDisplayBox, PictureBox drawingArea)
-        {
-            //inputBox.SelectionStart = inputBox.SelectionStart;
-            //inputBox.SelectionLength = 5;
-            //inputBox.Focus();
-
-            //int selectionStart = inputBox.SelectionStart;
-            //int lineIndex = inputBox.GetLineFromCharIndex(selectionStart);
-            //errorDisplayBox.Text += lineIndex + " ";
-
-            //int chars = inputBox.Text.Length;
-            //errorDisplayBox.Text += "     " + chars;
-            foreach (var keyword in returnedArrayList)
-            {
+                int commandInstance = 0;
+                //strips value from dictionary splits it using delimeters then stores the result
+                string[] splitMultilineCode = pair.Value.Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 
-                //int index = 0;
-                //checks if element is a string
-                if (keyword.GetType() == typeof(string))
+                //key acts as line number
+                int lineNumber = pair.Key;
+
+                foreach (string element in splitMultilineCode)
                 {
-                    //charindex = charIndex + ((String)keyword).Length;
-                    //errorDisplayBox.Text += "current char : " + charindex;
-
-                    //find line number
-                    unrecognizedKeywordlineNumber = inputBox.GetLineFromCharIndex(inputBox.Find((String)keyword + " "));
-                    
-                    //charIndex = inputBox.Text.IndexOf((String)keyword) + 1;
-                    //errorDisplayBox.Text += ((String)keyword) + " ko charindex : " + charindex;
-
-                    //String[] gg = inputBox.Text.Split('\n');
-
-                    //foreach (string cc in gg)
-                    //{
-                    //    string[] g = cc.Split(' ');
-                    //    //MessageBox.Show("" + keyword, "");
-                    //    if (g[0].ToUpper() == (string)keyword)
-                    //    {
-
-                    //        lineNumber = index + 1;
-                    //        break;
-                    //    }
-                    //    //else
-                    //    //{
-                    //        index++;
-                    //    //}
-                    //}
-
-                    if (possibleCommands.Contains(keyword))
+                    //checks if element is one of the possible commands
+                    if (possibleCommands.Contains((string)element.ToUpper()))
                     {
-                        //find index of keyword in returnedArrayList
-                        int keywordIndex = returnedArrayList.IndexOf(keyword, keyIndex);
-
-                        //finds the keyword
-                        if ((String)keyword == "MOVETO")
+                        //increases if command is found
+                        commandInstance++;
+                        // checks if line has multiple commands, then dispays error if it does
+                        if (commandInstance > 1)
                         {
-                            keyIndex = keywordIndex + 1;
-                            try
-                            {
-                                //try
-                                //{
-                                //    //check if number of parameters passed are more than required
-                                //    if (returnedArrayList[keywordIndex + 3].GetType() == typeof(int))
-                                //    {
-                                //        int lineNum = inputBox.GetLineFromCharIndex(inputBox.Find((String)keyword + returnedArrayList[keywordIndex + 3]));
-                                //        //displayErrorMsg(errorDisplayBox, "Wrong number of parameters in MOVETO on line", lineNumber, "( expected: [x,y] )");
-                                //        break;
-                                //    }
-                                //}
-                                //catch (System.ArgumentOutOfRangeException e)
-                                //{
-
-                                //}
-
-                                //next two elements must be numbers
-                                if (returnedArrayList[keywordIndex + 1].GetType() == typeof(int) && returnedArrayList[keywordIndex + 2].GetType() == typeof(int))
-                                {
-                                    penX = (int)returnedArrayList[keywordIndex + 1];
-                                    penY = (int)returnedArrayList[keywordIndex + 2];
-                                }
-                                else
-                                {
-                                    int lineNum = inputBox.GetLineFromCharIndex(inputBox.Find((String)keyword +" "+ returnedArrayList[keywordIndex + 1]));
-                                    displayErrorMsg(errorDisplayBox, "Missing parameters in MOVETO on line", lineNum + 1, "( expected: [x,y] )");
-                                    break;
-                                }
-                            }
-                            catch (System.ArgumentOutOfRangeException)
-                            {
-                                int lineNum = inputBox.GetLineFromCharIndex(inputBox.Find((String)keyword + " "+ returnedArrayList[keywordIndex + 1]));
-                                displayErrorMsg(errorDisplayBox, "Missing parameters in MOVETO on line", lineNum + 1, "( expected: [x,y] )");
-                                break;
-                            }
+                            errorDisplayBox.Text += "\n Cannot enter more than 1 command in this line : " + lineNumber + " ";
+                            commandInstance = 0;
+                            breakLoopFlag = 1;
+                            break;
                         }
-
-                        if ((String)keyword == "CIRCLE")
+                        else
                         {
-                            keyIndex = keywordIndex + 1;
-                            try
+                            //checks for moveto
+                            if ((string)element.ToUpper() == "MOVETO")
                             {
-                                try
+                                //gets the current length of line
+                                int countArrayNum = splitMultilineCode.Length;
+                                // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
+                                if (countArrayNum - 1 == 2)
                                 {
-                                    if (returnedArrayList[keywordIndex + 2].GetType() == typeof(int))
+                                    //checks if both the parameters passed are integers
+                                    try
                                     {
-                                        int lineNum = inputBox.GetLineFromCharIndex(inputBox.Find((String)keyword + " " + returnedArrayList[keywordIndex + 1] + " " + returnedArrayList[keywordIndex + 2]));
-                                        displayErrorMsg(errorDisplayBox, "secondMissing parameters in CIRCLE on line", lineNum, "( expected: [radius] )");
+                                        if (int.Parse(splitMultilineCode[1]) >= 0 && int.Parse(splitMultilineCode[2]) >= 0)
+                                        {
+                                            //stores params as coordinates
+                                            penX = int.Parse(splitMultilineCode[1]); 
+                                            penY = int.Parse(splitMultilineCode[2]);
+                                        }
+                                    }
+                                    catch (IndexOutOfRangeException) { break; }
+                                    catch (FormatException)
+                                    {
+                                        displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "MOVETO x,y");
+                                        breakLoopFlag = 1;
                                         break;
                                     }
                                 }
-                                catch (System.ArgumentOutOfRangeException e)
-                                {
-
-                                }
-
-                                //next element must be number
-                                if (returnedArrayList[keywordIndex + 1].GetType() == typeof(int))
-                                {
-                                    int radius = (int)returnedArrayList[keywordIndex + 1];
-                                    getAndAddShape(s, factory, (String)keyword, shapes, penX, penY, radius);
-                                }
                                 else
                                 {
-                                    int lineNum = inputBox.GetLineFromCharIndex(inputBox.Find((String)keyword + " " + returnedArrayList[keywordIndex + 1]));
-                                    displayErrorMsg(errorDisplayBox, "firstMissing parameters in CIRCLE on line", lineNum, "( expected: [radius] )");
-                                    break;
-                                }
-
-                                
-                            }
-                            catch (System.ArgumentOutOfRangeException)
-                            {
-                                int lineNum = inputBox.GetLineFromCharIndex(inputBox.Find((String)keyword + " " + returnedArrayList[keywordIndex + 1]));
-                                displayErrorMsg(errorDisplayBox, "thirdMissing parameters in CIRCLE on line", lineNum, "( expected: [radius] )");
-                                break;
-                            }
-                        }
-
-                        if ((String)keyword == "RECTANGLE")
-                        {
-                            keyIndex = keywordIndex + 1;
-                            try
-                            {
-                                //next two elements must be numbers
-                                if (returnedArrayList[keywordIndex + 1].GetType() == typeof(int) && returnedArrayList[keywordIndex + 2].GetType() == typeof(int))
-                                {
-                                    int width = (int)returnedArrayList[keywordIndex + 1];
-                                    int height = (int)returnedArrayList[keywordIndex + 2];
-                                    getAndAddShape(s, factory, (String)keyword, shapes, penX, penY, width, height);
-                                }
-                                else
-                                {
-                                    displayErrorMsg(errorDisplayBox, "Missing parameters in RECTANGLE on line", lineNumber, "(expected: [width, height])");
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword MOVETO", "MOVETO x,y");
+                                    breakLoopFlag = 1;
                                     break;
                                 }
                             }
-                            catch (System.ArgumentOutOfRangeException)
-                            {
-                                displayErrorMsg(errorDisplayBox, "Missing parameters in RECTANGLE on line", lineNumber, "(expected: [width, height])");
-                                break;
-                            }
 
-                        }
-
-                        if ((String)keyword == "TRIANGLE")
-                        {
-                            keyIndex = keywordIndex + 1;
-                            try
+                            //checks for CIRCLE
+                            if ((string)element.ToUpper() == "CIRCLE")
                             {
-                                //next two elements must be numbers
-                                if (returnedArrayList[keywordIndex + 1].GetType() == typeof(int) && returnedArrayList[keywordIndex + 2].GetType() == typeof(int))
+                                //gets the current length of line
+                                int countArrayNum = splitMultilineCode.Length;
+                                // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
+                                if (countArrayNum - 1 == 1)
                                 {
-                                    int bases = (int)returnedArrayList[keywordIndex + 1];
-                                    int height = (int)returnedArrayList[keywordIndex + 2];
-                                    getAndAddShape(s, factory, (String)keyword, shapes, penX, penY, bases, height);
+                                    try
+                                    {
+                                        if (int.Parse(splitMultilineCode[1]) >= 0)
+                                        {
+                                            int radius = int.Parse(splitMultilineCode[1]); // stores radius
+                                            getAndAddShape(shape, factory, (string)element.ToUpper(), shapes, penX, penY, radius);//creates and adds the shape
+
+                                        }
+                                    }
+                                    catch (IndexOutOfRangeException) { break; }
+                                    catch (FormatException)
+                                    {
+                                        displayErrorMsg(errorDisplayBox, lineNumber, "Parameter should be of type integer", "CIRCLE radius");
+                                        breakLoopFlag = 1;
+                                        break;
+                                    }
                                 }
                                 else
                                 {
-                                    displayErrorMsg(errorDisplayBox, "Missing parameters in TRIANGLE on line", lineNumber, "(expected: [height, base])");
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword CIRCLE", "CIRCLE radius");
+                                    breakLoopFlag = 1;
                                     break;
                                 }
                             }
-                            catch (System.ArgumentOutOfRangeException)
-                            {
-                                displayErrorMsg(errorDisplayBox, "Missing parameters in TRIANGLE on line", lineNumber, "(expected: [height, base])");
-                                break;
-                            }
-                        }
 
-                        if ((String)keyword == "DRAWTO")
-                        {
-                            keyIndex = keywordIndex + 1;
-                            try
+                            //checks for RECTANGLE
+                            if ((string)element.ToUpper() == "RECTANGLE")
                             {
-                                //next two elements must be numbers
-                                if (returnedArrayList[keywordIndex + 1].GetType() == typeof(int) && returnedArrayList[keywordIndex + 2].GetType() == typeof(int))
+                                //gets the current length of line
+                                int countArrayNum = splitMultilineCode.Length;
+                                // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
+                                if (countArrayNum - 1 == 2)
                                 {
-                                    //if 'moveTo' is written before 'drawTo'
-                                    drawFromX = penX;
-                                    drawFromY = penY;
+                                    try
+                                    {
+                                        if (int.Parse(splitMultilineCode[1]) >= 0)
+                                        {
+                                            int height = int.Parse(splitMultilineCode[1]); // adds index as integer on codeSplitArrayList
+                                            int width = int.Parse(splitMultilineCode[2]); // adds index as integer on codeSplitArrayList
+                                            getAndAddShape(shape, factory, (string)element.ToUpper(), shapes, penX, penY, height, width);//creates and adds the shape
+                                        }
 
-                                    //store params
-                                    drawToX = (int)returnedArrayList[keywordIndex + 1];
-                                    drawToY = (int)returnedArrayList[keywordIndex + 2];
-
-                                    //acts as moveto 
-                                    penX = drawToX;
-                                    penY = drawToY;
-
-                                    getAndAddShape(s, factory, (String)keyword, shapes, drawFromX, drawFromY, drawToX, drawToY);
-
-                                    //ending point become starting point
-                                    drawFromX = drawToX;
-                                    drawFromY = drawToY;
+                                    }
+                                    catch (IndexOutOfRangeException) { break; }
+                                    catch (FormatException)
+                                    {
+                                        displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "RECTANGLE height, width");
+                                        breakLoopFlag = 1;
+                                        break;
+                                    }
                                 }
                                 else
                                 {
-                                    displayErrorMsg(errorDisplayBox, "Missing parameters in DRAWTO on line", lineNumber, "(expected: [x, y])");
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword RECTANGLE", "RECTANGLE height, width");
+                                    breakLoopFlag = 1;
                                     break;
                                 }
-
                             }
-                            catch (System.ArgumentOutOfRangeException)
+
+                            //checks for TRIANGLE
+                            if ((string)element.ToUpper() == "TRIANGLE")
                             {
-                                displayErrorMsg(errorDisplayBox, "Missing parameters in DRAWTO on line", lineNumber, "(expected: [x, y])");
-                                break;
+                                //gets the current length of line
+                                int countArrayNum = splitMultilineCode.Length;
+                                // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
+                                if (countArrayNum - 1 == 2)
+                                {
+                                    try
+                                    {
+                                        if (int.Parse(splitMultilineCode[1]) >= 0)
+                                        {
+                                            int bases = int.Parse(splitMultilineCode[1]); // adds index as integer on codeSplitArrayList
+                                            int height = int.Parse(splitMultilineCode[2]); // adds index as integer on codeSplitArrayList
+                                            getAndAddShape(shape, factory, (string)element.ToUpper(), shapes, penX, penY, bases, height);//creates and adds the shape
+                                        }
+
+                                    }
+                                    catch (IndexOutOfRangeException) { break; }
+                                    catch (FormatException)
+                                    {
+                                        displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "TRIANGLE base, height");
+                                        breakLoopFlag = 1;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword TRIANGLE", "TRIANGLE base, height");
+                                    breakLoopFlag = 1;
+                                    break;
+                                }
+                            }
+
+                            //checks for DRAWTO
+                            if ((string)element.ToUpper() == "DRAWTO")
+                            {
+                                //gets the current length of line
+                                int countArrayNum = splitMultilineCode.Length;
+                                // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
+                                if (countArrayNum - 1 == 2)
+                                {
+                                    try
+                                    {
+                                        if (int.Parse(splitMultilineCode[1]) >= 0 && int.Parse(splitMultilineCode[2]) >= 0)
+                                        {
+                                            //if 'moveTo' is written before 'drawTo'
+                                            int drawFromX = penX;
+                                            int drawFromY = penY;
+
+                                            //store params
+                                            int drawToX = int.Parse(splitMultilineCode[1]);
+                                            int drawToY = int.Parse(splitMultilineCode[2]);
+
+                                            //the new co-ordinates for MOVETO params 
+                                            penX = drawToX;
+                                            penY = drawToY;
+
+                                            //creates and adds the shape
+                                            getAndAddShape(shape, factory, (string)element.ToUpper(), shapes, drawFromX, drawFromY, drawToX, drawToY);
+
+                                            //makes the ending point of the previous drawTo the starting point of the next drawTo
+                                            drawFromX = drawToX;
+                                            drawFromY = drawToY;
+                                        }
+                                    }
+                                    catch (IndexOutOfRangeException) { break; }
+                                    catch (FormatException)
+                                    {
+                                        displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "DRAWTO x,y");
+                                        breakLoopFlag = 1;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword DRAWTO", "DRAWTO x,y");
+                                    breakLoopFlag = 1;
+                                    break;
+                                }
                             }
                         }
                     }
                     else
                     {
-                        displayErrorMsg(errorDisplayBox, "Unrecognized keyword on line", unrecognizedKeywordlineNumber + 1, "try: CIRCLE, TRIANGLE, RECTANGLE, MOVETO or DRAWTO");
-                        break;
+                        //checks for invalid keywords
+                        try
+                        {
+                            if (int.Parse(element) > 0)
+                            {
+                                //do nothing if element is an integer
+                            }
+                        }
+                        catch (FormatException)
+                        {
+                            displayErrorMsg(errorDisplayBox, lineNumber, "Keyword does not exist", "circle or triangle or rectangle or drawto or moveto");
+                            breakLoopFlag = 1;
+                            break;
+                        }
                     }
                 }
+                if (breakLoopFlag == 1)
+                {
+                    break;
+                }
             }
-
+            //reset dictionary and pictureBox
             drawingArea.Refresh();
-            returnedArrayList.Clear();
+            dictionary.Clear();
         }
 
-        public void displayErrorMsg(RichTextBox errorDisplayBox, String error, int lineNumber, String correctFormat)
+        public void displayErrorMsg(RichTextBox errorDisplayBox, int lineNumber, String error,  String correctFormat)
         {
-            //this.errorDisplayBox = errorDisplayBox;
-            errorDisplayBox.Text += "\n" + error + " : " + lineNumber + " | " + correctFormat;
+            errorDisplayBox.Text += "\nLine " + lineNumber + " : " + error + "  |  EXPECTED:: " + correctFormat;
         }
 
         public void drawCurrMoveToPos(PaintEventArgs e, int penX, int penY)
         {
             Graphics movePos = e.Graphics;
+            //color of pen
             Pen p = new Pen(Color.Red, 1);
             movePos.DrawRectangle(p, penX - (4 / 2), penY - (4 / 2), 4, 4);
             movePos.FillRectangle(new SolidBrush(Color.Red), penX - (4 / 2), penY - (4 / 2), 4, 4);
@@ -317,8 +291,11 @@ namespace GraphicalProgrammingLanguage
             // draw all shapes stored in the 'shapes' arralist
             for (int i = 0; i < shapes.Count; i++)
             {
+                //cast all shape as type "Shape"
                 s = (Shape)shapes[i];
-                if (s != null)
+
+                //checks until the end
+                if (s != null) 
                 {
                     s.draw(draw); //draw the actual shape
                 }
@@ -327,9 +304,16 @@ namespace GraphicalProgrammingLanguage
 
         public void getAndAddShape(Shape s, ShapeFactory factory, String keyword, ArrayList shapes, params int[] list)
         {
+            //get the specific shape from factory class
             s = factory.getShape((String)keyword);
+
+            //set the color of shape
             Color circleColour = Color.Transparent;
+
+            //set the color and parameter of the shape
             s.set(circleColour, list);
+
+            //add shape to the array
             shapes.Add(s);
         }
     }
