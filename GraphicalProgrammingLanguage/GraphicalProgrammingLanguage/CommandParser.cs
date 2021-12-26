@@ -30,6 +30,13 @@ namespace GraphicalProgrammingLanguage
 
         public static Graphics draw;
 
+        /// <summary>
+        /// extracts
+        /// </summary>
+        /// <param name="possibleCommands"></param>
+        /// <param name="dictionary"></param>
+        /// <param name="errorDisplayBox"></param>
+        /// <param name="drawingArea"></param>
         public void checkForKeywords(string[] possibleCommands, Dictionary<int, string> dictionary, RichTextBox errorDisplayBox, PictureBox drawingArea)
         {
             //flag to break the outer foreach loop
@@ -38,19 +45,19 @@ namespace GraphicalProgrammingLanguage
             {
                 int commandInstance = 0;
                 //strips value from dictionary splits it using delimeters then stores the result
-                string[] splitMultilineCode = pair.Value.Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] singleLine = pair.Value.Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 
                 //key acts as line number
                 int lineNumber = pair.Key;
 
-                foreach (string element in splitMultilineCode)
+                foreach (string element in singleLine)
                 {
                     //checks if element is one of the possible commands
                     if (possibleCommands.Contains((string)element.ToUpper()))
                     {
                         //increases if command is found
                         commandInstance++;
-                        // checks if line has multiple commands, then dispays error if it does
+                        // checks if a single line has multiple commands, then dispays error if it does
                         if (commandInstance > 1)
                         {
                             errorDisplayBox.Text += "\n Cannot enter more than 1 command in this line : " + lineNumber + " ";
@@ -64,18 +71,18 @@ namespace GraphicalProgrammingLanguage
                             if ((string)element.ToUpper() == "MOVETO")
                             {
                                 //gets the current length of line
-                                int countArrayNum = splitMultilineCode.Length;
+                                int countArrayNum = singleLine.Length;
                                 // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
                                 if (countArrayNum - 1 == 2)
                                 {
                                     //checks if both the parameters passed are integers
                                     try
                                     {
-                                        if (int.Parse(splitMultilineCode[1]) >= 0 && int.Parse(splitMultilineCode[2]) >= 0)
+                                        if (int.Parse(singleLine[1]) >= 0 && int.Parse(singleLine[2]) >= 0)
                                         {
                                             //stores params as coordinates
-                                            penX = int.Parse(splitMultilineCode[1]); 
-                                            penY = int.Parse(splitMultilineCode[2]);
+                                            penX = int.Parse(singleLine[1]); 
+                                            penY = int.Parse(singleLine[2]);
                                         }
                                     }
                                     catch (IndexOutOfRangeException) { break; }
@@ -98,15 +105,15 @@ namespace GraphicalProgrammingLanguage
                             if ((string)element.ToUpper() == "CIRCLE")
                             {
                                 //gets the current length of line
-                                int countArrayNum = splitMultilineCode.Length;
+                                int countArrayNum = singleLine.Length;
                                 // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
                                 if (countArrayNum - 1 == 1)
                                 {
                                     try
                                     {
-                                        if (int.Parse(splitMultilineCode[1]) >= 0)
+                                        if (int.Parse(singleLine[1]) >= 0)
                                         {
-                                            int radius = int.Parse(splitMultilineCode[1]); // stores radius
+                                            int radius = int.Parse(singleLine[1]); // stores radius
                                             getAndAddShape(shape, factory, (string)element.ToUpper(), shapes, penX, penY, radius);//creates and adds the shape
 
                                         }
@@ -131,16 +138,16 @@ namespace GraphicalProgrammingLanguage
                             if ((string)element.ToUpper() == "RECTANGLE")
                             {
                                 //gets the current length of line
-                                int countArrayNum = splitMultilineCode.Length;
+                                int countArrayNum = singleLine.Length;
                                 // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
                                 if (countArrayNum - 1 == 2)
                                 {
                                     try
                                     {
-                                        if (int.Parse(splitMultilineCode[1]) >= 0)
+                                        if (int.Parse(singleLine[1]) >= 0)
                                         {
-                                            int height = int.Parse(splitMultilineCode[1]); // adds index as integer on codeSplitArrayList
-                                            int width = int.Parse(splitMultilineCode[2]); // adds index as integer on codeSplitArrayList
+                                            int height = int.Parse(singleLine[1]); // adds index as integer on codeSplitArrayList
+                                            int width = int.Parse(singleLine[2]); // adds index as integer on codeSplitArrayList
                                             getAndAddShape(shape, factory, (string)element.ToUpper(), shapes, penX, penY, height, width);//creates and adds the shape
                                         }
 
@@ -165,16 +172,16 @@ namespace GraphicalProgrammingLanguage
                             if ((string)element.ToUpper() == "TRIANGLE")
                             {
                                 //gets the current length of line
-                                int countArrayNum = splitMultilineCode.Length;
+                                int countArrayNum = singleLine.Length;
                                 // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
                                 if (countArrayNum - 1 == 2)
                                 {
                                     try
                                     {
-                                        if (int.Parse(splitMultilineCode[1]) >= 0)
+                                        if (int.Parse(singleLine[1]) >= 0)
                                         {
-                                            int bases = int.Parse(splitMultilineCode[1]); // adds index as integer on codeSplitArrayList
-                                            int height = int.Parse(splitMultilineCode[2]); // adds index as integer on codeSplitArrayList
+                                            int bases = int.Parse(singleLine[1]); // adds index as integer on codeSplitArrayList
+                                            int height = int.Parse(singleLine[2]); // adds index as integer on codeSplitArrayList
                                             getAndAddShape(shape, factory, (string)element.ToUpper(), shapes, penX, penY, bases, height);//creates and adds the shape
                                         }
 
@@ -199,21 +206,21 @@ namespace GraphicalProgrammingLanguage
                             if ((string)element.ToUpper() == "DRAWTO")
                             {
                                 //gets the current length of line
-                                int countArrayNum = splitMultilineCode.Length;
+                                int countArrayNum = singleLine.Length;
                                 // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
                                 if (countArrayNum - 1 == 2)
                                 {
                                     try
                                     {
-                                        if (int.Parse(splitMultilineCode[1]) >= 0 && int.Parse(splitMultilineCode[2]) >= 0)
+                                        if (int.Parse(singleLine[1]) >= 0 && int.Parse(singleLine[2]) >= 0)
                                         {
                                             //if 'moveTo' is written before 'drawTo'
                                             int drawFromX = penX;
                                             int drawFromY = penY;
 
                                             //store params
-                                            int drawToX = int.Parse(splitMultilineCode[1]);
-                                            int drawToY = int.Parse(splitMultilineCode[2]);
+                                            int drawToX = int.Parse(singleLine[1]);
+                                            int drawToY = int.Parse(singleLine[2]);
 
                                             //the new co-ordinates for MOVETO params 
                                             penX = drawToX;
@@ -272,11 +279,26 @@ namespace GraphicalProgrammingLanguage
             dictionary.Clear();
         }
 
+
+        /// <summary>
+        /// displays the error message along with line number and the correct format in the specified textBox with some extra formatting
+        /// </summary>
+        /// <param name="errorDisplayBox"></param>
+        /// <param name="lineNumber"></param>
+        /// <param name="error"></param>
+        /// <param name="correctFormat"></param>
         public void displayErrorMsg(RichTextBox errorDisplayBox, int lineNumber, String error,  String correctFormat)
         {
             errorDisplayBox.Text += "\nLine " + lineNumber + " : " + error + "  |  EXPECTED:: " + correctFormat;
         }
 
+
+        /// <summary>
+        /// draws the current position of the MOVETO co-ordinates
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="penX"></param>
+        /// <param name="penY"></param>
         public void drawCurrMoveToPos(PaintEventArgs e, int penX, int penY)
         {
             Graphics movePos = e.Graphics;
@@ -286,6 +308,13 @@ namespace GraphicalProgrammingLanguage
             movePos.FillRectangle(new SolidBrush(Color.Red), penX - (4 / 2), penY - (4 / 2), 4, 4);
         }
 
+
+        /// <summary>
+        /// takes eah shape from arraylist and casts it to the type of 'Shape' and uses graphics to draw the actual shape
+        /// </summary>
+        /// <param name="shapes"></param>
+        /// <param name="s"></param>
+        /// <param name="draw"></param>
         public void drawShapes(ArrayList shapes, Shape s, Graphics draw)
         {
             // draw all shapes stored in the 'shapes' arralist
@@ -302,6 +331,15 @@ namespace GraphicalProgrammingLanguage
             }
         }
 
+
+        /// <summary>
+        /// gets the shapes from the factory class and stores it in a variable called shape of type Shape. Then sets the color and parameter of the shapes and finally adds it to the arraylist
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="factory"></param>
+        /// <param name="keyword"></param>
+        /// <param name="shapes"></param>
+        /// <param name="list"></param>
         public void getAndAddShape(Shape s, ShapeFactory factory, String keyword, ArrayList shapes, params int[] list)
         {
             //get the specific shape from factory class

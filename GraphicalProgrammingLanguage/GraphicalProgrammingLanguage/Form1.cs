@@ -26,6 +26,11 @@ namespace GraphicalProgrammingLanguage
             InitializeComponent();
         }
 
+
+        /// <summary>
+        /// takes input from either the commandLine or the actual code area depending on the commands passed in the commandLine
+        /// </summary>
+        /// <param name="input"></param>
         public void startExecution( String input)
         {
             parser.shapes.Clear(); //clears array
@@ -71,6 +76,7 @@ namespace GraphicalProgrammingLanguage
                 //resets moveto position to (0,0)
                 CommandParser.penX = 0;
                 CommandParser.penY = 0;
+                //refresh to implement above changes
                 drawingArea.Refresh();
             }
             else if ((string.IsNullOrWhiteSpace(commandLineInput) && commandLine.Text.Length > 0) || commandLine.Text == "")
@@ -199,10 +205,51 @@ namespace GraphicalProgrammingLanguage
             }
         }
 
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to exit?", "My First Application", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+            {
+                e.Cancel = true;
+            }
+        }
+
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //closes application
             Application.Exit();
+        }
+
+
+        int maxLC = 1; //maxLineCount - should be public
+        private void codeArea_KeyUp(object sender, KeyEventArgs e)
+        {
+            int linecount = codeArea.GetLineFromCharIndex(codeArea.TextLength) + 1;
+            if (linecount != maxLC)
+            {
+                textBox1.Clear();
+                for (int i = 1; i < linecount + 1; i++)
+                {
+                    textBox1.AppendText(Convert.ToString(i) + "\r\n");
+                }
+                maxLC = linecount;
+            }
+        }
+
+        private void codeArea_VScroll(object sender, EventArgs e)
+        {
+            textBox1.Text = "";
+            int linecount = codeArea.GetLineFromCharIndex(codeArea.TextLength) + 1;
+            if (linecount != maxLC)
+            {
+                textBox1.Clear();
+                for (int i = 1; i < linecount + 1; i++)
+                {
+                    textBox1.AppendText(Convert.ToString(i) + "\r\n");
+                }
+                maxLC = linecount;
+            }
+            textBox1.Invalidate();
         }
     }
 }
