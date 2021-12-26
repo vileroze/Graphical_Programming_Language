@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GraphicalProgrammingLanguage
 {
-    class Circle : Shape
+    public class Circle : Shape
     {
         int radius;
 

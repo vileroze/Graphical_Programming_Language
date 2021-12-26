@@ -12,12 +12,10 @@ namespace GraphicalProgrammingLanguage
     public class CommandParser
     {
 
-        //Form1 ko varaible haru
+        
         ShapeFactory factory = new ShapeFactory(); //to return the shapes 
         public ArrayList shapes = new ArrayList(); //stores shapes
-        public Shape shape;
-
-        //public static int lineNumber;
+        public Shape shape;//shape of type Shape
 
         public static int penX; //X-coordinate of MOVETO
         public static int penY; //Y-coordinate of MOVETO
@@ -30,6 +28,28 @@ namespace GraphicalProgrammingLanguage
 
         public static Graphics draw;
 
+        public static void HighlightLine(RichTextBox inputBox, int index, Color color)
+        {
+            inputBox.SelectAll();
+            inputBox.SelectionBackColor = inputBox.BackColor;
+            var lines = inputBox.Lines;
+            if (index < 0 || index >= lines.Length)
+                return;
+            var start = inputBox.GetFirstCharIndexFromLine(index);  // Get the 1st char index of the appended text
+            var length = lines[index].Length;
+            inputBox.Select(start, length);                 // Select from there to the end
+            inputBox.SelectionBackColor = color;
+        }
+
+        public bool isPossibleCommand(string[] possibleCommands, string command)
+        {
+            if (possibleCommands.Contains((string)command.ToUpper()))
+            {
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// extracts
         /// </summary>
@@ -37,13 +57,14 @@ namespace GraphicalProgrammingLanguage
         /// <param name="dictionary"></param>
         /// <param name="errorDisplayBox"></param>
         /// <param name="drawingArea"></param>
-        public void checkForKeywords(string[] possibleCommands, Dictionary<int, string> dictionary, RichTextBox errorDisplayBox, PictureBox drawingArea)
+        public void checkForKeywords(string[] possibleCommands, Dictionary<int, string> dictionary, RichTextBox errorDisplayBox, PictureBox drawingArea, RichTextBox codeArea)
         {
             //flag to break the outer foreach loop
             int breakLoopFlag = 0;
             foreach (KeyValuePair<int, string> pair in dictionary)
             {
                 int commandInstance = 0;
+
                 //strips value from dictionary splits it using delimeters then stores the result
                 string[] singleLine = pair.Value.Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 
@@ -53,7 +74,7 @@ namespace GraphicalProgrammingLanguage
                 foreach (string element in singleLine)
                 {
                     //checks if element is one of the possible commands
-                    if (possibleCommands.Contains((string)element.ToUpper()))
+                    if (isPossibleCommand(possibleCommands, element) == true)
                     {
                         //increases if command is found
                         commandInstance++;
@@ -87,15 +108,19 @@ namespace GraphicalProgrammingLanguage
                                     }
                                     catch (IndexOutOfRangeException) { break; }
                                     catch (FormatException)
+                                    //catch params that are not integers
                                     {
                                         displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "MOVETO x,y");
+                                        HighlightLine(codeArea, lineNumber - 1, Color.Red);
                                         breakLoopFlag = 1;
                                         break;
                                     }
                                 }
                                 else
                                 {
+                                    //if wrong number of parameters are passed
                                     displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword MOVETO", "MOVETO x,y");
+                                    HighlightLine(codeArea, lineNumber - 1, Color.Red);
                                     breakLoopFlag = 1;
                                     break;
                                 }
@@ -115,7 +140,6 @@ namespace GraphicalProgrammingLanguage
                                         {
                                             int radius = int.Parse(singleLine[1]); // stores radius
                                             getAndAddShape(shape, factory, (string)element.ToUpper(), shapes, penX, penY, radius);//creates and adds the shape
-
                                         }
                                     }
                                     catch (IndexOutOfRangeException) { break; }
@@ -126,6 +150,7 @@ namespace GraphicalProgrammingLanguage
                                         break;
                                     }
                                 }
+                                //check if required number of parameters are passed
                                 else
                                 {
                                     displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword CIRCLE", "CIRCLE radius");
@@ -144,10 +169,10 @@ namespace GraphicalProgrammingLanguage
                                 {
                                     try
                                     {
-                                        if (int.Parse(singleLine[1]) >= 0)
+                                        if (int.Parse(singleLine[1]) >= 0 && int.Parse(singleLine[2]) >= 0)
                                         {
-                                            int height = int.Parse(singleLine[1]); // adds index as integer on codeSplitArrayList
-                                            int width = int.Parse(singleLine[2]); // adds index as integer on codeSplitArrayList
+                                            int height = int.Parse(singleLine[1]);
+                                            int width = int.Parse(singleLine[2]); 
                                             getAndAddShape(shape, factory, (string)element.ToUpper(), shapes, penX, penY, height, width);//creates and adds the shape
                                         }
 
@@ -171,17 +196,15 @@ namespace GraphicalProgrammingLanguage
                             //checks for TRIANGLE
                             if ((string)element.ToUpper() == "TRIANGLE")
                             {
-                                //gets the current length of line
                                 int countArrayNum = singleLine.Length;
-                                // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
                                 if (countArrayNum - 1 == 2)
                                 {
                                     try
                                     {
                                         if (int.Parse(singleLine[1]) >= 0)
                                         {
-                                            int bases = int.Parse(singleLine[1]); // adds index as integer on codeSplitArrayList
-                                            int height = int.Parse(singleLine[2]); // adds index as integer on codeSplitArrayList
+                                            int bases = int.Parse(singleLine[1]);
+                                            int height = int.Parse(singleLine[2]);
                                             getAndAddShape(shape, factory, (string)element.ToUpper(), shapes, penX, penY, bases, height);//creates and adds the shape
                                         }
 
@@ -205,9 +228,7 @@ namespace GraphicalProgrammingLanguage
                             //checks for DRAWTO
                             if ((string)element.ToUpper() == "DRAWTO")
                             {
-                                //gets the current length of line
                                 int countArrayNum = singleLine.Length;
-                                // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
                                 if (countArrayNum - 1 == 2)
                                 {
                                     try
@@ -251,16 +272,18 @@ namespace GraphicalProgrammingLanguage
                             }
                         }
                     }
+                    //checks for invalid keywords
                     else
                     {
-                        //checks for invalid keywords
                         try
                         {
-                            if (int.Parse(element) > 0)
+                            //runs only if the first word in the codeArea is a number
+                            if (int.Parse(element) >= 0)
                             {
-                                //do nothing if element is an integer
+                                displayErrorMsg(errorDisplayBox, lineNumber, "Missing Keyword", "circle or triangle or rectangle or drawto or moveto");
                             }
                         }
+                        //check if keyword exists
                         catch (FormatException)
                         {
                             displayErrorMsg(errorDisplayBox, lineNumber, "Keyword does not exist", "circle or triangle or rectangle or drawto or moveto");
@@ -289,7 +312,8 @@ namespace GraphicalProgrammingLanguage
         /// <param name="correctFormat"></param>
         public void displayErrorMsg(RichTextBox errorDisplayBox, int lineNumber, String error,  String correctFormat)
         {
-            errorDisplayBox.Text += "\nLine " + lineNumber + " : " + error + "  |  EXPECTED:: " + correctFormat;
+            // 🛑
+            errorDisplayBox.Text += "\n⚠️ Line " + lineNumber + " : " + error + "❗  |  ✔ EXPECTED:: " + correctFormat;
         }
 
 
@@ -315,18 +339,18 @@ namespace GraphicalProgrammingLanguage
         /// <param name="shapes"></param>
         /// <param name="s"></param>
         /// <param name="draw"></param>
-        public void drawShapes(ArrayList shapes, Shape s, Graphics draw)
+        public void drawShapes(ArrayList shapes, Shape shape, Graphics draw)
         {
             // draw all shapes stored in the 'shapes' arralist
             for (int i = 0; i < shapes.Count; i++)
             {
                 //cast all shape as type "Shape"
-                s = (Shape)shapes[i];
+                shape = (Shape)shapes[i];
 
                 //checks until the end
-                if (s != null) 
+                if (shape != null) 
                 {
-                    s.draw(draw); //draw the actual shape
+                    shape.draw(draw); //draw the actual shape
                 }
             }
         }
@@ -340,19 +364,19 @@ namespace GraphicalProgrammingLanguage
         /// <param name="keyword"></param>
         /// <param name="shapes"></param>
         /// <param name="list"></param>
-        public void getAndAddShape(Shape s, ShapeFactory factory, String keyword, ArrayList shapes, params int[] list)
+        public void getAndAddShape(Shape shape, ShapeFactory factory, String keyword, ArrayList shapes, params int[] list)
         {
             //get the specific shape from factory class
-            s = factory.getShape((String)keyword);
+            shape = factory.getShape((String)keyword);
 
             //set the color of shape
             Color circleColour = Color.Transparent;
 
             //set the color and parameter of the shape
-            s.set(circleColour, list);
+            shape.set(circleColour, list);
 
             //add shape to the array
-            shapes.Add(s);
+            shapes.Add(shape);
         }
     }
 }

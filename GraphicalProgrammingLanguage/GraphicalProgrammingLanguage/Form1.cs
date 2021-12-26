@@ -20,6 +20,13 @@ namespace GraphicalProgrammingLanguage
 
         CommandParser parser = new CommandParser();
         Dictionary<int, string> dictionary = new Dictionary<int, string>();
+        ArrayList singleLineCommand = new ArrayList();
+
+        //flag set to determine if command is from commandLine or codeArea (i.e 1 for codeArea and 2 for commandLine)
+        static int flag = 0;
+
+        // stores all possible commands
+        public string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE" };
 
         public Form1()
         {
@@ -33,27 +40,54 @@ namespace GraphicalProgrammingLanguage
         /// <param name="input"></param>
         public void startExecution( String input)
         {
-            parser.shapes.Clear(); //clears array
-            errorDisplayBox.Text = ""; //clears error messages
-            string code = input;
-            dictionary.Clear();
-
-            string[] codeSpitArray = code.Split(new char[] { '\n' });
-
-            // line number is one
-            int lineNumber = 1;
-            foreach (string line in codeSpitArray)
+            //for multi line codes i.e codeArea
+            if(flag == 1)
             {
-                // add the entire line as value and the lineNumber as index
-                dictionary.Add(lineNumber, line);
-                lineNumber++;
+                parser.shapes.Clear();
+                errorDisplayBox.Text = "";
+                string code = input;
+                dictionary.Clear();
+                //codeArea.DeselectAll();
+
+                // split lines 
+                string[] splitLine = code.Split(new char[] { '\n' });
+
+                int lineNumber = 1;
+                foreach (string line in splitLine)
+                {
+                    // add the entire line as value and the lineNumber as key
+                    dictionary.Add(lineNumber, line);
+                    lineNumber++;
+                }
             }
 
-            // stores all possible commands
-            string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE" };
+            //for single line codes i.e commandLine
+            if (flag == 2)
+            {
+                if (parser.shapes.Count > 0) { singleLineCommand.Clear(); }
+                errorDisplayBox.Text = "";
+
+                //take input
+                string singleCommand = input;
+
+                //assign lineNumber
+                int lineNumber = 1;
+
+                //add the command to arraylist
+                singleLineCommand.Add(singleCommand);
+
+                // for every line add the lineNumber as key and entire line as value
+                foreach (string line in singleLineCommand)
+                {
+                    dictionary.Add(lineNumber, line);
+                    lineNumber++;
+                }
+            }
+
+            
 
             // main execution part of the program (see xml file for full specifications)
-            parser.checkForKeywords(possibleCommands, dictionary, errorDisplayBox, drawingArea);
+            parser.checkForKeywords(possibleCommands, dictionary, errorDisplayBox, drawingArea, codeArea);
         }
 
         private void runCode_Click(object sender, EventArgs e)
@@ -63,6 +97,7 @@ namespace GraphicalProgrammingLanguage
             if (commandLineInput.Equals("run", StringComparison.InvariantCultureIgnoreCase))
             {
                 String codeAreaInput = codeArea.Text;
+                flag = 1;
                 startExecution(codeAreaInput);
             }
             else if (commandLineInput.Equals("clear", StringComparison.InvariantCultureIgnoreCase))
@@ -76,15 +111,17 @@ namespace GraphicalProgrammingLanguage
                 //resets moveto position to (0,0)
                 CommandParser.penX = 0;
                 CommandParser.penY = 0;
+
                 //refresh to implement above changes
                 drawingArea.Refresh();
             }
             else if ((string.IsNullOrWhiteSpace(commandLineInput) && commandLine.Text.Length > 0) || commandLine.Text == "")
             {
-                errorDisplayBox.Text = "\nNo command given on the command parser (try: run, clear, reset)";
+                errorDisplayBox.Text = "\n⚠️ No command given on the command parser (try: run, clear, reset)";
             }
             else
             {
+                flag = 2;
                 //runs the command like a multiline command
                 startExecution(commandLineInput);
             }
@@ -96,6 +133,9 @@ namespace GraphicalProgrammingLanguage
             {
                 //peforms click operation of runCode button
                 runCode.PerformClick();
+
+                //refresh line number
+                displayLineNumber.Refresh();
 
                 // these last two lines will stop the beep sound
                 e.SuppressKeyPress = true;
@@ -179,15 +219,15 @@ namespace GraphicalProgrammingLanguage
                 if (fileExplorer.ShowDialog() == DialogResult.OK)
                 {
                     codeArea.Text = ""; //clears text box before loading file contents
-                    StreamReader s = File.OpenText(fileExplorer.FileName);
+                    StreamReader reader = File.OpenText(fileExplorer.FileName);
                     do
                     {
-                        String line = s.ReadLine();
+                        String line = reader.ReadLine();
                         if (line == null) break; //breaks if end of file
                         codeArea.Text += line;
                         codeArea.AppendText(Environment.NewLine); // new line starting points are preserved
                     } while (true);
-                    s.Close();
+                    reader.Close();
                 }
             }
 
@@ -221,35 +261,44 @@ namespace GraphicalProgrammingLanguage
         }
 
 
-        int maxLC = 1; //maxLineCount - should be public
+        int maxLineCount = 1; //maxLineCount - should be public
         private void codeArea_KeyUp(object sender, KeyEventArgs e)
         {
+            //gets the current number of lines using charIndex
             int linecount = codeArea.GetLineFromCharIndex(codeArea.TextLength) + 1;
-            if (linecount != maxLC)
+            
+            if (linecount != maxLineCount)
             {
-                textBox1.Clear();
+                displayLineNumber.Clear();
+                //loops for every line in codeArea
                 for (int i = 1; i < linecount + 1; i++)
                 {
-                    textBox1.AppendText(Convert.ToString(i) + "\r\n");
+                    displayLineNumber.AppendText(Convert.ToString(i) + ".\r\n"); //displays the formatted line number to the textBox
                 }
-                maxLC = linecount;
+                maxLineCount = linecount;
             }
         }
 
         private void codeArea_VScroll(object sender, EventArgs e)
         {
-            textBox1.Text = "";
+            displayLineNumber.Text = "";
+
+            //gets the current number of lines using charIndex
             int linecount = codeArea.GetLineFromCharIndex(codeArea.TextLength) + 1;
-            if (linecount != maxLC)
+
+            if (linecount != maxLineCount)
             {
-                textBox1.Clear();
+                displayLineNumber.Clear();
+
+                //loops for every line in codeArea
                 for (int i = 1; i < linecount + 1; i++)
                 {
-                    textBox1.AppendText(Convert.ToString(i) + "\r\n");
+                    displayLineNumber.AppendText(Convert.ToString(i) + "\r\n");
                 }
-                maxLC = linecount;
+                maxLineCount = linecount;
             }
-            textBox1.Invalidate();
+            //refreshes line numbers after scroll
+            displayLineNumber.Refresh();
         }
     }
 }

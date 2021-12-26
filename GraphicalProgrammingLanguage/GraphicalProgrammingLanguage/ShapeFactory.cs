@@ -15,6 +15,7 @@ namespace GraphicalProgrammingLanguage
 
             if (shapeType.Equals("CIRCLE"))
             {
+                
                 return new Circle();
 
             }
@@ -35,9 +36,7 @@ namespace GraphicalProgrammingLanguage
             }
             else
             {
-                //if we get here then what has been passed in is inkown so throw an appropriate exception
-                System.ArgumentException argEx = new System.ArgumentException("Factory error: " + shapeType + " does not exist");
-                throw argEx;
+                throw new System.ArgumentException("Factory error: " + shapeType + " does not exist");
             }
 
         }
