@@ -9,47 +9,55 @@ namespace GraphicalProgrammingLanguage
 {
     class Triangle : Shape
     {
-        int hypotenuse;
-        int perpendicular;
-        public Triangle()
-        {
+        int hypotenuse, perpendicular;
 
+        public Triangle() : base()
+        {
         }
         public Triangle(Color colour, int x, int y, int hypotenuse, int perpendicular) : base(colour, x, y)
         {
             this.hypotenuse = hypotenuse;
             this.perpendicular = perpendicular;
         }
-        public override void set(Color colour, params int[] list)
+
+        public override void set(Color colour, Boolean fill, params int[] list)
         {
+            base.colour = colour;
             //list[0] is x, list[1] is y, list[2] is hypotenuse, list[3] is perpendicular
-            base.set(colour, list[0], list[1]);
+            base.set(colour, fill, list[0], list[1]);
             this.hypotenuse = list[2];
             this.perpendicular = list[3];
-
         }
 
-        public override void draw(Graphics g)
+        public override void draw(Graphics graphics, Boolean fill)
         {
-            Point[] pnt = new Point[3];
-            Pen p = new Pen(Color.Black, 2);
-            SolidBrush b = new SolidBrush(colour);
+            Point[] point = new Point[3];
+            SolidBrush brush = new SolidBrush(Color.Transparent);
+            Pen pen = new Pen(base.colour, 2);
+            if (base.fill == true)
+            {
+                brush = new SolidBrush(base.colour);
+            }
+
+            else
+            {
+                brush = new SolidBrush(Color.Transparent);
+            }
 
             //right point
-            pnt[0].X = x + perpendicular;
-            pnt[0].Y = y + hypotenuse;
+            point[0].X = x + perpendicular;
+            point[0].Y = y + hypotenuse;
 
             //top point
-            pnt[1].X = x;
-            pnt[1].Y = y - (hypotenuse);
+            point[1].X = x;
+            point[1].Y = y - (hypotenuse);
 
             //left point
-            pnt[2].X = x - perpendicular;
-            pnt[2].Y = y + hypotenuse;
+            point[2].X = x - perpendicular;
+            point[2].Y = y + hypotenuse;
 
-            g.DrawPolygon(p, pnt);
-            g.FillPolygon(b, pnt);
-            // g.DrawPolygon(p, x, y, width, height);
+            graphics.DrawPolygon(pen, point);
+            graphics.FillPolygon(brush, point);
         }
     }
 }

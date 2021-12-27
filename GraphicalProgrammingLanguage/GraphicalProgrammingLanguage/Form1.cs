@@ -26,7 +26,7 @@ namespace GraphicalProgrammingLanguage
         static int flag = 0;
 
         // stores all possible commands
-        public string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE" };
+        public string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE", "PEN", "FILL" };
 
         public Form1()
         {
@@ -43,11 +43,10 @@ namespace GraphicalProgrammingLanguage
             //for multi line codes i.e codeArea
             if(flag == 1)
             {
-                parser.shapes.Clear();
+                //parser.shapes.Clear();
                 errorDisplayBox.Text = "";
                 string code = input;
                 dictionary.Clear();
-                //codeArea.DeselectAll();
 
                 // split lines 
                 string[] splitLine = code.Split(new char[] { '\n' });
@@ -84,10 +83,8 @@ namespace GraphicalProgrammingLanguage
                 }
             }
 
-            
-
             // main execution part of the program (see xml file for full specifications)
-            parser.checkForKeywords(possibleCommands, dictionary, errorDisplayBox, drawingArea, codeArea);
+            parser.checkForKeywords(possibleCommands, dictionary, errorDisplayBox, drawingArea, codeArea, commandLine);
         }
 
         private void runCode_Click(object sender, EventArgs e)
@@ -102,6 +99,10 @@ namespace GraphicalProgrammingLanguage
             }
             else if (commandLineInput.Equals("clear", StringComparison.InvariantCultureIgnoreCase))
             {
+                //resets PEN color to default and FILL to off
+                parser.color = Color.Black;
+                parser.fill = false;
+
                 //clears all the sahpes in the array then refreshes the pictureBox so everything dissapears
                 parser.shapes.Clear();
                 drawingArea.Refresh();
@@ -122,6 +123,7 @@ namespace GraphicalProgrammingLanguage
             else
             {
                 flag = 2;
+
                 //runs the command like a multiline command
                 startExecution(commandLineInput);
             }
@@ -151,7 +153,7 @@ namespace GraphicalProgrammingLanguage
             CommandParser.draw = e.Graphics;
 
             //draw all shapes stored in the 'shapes' arralist
-            parser.drawShapes(parser.shapes, parser.shape, CommandParser.draw);
+            parser.drawShapes(parser.shapes, parser.shape, CommandParser.draw, parser.fill);
         }
 
 

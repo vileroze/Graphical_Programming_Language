@@ -9,9 +9,9 @@ namespace GraphicalProgrammingLanguage
 {
     public abstract class Shape : ShapeInterface
     {
-        protected Color colour; //shape's colour
-        protected int x, y; //not I could use c# properties for this
-
+        protected Color colour = Color.Black;
+        protected Boolean fill;
+        protected int x, y;
         public Shape()
         {
 
@@ -24,11 +24,17 @@ namespace GraphicalProgrammingLanguage
             this.y = y; //its y pos
         }
 
-        public abstract void draw(Graphics g);
+        public abstract void draw(Graphics graphics, Boolean fill);
 
-        public virtual void set(Color c, params int[] list)
+        public void draw(Graphics graphics, Color color)
         {
-            this.colour = c;
+            throw new NotImplementedException();
+        }
+
+        public virtual void set(Color colour, Boolean fill, params int[] list)
+        {
+            this.fill = fill;
+            this.colour = colour;
             this.x = list[0];
             this.y = list[1];
         }
@@ -36,5 +42,6 @@ namespace GraphicalProgrammingLanguage
         {
             return base.ToString() + "    " + this.x + "," + this.y + " : ";
         }
+
     }
 }

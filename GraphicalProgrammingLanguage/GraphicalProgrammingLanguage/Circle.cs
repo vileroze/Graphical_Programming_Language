@@ -11,7 +11,7 @@ namespace GraphicalProgrammingLanguage
     {
         int radius;
 
-        public Circle()
+        public Circle() : base()
         {
         }
 
@@ -20,21 +20,33 @@ namespace GraphicalProgrammingLanguage
             this.radius = radius; //the only thing that is different from shape
         }
 
-        public override void set(Color colour, params int[] list)
+        public override void set(Color colour, Boolean fill, params int[] list)
         {
+            base.colour = colour;
             //list[0] is x, list[1] is y, list[2] is radius
-            base.set(colour, list[0], list[1]);
+            base.set(colour, fill, list[0], list[1]);
             this.radius = list[2];
 
         }
 
-        public override void draw(Graphics g)
+        public override void draw(Graphics g, Boolean fill)
         {
-            Pen p = new Pen(Color.Black, 2);
-            SolidBrush b = new SolidBrush(colour);
-            g.FillEllipse(b, x - radius, y - radius, radius * 2, radius * 2);
-            g.DrawEllipse(p, x - radius, y - radius, radius * 2, radius * 2);
+            SolidBrush brush = new SolidBrush(Color.Transparent);
+            Pen pen = new Pen(base.colour, 2);
+            if (base.fill == true)
+            {
+                brush = new SolidBrush(base.colour);
+            }
+
+            else
+            {
+                brush = new SolidBrush(Color.Transparent);
+            }
+
+            g.FillEllipse(brush, x - radius, y - radius, radius * 2, radius * 2);
+            g.DrawEllipse(pen, x - radius, y - radius, radius * 2, radius * 2);
         }
+
         public override string ToString() //all classes inherit from object and ToString() is abstract in object
         {
             return base.ToString() + "  " + this.radius;

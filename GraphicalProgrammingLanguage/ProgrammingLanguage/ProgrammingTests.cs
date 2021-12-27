@@ -64,7 +64,7 @@ namespace ProgrammingLanguage
         public void is_Possible_Command()
         {
             //Arrange
-            string givenCommand = "moveto";
+            string givenCommand = "movetoo";
             string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE" };
             bool isCommand = false;
 
@@ -72,7 +72,7 @@ namespace ProgrammingLanguage
             isCommand = parser.isPossibleCommand(possibleCommands, givenCommand);
 
             //Assert
-            Assert.IsTrue(isCommand);
+            Assert.IsFalse(isCommand);
 
         }
     }

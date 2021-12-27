@@ -12,7 +12,6 @@ namespace GraphicalProgrammingLanguage
     public class CommandParser
     {
 
-        
         ShapeFactory factory = new ShapeFactory(); //to return the shapes 
         public ArrayList shapes = new ArrayList(); //stores shapes
         public Shape shape;//shape of type Shape
@@ -27,19 +26,21 @@ namespace GraphicalProgrammingLanguage
         public static int drawFromY = 0;//Y2-coordinate of DRAWTO
 
         public static Graphics draw;
+        public Color color;
+        public Boolean fill;
 
-        public static void HighlightLine(RichTextBox inputBox, int index, Color color)
-        {
-            inputBox.SelectAll();
-            inputBox.SelectionBackColor = inputBox.BackColor;
-            var lines = inputBox.Lines;
-            if (index < 0 || index >= lines.Length)
-                return;
-            var start = inputBox.GetFirstCharIndexFromLine(index);  // Get the 1st char index of the appended text
-            var length = lines[index].Length;
-            inputBox.Select(start, length);                 // Select from there to the end
-            inputBox.SelectionBackColor = color;
-        }
+        //public static void HighlightLine(RichTextBox inputBox, int index, Color color)
+        //{
+        //    inputBox.SelectAll();
+        //    inputBox.SelectionBackColor = inputBox.BackColor;
+        //    var lines = inputBox.Lines;
+        //    if (index < 0 || index >= lines.Length)
+        //        return;
+        //    var start = inputBox.GetFirstCharIndexFromLine(index);  // Get the 1st char index of the appended text
+        //    var length = lines[index].Length;
+        //    inputBox.Select(start, length);                 // Select from there to the end
+        //    inputBox.SelectionBackColor = color;
+        //}
 
         public bool isPossibleCommand(string[] possibleCommands, string command)
         {
@@ -57,7 +58,7 @@ namespace GraphicalProgrammingLanguage
         /// <param name="dictionary"></param>
         /// <param name="errorDisplayBox"></param>
         /// <param name="drawingArea"></param>
-        public void checkForKeywords(string[] possibleCommands, Dictionary<int, string> dictionary, RichTextBox errorDisplayBox, PictureBox drawingArea, RichTextBox codeArea)
+        public void checkForKeywords(string[] possibleCommands, Dictionary<int, string> dictionary, RichTextBox errorDisplayBox, PictureBox drawingArea, RichTextBox codeArea, TextBox commandLine)
         {
             //flag to break the outer foreach loop
             int breakLoopFlag = 0;
@@ -111,7 +112,6 @@ namespace GraphicalProgrammingLanguage
                                     //catch params that are not integers
                                     {
                                         displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "MOVETO x,y");
-                                        HighlightLine(codeArea, lineNumber - 1, Color.Red);
                                         breakLoopFlag = 1;
                                         break;
                                     }
@@ -120,7 +120,6 @@ namespace GraphicalProgrammingLanguage
                                 {
                                     //if wrong number of parameters are passed
                                     displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword MOVETO", "MOVETO x,y");
-                                    HighlightLine(codeArea, lineNumber - 1, Color.Red);
                                     breakLoopFlag = 1;
                                     break;
                                 }
@@ -139,7 +138,7 @@ namespace GraphicalProgrammingLanguage
                                         if (int.Parse(singleLine[1]) >= 0)
                                         {
                                             int radius = int.Parse(singleLine[1]); // stores radius
-                                            getAndAddShape(shape, factory, (string)element.ToUpper(), shapes, penX, penY, radius);//creates and adds the shape
+                                            getAndAddShape(color, fill, shape, factory, (string)element.ToUpper(), shapes, penX, penY, radius);//creates and adds the shape
                                         }
                                     }
                                     catch (IndexOutOfRangeException) { break; }
@@ -173,7 +172,7 @@ namespace GraphicalProgrammingLanguage
                                         {
                                             int height = int.Parse(singleLine[1]);
                                             int width = int.Parse(singleLine[2]); 
-                                            getAndAddShape(shape, factory, (string)element.ToUpper(), shapes, penX, penY, height, width);//creates and adds the shape
+                                            getAndAddShape(color, fill, shape, factory, (string)element.ToUpper(), shapes, penX, penY, height, width);//creates and adds the shape
                                         }
 
                                     }
@@ -205,7 +204,7 @@ namespace GraphicalProgrammingLanguage
                                         {
                                             int bases = int.Parse(singleLine[1]);
                                             int height = int.Parse(singleLine[2]);
-                                            getAndAddShape(shape, factory, (string)element.ToUpper(), shapes, penX, penY, bases, height);//creates and adds the shape
+                                            getAndAddShape(color, fill, shape, factory, (string)element.ToUpper(), shapes, penX, penY, bases, height);//creates and adds the shape
                                         }
 
                                     }
@@ -248,7 +247,7 @@ namespace GraphicalProgrammingLanguage
                                             penY = drawToY;
 
                                             //creates and adds the shape
-                                            getAndAddShape(shape, factory, (string)element.ToUpper(), shapes, drawFromX, drawFromY, drawToX, drawToY);
+                                            getAndAddShape(color, fill, shape, factory, (string)element.ToUpper(), shapes, drawFromX, drawFromY, drawToX, drawToY);
 
                                             //makes the ending point of the previous drawTo the starting point of the next drawTo
                                             drawFromX = drawToX;
@@ -270,6 +269,77 @@ namespace GraphicalProgrammingLanguage
                                     break;
                                 }
                             }
+
+                            if ((string)element.ToUpper() == "PEN")
+                            {
+                                int countArrayNum = singleLine.Length;
+                                if (countArrayNum - 1 == 1)
+                                {
+
+                                    if (singleLine[1].ToUpper() == "RED" || singleLine[1].ToUpper() == "YELLOW" || singleLine[1].ToUpper() == "BLUE")
+                                    {
+
+                                        if (singleLine[1].ToUpper() == "RED")
+                                        {
+                                            color = Color.Red;
+                                        }
+                                        if (singleLine[1].ToUpper() == "YELLOW")
+                                        {
+                                            color = Color.Yellow;
+                                        }
+                                        if (singleLine[1].ToUpper() == "BLUE")
+                                        {
+                                            color = Color.Blue;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        displayErrorMsg(errorDisplayBox, lineNumber, "Such color doesnt exist " , "red OR green OR blue");
+                                        breakLoopFlag = 1;
+                                        break;
+                                    }
+
+                                }
+                                else
+                                {
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword DRAWTO", "PEN red");
+                                    breakLoopFlag = 1;
+                                    break;
+                                }
+                            }
+
+                            if ((string)element.ToUpper() == "FILL")
+                            {
+                                string expectedMsg = " \"expected fill <boolean > \"";
+                                int countArrayNum = singleLine.Length;
+                                if (countArrayNum - 1 == 1)
+                                {
+                                    if (singleLine[1].ToUpper() == "ON" || singleLine[1].ToUpper() == "OFF")
+                                    {
+                                        if (singleLine[1].ToUpper() == "ON")
+                                        {
+                                            fill = true;
+                                        }
+                                        if (singleLine[1].ToUpper() == "OFF")
+                                        {
+                                            fill = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        displayErrorMsg(errorDisplayBox, lineNumber, "Wrong parameter for keyword FILL", "FILL on");
+                                        breakLoopFlag = 1;
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword FILL", "FILL on");
+                                    breakLoopFlag = 1;
+                                    break;
+                                }
+
+                            }
                         }
                     }
                     //checks for invalid keywords
@@ -277,16 +347,25 @@ namespace GraphicalProgrammingLanguage
                     {
                         try
                         {
-                            //runs only if the first word in the codeArea is a number
-                            if (int.Parse(element) >= 0)
+                            if (singleLine[0].ToUpper() == "RED" || singleLine[0].ToUpper() == "BLUE" || singleLine[0].ToUpper() == "YELLOW" || singleLine[0].ToUpper() == "ON" || singleLine[0].ToUpper() == "OFF")
                             {
-                                displayErrorMsg(errorDisplayBox, lineNumber, "Missing Keyword", "circle or triangle or rectangle or drawto or moveto");
+                                displayErrorMsg(errorDisplayBox, lineNumber, "Keyword does not exist", "circle OR triangle OR rectangle OR drawto OR moveto");
+                                breakLoopFlag = 1;
+                                break;
+                            }
+                            if (element.ToUpper() == "RED" || element.ToUpper() == "YELLOW" || element.ToUpper() == "BLUE" || element.ToUpper() == "ON" || element.ToUpper() == "OFF")
+                            {
+
+                            }
+                            else if (int.Parse(element) > 0)
+                            {
+
                             }
                         }
                         //check if keyword exists
                         catch (FormatException)
                         {
-                            displayErrorMsg(errorDisplayBox, lineNumber, "Keyword does not exist", "circle or triangle or rectangle or drawto or moveto");
+                            displayErrorMsg(errorDisplayBox, lineNumber, "Keyword does not exist", "circle OR triangle OR rectangle OR drawto OR moveto");
                             breakLoopFlag = 1;
                             break;
                         }
@@ -296,6 +375,12 @@ namespace GraphicalProgrammingLanguage
                 {
                     break;
                 }
+            }
+
+            if (breakLoopFlag == 0)
+            {
+                errorDisplayBox.Text += "\n✔ Command executed successfully";
+                commandLine.Clear();
             }
             //reset dictionary and pictureBox
             drawingArea.Refresh();
@@ -312,8 +397,7 @@ namespace GraphicalProgrammingLanguage
         /// <param name="correctFormat"></param>
         public void displayErrorMsg(RichTextBox errorDisplayBox, int lineNumber, String error,  String correctFormat)
         {
-            // 🛑
-            errorDisplayBox.Text += "\n⚠️ Line " + lineNumber + " : " + error + "❗  |  ✔ EXPECTED:: " + correctFormat;
+            errorDisplayBox.Text += "\n⚠️ Line " + lineNumber + " : " + error + "❗  |  EXPECTED:: " + correctFormat;
         }
 
 
@@ -339,7 +423,7 @@ namespace GraphicalProgrammingLanguage
         /// <param name="shapes"></param>
         /// <param name="s"></param>
         /// <param name="draw"></param>
-        public void drawShapes(ArrayList shapes, Shape shape, Graphics draw)
+        public void drawShapes(ArrayList shapes, Shape shape, Graphics draw, Boolean fill)
         {
             // draw all shapes stored in the 'shapes' arralist
             for (int i = 0; i < shapes.Count; i++)
@@ -350,7 +434,7 @@ namespace GraphicalProgrammingLanguage
                 //checks until the end
                 if (shape != null) 
                 {
-                    shape.draw(draw); //draw the actual shape
+                    shape.draw(draw, fill); //draw the actual shape
                 }
             }
         }
@@ -364,16 +448,13 @@ namespace GraphicalProgrammingLanguage
         /// <param name="keyword"></param>
         /// <param name="shapes"></param>
         /// <param name="list"></param>
-        public void getAndAddShape(Shape shape, ShapeFactory factory, String keyword, ArrayList shapes, params int[] list)
+        public void getAndAddShape(Color color, Boolean fill, Shape shape, ShapeFactory factory, String keyword, ArrayList shapes, params int[] list)
         {
             //get the specific shape from factory class
             shape = factory.getShape((String)keyword);
 
-            //set the color of shape
-            Color circleColour = Color.Transparent;
-
             //set the color and parameter of the shape
-            shape.set(circleColour, list);
+            shape.set(color, fill, list);
 
             //add shape to the array
             shapes.Add(shape);
