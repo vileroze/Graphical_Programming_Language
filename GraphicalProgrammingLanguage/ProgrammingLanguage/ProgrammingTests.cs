@@ -17,9 +17,24 @@ namespace ProgrammingLanguage
             // Arrange
             string shapePassed = "Circe";
             
-
             // Act and Assert
             Assert.ThrowsException<System.ArgumentException>(() => factory.getShape(shapePassed));
+        }
+
+
+        [TestMethod]
+        public void is_Possible_Command()
+        {
+            //Arrange
+            string givenCommand = "movetoo";
+            string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE", "PEN", "FILL" };
+            bool isCommand = false;
+
+            //Act
+            isCommand = parser.isPossibleCommand(possibleCommands, givenCommand);
+
+            //Assert
+            Assert.IsFalse(isCommand);
         }
 
 
@@ -58,22 +73,25 @@ namespace ProgrammingLanguage
             //Assert
             Assert.IsFalse(isRectangle);
         }
+        
 
 
         [TestMethod]
-        public void is_Possible_Command()
+        public void is_Triangle()
         {
             //Arrange
-            string givenCommand = "movetoo";
-            string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE" };
-            bool isCommand = false;
+            Shape newShape = factory.getShape("triangle");
+            bool isTriangle = false;
 
             //Act
-            isCommand = parser.isPossibleCommand(possibleCommands, givenCommand);
+            if (newShape is Triangle)
+            {
+                isTriangle = true;
+            }
 
             //Assert
-            Assert.IsFalse(isCommand);
-
+            Assert.IsTrue(isTriangle);
         }
+
     }
 }

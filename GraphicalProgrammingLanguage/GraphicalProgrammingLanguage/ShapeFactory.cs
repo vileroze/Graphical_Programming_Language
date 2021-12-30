@@ -34,6 +34,11 @@ namespace GraphicalProgrammingLanguage
                 return new DrawTo();
 
             }
+            else if (shapeType.Equals("POLYGON"))
+            {
+                return new Polygon();
+
+            }
             else
             {
                 throw new System.ArgumentException("Factory error: " + shapeType + " does not exist");

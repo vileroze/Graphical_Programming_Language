@@ -12,6 +12,7 @@ namespace GraphicalProgrammingLanguage
         protected Color colour = Color.Black;
         protected Boolean fill;
         protected int x, y;
+        protected int[] polyArray = new int[40];
         public Shape()
         {
 
@@ -38,6 +39,16 @@ namespace GraphicalProgrammingLanguage
             this.x = list[0];
             this.y = list[1];
         }
+
+        public virtual void setPoly(Color colour, Boolean fill, int x, int y, int[] polyArray)
+        {
+            this.fill = fill;
+            this.colour = colour;
+            this.x = x;
+            this.y = y;
+            this.polyArray = polyArray;
+        }
+
         public override string ToString()
         {
             return base.ToString() + "    " + this.x + "," + this.y + " : ";

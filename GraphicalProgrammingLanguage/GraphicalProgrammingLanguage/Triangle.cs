@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace GraphicalProgrammingLanguage
 {
-    class Triangle : Shape
+    public class Triangle : Shape
     {
         int hypotenuse, perpendicular;
 
         public Triangle() : base()
         {
         }
+
         public Triangle(Color colour, int x, int y, int hypotenuse, int perpendicular) : base(colour, x, y)
         {
             this.hypotenuse = hypotenuse;
@@ -38,7 +39,6 @@ namespace GraphicalProgrammingLanguage
             {
                 brush = new SolidBrush(base.colour);
             }
-
             else
             {
                 brush = new SolidBrush(Color.Transparent);

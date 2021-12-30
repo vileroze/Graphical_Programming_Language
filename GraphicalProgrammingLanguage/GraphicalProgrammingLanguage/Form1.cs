@@ -26,7 +26,7 @@ namespace GraphicalProgrammingLanguage
         static int flag = 0;
 
         // stores all possible commands
-        public string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE", "PEN", "FILL" };
+        public string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE", "PEN", "FILL", "POLYGON" };
 
         public Form1()
         {
@@ -37,20 +37,19 @@ namespace GraphicalProgrammingLanguage
         /// <summary>
         /// takes input from either the commandLine or the actual code area depending on the commands passed in the commandLine
         /// </summary>
-        /// <param name="input"></param>
+        /// <param name="input">the command to be parsed</param>
         public void startExecution( String input)
         {
             //for multi line codes i.e codeArea
             if(flag == 1)
             {
-                //parser.shapes.Clear();
                 errorDisplayBox.Text = "";
                 string code = input;
                 dictionary.Clear();
+                
 
                 // split lines 
                 string[] splitLine = code.Split(new char[] { '\n' });
-
                 int lineNumber = 1;
                 foreach (string line in splitLine)
                 {
@@ -84,7 +83,7 @@ namespace GraphicalProgrammingLanguage
             }
 
             // main execution part of the program (see xml file for full specifications)
-            parser.checkForKeywords(possibleCommands, dictionary, errorDisplayBox, drawingArea, codeArea, commandLine);
+            parser.checkForKeywords(possibleCommands, dictionary, errorDisplayBox, drawingArea, commandLine);
         }
 
         private void runCode_Click(object sender, EventArgs e)
@@ -93,6 +92,7 @@ namespace GraphicalProgrammingLanguage
 
             if (commandLineInput.Equals("run", StringComparison.InvariantCultureIgnoreCase))
             {
+                parser.color = Color.Black;
                 String codeAreaInput = codeArea.Text;
                 flag = 1;
                 startExecution(codeAreaInput);
@@ -247,13 +247,12 @@ namespace GraphicalProgrammingLanguage
             }
         }
 
-
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want to exit?", "My First Application", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-            {
-                e.Cancel = true;
-            }
+            //if (MessageBox.Show("Are you sure you want to exit?", "My First Application", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+            //{
+            //    e.Cancel = true;
+            //}
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

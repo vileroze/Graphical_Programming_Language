@@ -14,11 +14,13 @@ namespace GraphicalProgrammingLanguage
         public Rectangle()
         {
         }
+
         public Rectangle(Color colour, int x, int y, int width, int height) : base(colour, x, y)
         {
             this.width = width; //the only thing that is different from shape
             this.height = height;
         }
+
         public override void set(Color colour, Boolean fill, params int[] list)
         {
             base.colour = colour;
@@ -26,8 +28,8 @@ namespace GraphicalProgrammingLanguage
             base.set(colour, fill, list[0], list[1]);
             this.width = list[2];
             this.height = list[3];
-
         }
+
         public override void draw(Graphics graphics, Boolean fill)
         {
             SolidBrush brush = new SolidBrush(Color.Transparent);
@@ -36,7 +38,6 @@ namespace GraphicalProgrammingLanguage
             {
                 brush = new SolidBrush(base.colour);
             }
-
             else
             {
                 brush = new SolidBrush(Color.Transparent);
@@ -44,6 +45,7 @@ namespace GraphicalProgrammingLanguage
             graphics.FillRectangle(brush, x - width, y - height, width * 2, height * 2);
             graphics.DrawRectangle(pen, x - width, y - height, width * 2, height * 2);
         }
+
         public override string ToString() //all classes inherit from object and ToString() is abstract in object
         {
             return base.ToString() + "  " + this.height + "  " + this.width;

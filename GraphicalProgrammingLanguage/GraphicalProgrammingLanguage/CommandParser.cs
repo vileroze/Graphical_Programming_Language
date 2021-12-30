@@ -25,23 +25,19 @@ namespace GraphicalProgrammingLanguage
         public static int drawFromX = 0;//X2-coordinate of DRAWTO
         public static int drawFromY = 0;//Y2-coordinate of DRAWTO
 
+        public int[] polyArray;
+
         public static Graphics draw;
         public Color color;
         public Boolean fill;
 
-        //public static void HighlightLine(RichTextBox inputBox, int index, Color color)
-        //{
-        //    inputBox.SelectAll();
-        //    inputBox.SelectionBackColor = inputBox.BackColor;
-        //    var lines = inputBox.Lines;
-        //    if (index < 0 || index >= lines.Length)
-        //        return;
-        //    var start = inputBox.GetFirstCharIndexFromLine(index);  // Get the 1st char index of the appended text
-        //    var length = lines[index].Length;
-        //    inputBox.Select(start, length);                 // Select from there to the end
-        //    inputBox.SelectionBackColor = color;
-        //}
 
+        /// <summary>
+        /// checks if command passed is within possibleCommand array
+        /// </summary>
+        /// <param name="possibleCommands">all possible commands</param>
+        /// <param name="command">the command to be checked</param>
+        /// <returns>returns true if the array passed contains the command passed and vice versa</returns>
         public bool isPossibleCommand(string[] possibleCommands, string command)
         {
             if (possibleCommands.Contains((string)command.ToUpper()))
@@ -52,13 +48,14 @@ namespace GraphicalProgrammingLanguage
         }
 
         /// <summary>
-        /// extracts
+        /// extract lineNUmber and all commands from data dictionary, catches and displays errors, displays shapes and reads commandLine
         /// </summary>
-        /// <param name="possibleCommands"></param>
-        /// <param name="dictionary"></param>
-        /// <param name="errorDisplayBox"></param>
-        /// <param name="drawingArea"></param>
-        public void checkForKeywords(string[] possibleCommands, Dictionary<int, string> dictionary, RichTextBox errorDisplayBox, PictureBox drawingArea, RichTextBox codeArea, TextBox commandLine)
+        /// <param name="possibleCommands">all possible commands</param>
+        /// <param name="dictionary">dictionary that holds</param>
+        /// <param name="errorDisplayBox">textBox to display all errors</param>
+        /// <param name="drawingArea">pictureBox to display all shapes</param>
+        /// <param name="commandLine">get instance of single line command</param>
+        public void checkForKeywords(string[] possibleCommands, Dictionary<int, string> dictionary, RichTextBox errorDisplayBox, PictureBox drawingArea, TextBox commandLine)
         {
             //flag to break the outer foreach loop
             int breakLoopFlag = 0;
@@ -138,7 +135,7 @@ namespace GraphicalProgrammingLanguage
                                         if (int.Parse(singleLine[1]) >= 0)
                                         {
                                             int radius = int.Parse(singleLine[1]); // stores radius
-                                            getAndAddShape(color, fill, shape, factory, (string)element.ToUpper(), shapes, penX, penY, radius);//creates and adds the shape
+                                            getAndAddShape(color, fill, factory, (string)element.ToUpper(), shapes, penX, penY, radius);//creates and adds the shape
                                         }
                                     }
                                     catch (IndexOutOfRangeException) { break; }
@@ -172,7 +169,7 @@ namespace GraphicalProgrammingLanguage
                                         {
                                             int height = int.Parse(singleLine[1]);
                                             int width = int.Parse(singleLine[2]); 
-                                            getAndAddShape(color, fill, shape, factory, (string)element.ToUpper(), shapes, penX, penY, height, width);//creates and adds the shape
+                                            getAndAddShape(color, fill, factory, (string)element.ToUpper(), shapes, penX, penY, height, width);//creates and adds the shape
                                         }
 
                                     }
@@ -204,7 +201,7 @@ namespace GraphicalProgrammingLanguage
                                         {
                                             int bases = int.Parse(singleLine[1]);
                                             int height = int.Parse(singleLine[2]);
-                                            getAndAddShape(color, fill, shape, factory, (string)element.ToUpper(), shapes, penX, penY, bases, height);//creates and adds the shape
+                                            getAndAddShape(color, fill, factory, (string)element.ToUpper(), shapes, penX, penY, bases, height);//creates and adds the shape
                                         }
 
                                     }
@@ -247,7 +244,7 @@ namespace GraphicalProgrammingLanguage
                                             penY = drawToY;
 
                                             //creates and adds the shape
-                                            getAndAddShape(color, fill, shape, factory, (string)element.ToUpper(), shapes, drawFromX, drawFromY, drawToX, drawToY);
+                                            getAndAddShape(color, fill, factory, (string)element.ToUpper(), shapes, drawFromX, drawFromY, drawToX, drawToY);
 
                                             //makes the ending point of the previous drawTo the starting point of the next drawTo
                                             drawFromX = drawToX;
@@ -310,7 +307,6 @@ namespace GraphicalProgrammingLanguage
 
                             if ((string)element.ToUpper() == "FILL")
                             {
-                                string expectedMsg = " \"expected fill <boolean > \"";
                                 int countArrayNum = singleLine.Length;
                                 if (countArrayNum - 1 == 1)
                                 {
@@ -339,6 +335,33 @@ namespace GraphicalProgrammingLanguage
                                     break;
                                 }
 
+                            }
+
+                            if ((string)element.ToUpper() == "POLYGON")
+                            {
+                                int countArrayNum = singleLine.Length;
+                                shape = factory.getShape((string)element.ToUpper());
+
+                                if (countArrayNum - 1 >= 2)
+                                {
+                                    polyArray = new int[countArrayNum - 1];
+
+                                    for (int index = 0; index < singleLine.Length - 1; index++)
+                                    {
+                                        if (int.Parse(singleLine[index+1]) >= 0)
+                                        {
+                                            polyArray[index] = int.Parse(singleLine[index+1]);
+                                        }
+                                    }
+                                    shape.setPoly(color, fill, penX, penY, polyArray);
+                                    shapes.Add(shape);
+                                }
+                                else
+                                {
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword POLYGON", "POLYGON  23,2,32,5");
+                                    breakLoopFlag = 1;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -391,22 +414,22 @@ namespace GraphicalProgrammingLanguage
         /// <summary>
         /// displays the error message along with line number and the correct format in the specified textBox with some extra formatting
         /// </summary>
-        /// <param name="errorDisplayBox"></param>
-        /// <param name="lineNumber"></param>
-        /// <param name="error"></param>
-        /// <param name="correctFormat"></param>
+        /// <param name="errorDisplayBox">richTextBox to display errors</param>
+        /// <param name="lineNumber">the error of the line number</param>
+        /// <param name="error">the name of the error</param>
+        /// <param name="correctFormat">the correct format of the command</param>
         public void displayErrorMsg(RichTextBox errorDisplayBox, int lineNumber, String error,  String correctFormat)
         {
-            errorDisplayBox.Text += "\n⚠️ Line " + lineNumber + " : " + error + "❗  |  EXPECTED:: " + correctFormat;
+            errorDisplayBox.Text += "\n⚠️ Line " + lineNumber + " : " + error + "❗  |" + "  EXPECTED:: " + correctFormat;
         }
 
 
         /// <summary>
         /// draws the current position of the MOVETO co-ordinates
         /// </summary>
-        /// <param name="e"></param>
-        /// <param name="penX"></param>
-        /// <param name="penY"></param>
+        /// <param name="e">paint event argument to cal the Graphics object</param>
+        /// <param name="penX">x-coordinate</param>
+        /// <param name="penY">y-coordinate</param>
         public void drawCurrMoveToPos(PaintEventArgs e, int penX, int penY)
         {
             Graphics movePos = e.Graphics;
@@ -420,9 +443,10 @@ namespace GraphicalProgrammingLanguage
         /// <summary>
         /// takes eah shape from arraylist and casts it to the type of 'Shape' and uses graphics to draw the actual shape
         /// </summary>
-        /// <param name="shapes"></param>
-        /// <param name="s"></param>
-        /// <param name="draw"></param>
+        /// <param name="shapes">array that stores the shapes</param>
+        /// <param name="shape">the actual shape</param>
+        /// <param name="draw">Graphics instance to draw the shape</param>
+        /// <param name="fill">fill state of shape</param>
         public void drawShapes(ArrayList shapes, Shape shape, Graphics draw, Boolean fill)
         {
             // draw all shapes stored in the 'shapes' arralist
@@ -441,14 +465,15 @@ namespace GraphicalProgrammingLanguage
 
 
         /// <summary>
-        /// gets the shapes from the factory class and stores it in a variable called shape of type Shape. Then sets the color and parameter of the shapes and finally adds it to the arraylist
+        ///  gets the shapes from the factory class and stores it in a variable called shape of type Shape. Then sets the color and parameter of the shapes and finally adds it to the arraylist
         /// </summary>
-        /// <param name="s"></param>
-        /// <param name="factory"></param>
-        /// <param name="keyword"></param>
-        /// <param name="shapes"></param>
-        /// <param name="list"></param>
-        public void getAndAddShape(Color color, Boolean fill, Shape shape, ShapeFactory factory, String keyword, ArrayList shapes, params int[] list)
+        /// <param name="color">color of the shape</param>
+        /// <param name="fill">specifies the fill state of the shape</param>
+        /// <param name="factory"> returns the shape</param>
+        /// <param name="keyword">the shape to be returned</param>
+        /// <param name="shapes">arraylis to store the shapes</param>
+        /// <param name="list">list of parameters for the given shape</param>
+        public void getAndAddShape(Color color, Boolean fill, ShapeFactory factory, String keyword, ArrayList shapes, params int[] list)
         {
             //get the specific shape from factory class
             shape = factory.getShape((String)keyword);
