@@ -26,7 +26,7 @@ namespace GraphicalProgrammingLanguage
         static int flag = 0;
 
         // stores all possible commands
-        public string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE", "PEN", "FILL", "POLYGON" };
+        public string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE", "PEN", "FILL", "POLYGON", "VAR" };
 
         public Form1()
         {
@@ -46,6 +46,7 @@ namespace GraphicalProgrammingLanguage
                 errorDisplayBox.Text = "";
                 string code = input;
                 dictionary.Clear();
+                
                 
 
                 // split lines 
@@ -102,6 +103,7 @@ namespace GraphicalProgrammingLanguage
                 //resets PEN color to default and FILL to off
                 parser.color = Color.Black;
                 parser.fill = false;
+                parser.varDictionary.Clear();
 
                 //clears all the sahpes in the array then refreshes the pictureBox so everything dissapears
                 parser.shapes.Clear();

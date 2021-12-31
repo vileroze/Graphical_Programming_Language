@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -30,6 +32,9 @@ namespace GraphicalProgrammingLanguage
         public static Graphics draw;
         public Color color;
         public Boolean fill;
+
+
+        public Dictionary<string, int> varDictionary = new Dictionary<string, int>();
 
 
         /// <summary>
@@ -76,6 +81,7 @@ namespace GraphicalProgrammingLanguage
                     {
                         //increases if command is found
                         commandInstance++;
+
                         // checks if a single line has multiple commands, then dispays error if it does
                         if (commandInstance > 1)
                         {
@@ -97,21 +103,42 @@ namespace GraphicalProgrammingLanguage
                                     //checks if both the parameters passed are integers
                                     try
                                     {
-                                        if (int.Parse(singleLine[1]) >= 0 && int.Parse(singleLine[2]) >= 0)
+                                        var firstParam = singleLine[1];
+                                        var secondParam = singleLine[2];
+
+                                        string firstVariable = firstParam.Trim().ToUpper();
+                                        string secondVariable = firstParam.Trim().ToUpper();
+
+                                        if (varDictionary.ContainsKey(firstVariable))
+                                        {
+                                            int valueOfOperand = varDictionary[firstVariable];
+                                            firstParam = firstParam.Replace(firstParam, valueOfOperand.ToString());
+                                        }
+
+                                        if (varDictionary.ContainsKey(secondVariable))
+                                        {
+                                            int valueOfOperand = varDictionary[secondVariable];
+                                            secondParam = secondParam.Replace(secondParam, valueOfOperand.ToString());
+                                        }
+
+                                        if (int.Parse(firstParam) >= 0 && int.Parse(secondParam) >= 0)
                                         {
                                             //stores params as coordinates
-                                            penX = int.Parse(singleLine[1]); 
-                                            penY = int.Parse(singleLine[2]);
+                                            penX = int.Parse(firstParam); 
+                                            penY = int.Parse(secondParam);
                                         }
                                     }
-                                    catch (IndexOutOfRangeException) { break; }
-                                    catch (FormatException)
-                                    //catch params that are not integers
-                                    {
-                                        displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "MOVETO x,y");
-                                        breakLoopFlag = 1;
-                                        break;
+                                    catch (IndexOutOfRangeException) 
+                                    { 
+                                        break; 
                                     }
+                                    //catch (FormatException)
+                                    ////catch params that are not integers
+                                    //{
+                                    //    displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be positive integer", "MOVETO x,y");
+                                    //    breakLoopFlag = 1;
+                                    //    break;
+                                    //}
                                 }
                                 else
                                 {
@@ -365,8 +392,89 @@ namespace GraphicalProgrammingLanguage
                             }
                         }
                     }
-                    //checks for invalid keywords
+                    
+                    else if(singleLine[1] == "=")
+                    //checks for variables
+                    {
+                        int indexOfEqualsSign = Array.IndexOf(singleLine, "=");
+                        string varName = "";
+                        string output = ""; //to store all the things that need to be calculated
+
+                        //create string to calculate value to put in the dictionary
+                        string[] varValueArray = new string[100];
+                        Array.Copy(singleLine, indexOfEqualsSign +1, varValueArray, 0, singleLine.Length - 2);
+                        foreach (string input in varValueArray)
+                        {
+                            //stores something like : 10+20+30 OR height+20
+                            output += input;
+                        }
+
+                        //replace variable with its value
+                        string[] splitOutput = output.Split(new char[] { '+', '-', '/', '*' });
+                        
+                        foreach(string operand in splitOutput)
+                        {
+                            string opp = operand.Trim().ToUpper();
+                            if (varDictionary.ContainsKey(opp))
+                            {
+                                int valueOfOperand = varDictionary[opp];
+                                output = output.Replace(operand, valueOfOperand.ToString());
+                            }
+                        }
+
+                        //compute variable name and value for dictionary
+                        try
+                        {
+                            var result = new DataTable().Compute(output, null);
+                            varName = singleLine[indexOfEqualsSign - 1];
+
+                            //check if result returns a positive integer
+                            if (Convert.ToInt32(result) >= 0)
+                            {
+                                //store the result
+                                int varValue = Convert.ToInt32(result);
+
+                                //check if variable already exists
+                                if (varDictionary.ContainsKey(varName.Trim().ToUpper()))
+                                {
+                                    //update value
+                                    varDictionary[varName.Trim().ToUpper()] = varValue;
+                                }
+                                else
+                                {
+                                    //add value
+                                    varDictionary.Add(varName.Trim().ToUpper(), varValue);
+                                }
+                            }
+                        }
+                        catch (FormatException)
+                        {
+                            displayErrorMsg(errorDisplayBox, lineNumber, "variable names cannot be a number", "VAR count = 10");
+                            breakLoopFlag = 1;
+                            break;
+                        }
+                        catch (InvalidCastException)
+                        {
+                            displayErrorMsg(errorDisplayBox, lineNumber, "invalid cat exception", "VAR count = 10");
+                            breakLoopFlag = 1;
+                            break;
+                        }
+                        catch (SyntaxErrorException)
+                        {
+                            displayErrorMsg(errorDisplayBox, lineNumber, "syntax exception", "VAR count = 10");
+                            breakLoopFlag = 1;
+                            break;
+                        }
+                        catch (EvaluateException)
+                        {
+                            displayErrorMsg(errorDisplayBox, lineNumber, "evaluate exception", "VAR count = 10");
+                            breakLoopFlag = 1;
+                            break;
+                        }
+                    }
+
                     else
+                    //checks for invalid keywords
                     {
                         try
                         {
@@ -400,11 +508,20 @@ namespace GraphicalProgrammingLanguage
                 }
             }
 
+            //just for debugging purposes
+            Debug.WriteLine("\n=============");
+            foreach (KeyValuePair<string, int> dict in varDictionary)
+            {
+                Debug.WriteLine("\nkey: " + dict.Key + " value: " + dict.Value);
+
+            }
+
             if (breakLoopFlag == 0)
             {
                 errorDisplayBox.Text += "\n✔ Command executed successfully";
                 commandLine.Clear();
             }
+
             //reset dictionary and pictureBox
             drawingArea.Refresh();
             dictionary.Clear();
