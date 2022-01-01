@@ -26,7 +26,7 @@ namespace GraphicalProgrammingLanguage
         static int flag = 0;
 
         // stores all possible commands
-        public string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE", "PEN", "FILL", "POLYGON", "VAR" };
+        public string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE", "PEN", "FILL", "POLYGON", "IF", "ENDIF", "WHILE"};
 
         public Form1()
         {

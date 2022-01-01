@@ -108,7 +108,7 @@ namespace GraphicalProgrammingLanguage
             this.saveToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(188, 30);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(160, 24);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
@@ -119,7 +119,7 @@ namespace GraphicalProgrammingLanguage
             this.loadToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
             this.loadToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
-            this.loadToolStripMenuItem.Size = new System.Drawing.Size(188, 30);
+            this.loadToolStripMenuItem.Size = new System.Drawing.Size(160, 24);
             this.loadToolStripMenuItem.Text = "Load";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
             // 
@@ -130,7 +130,7 @@ namespace GraphicalProgrammingLanguage
             this.exitToolStripMenuItem.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.X)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(188, 30);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(160, 24);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -144,7 +144,7 @@ namespace GraphicalProgrammingLanguage
             this.drawingArea.Location = new System.Drawing.Point(363, 42);
             this.drawingArea.Margin = new System.Windows.Forms.Padding(2);
             this.drawingArea.Name = "drawingArea";
-            this.drawingArea.Size = new System.Drawing.Size(1334, 615);
+            this.drawingArea.Size = new System.Drawing.Size(1334, 562);
             this.drawingArea.TabIndex = 0;
             this.drawingArea.TabStop = false;
             this.drawingArea.Paint += new System.Windows.Forms.PaintEventHandler(this.DrawingArea_Paint);
@@ -156,11 +156,11 @@ namespace GraphicalProgrammingLanguage
             this.errorDisplayBox.BackColor = System.Drawing.Color.OldLace;
             this.errorDisplayBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.errorDisplayBox.ForeColor = System.Drawing.Color.Red;
-            this.errorDisplayBox.Location = new System.Drawing.Point(363, 661);
+            this.errorDisplayBox.Location = new System.Drawing.Point(363, 608);
             this.errorDisplayBox.Margin = new System.Windows.Forms.Padding(2);
             this.errorDisplayBox.Name = "errorDisplayBox";
             this.errorDisplayBox.ReadOnly = true;
-            this.errorDisplayBox.Size = new System.Drawing.Size(1334, 91);
+            this.errorDisplayBox.Size = new System.Drawing.Size(1334, 144);
             this.errorDisplayBox.TabIndex = 4;
             this.errorDisplayBox.Text = "";
             // 
@@ -202,7 +202,7 @@ namespace GraphicalProgrammingLanguage
             this.textBox2.BackColor = System.Drawing.Color.NavajoWhite;
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox2.Location = new System.Drawing.Point(365, 663);
+            this.textBox2.Location = new System.Drawing.Point(365, 589);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(1331, 15);

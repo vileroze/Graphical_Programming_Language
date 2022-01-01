@@ -34,6 +34,9 @@ namespace GraphicalProgrammingLanguage
         public Boolean fill;
 
 
+        static int endIfLineNumber = 0;
+        static int ifLineNumber = 0;
+        public static int ifConditionStatus= 0;
         public Dictionary<string, int> varDictionary = new Dictionary<string, int>();
 
 
@@ -61,14 +64,23 @@ namespace GraphicalProgrammingLanguage
         /// <param name="errorDisplayBox">textBox to display all errors</param>
         /// <param name="drawingArea">pictureBox to display all shapes</param>
         /// <param name="commandLine">get instance of single line command</param>
-        public void checkForKeywords(string[] possibleCommands, Dictionary<int, string> dictionary, RichTextBox errorDisplayBox, PictureBox drawingArea, TextBox commandLine)
+        public void checkForKeywords(string[] possibleCommands, Dictionary<int, string> mainDictionary, RichTextBox errorDisplayBox, PictureBox drawingArea, TextBox commandLine)
         {
             //flag to break the outer foreach loop
             int breakLoopFlag = 0;
-            foreach (KeyValuePair<int, string> pair in dictionary)
+            ifConditionStatus= 0;
+            
+            foreach (KeyValuePair<int, string> pair in mainDictionary)
             {
-                int commandInstance = 0;
+                if (ifConditionStatus == 1)
+                {
+                    if (pair.Key < endIfLineNumber && pair.Key > ifLineNumber)
+                    {
+                        continue;
+                    }
+                }
 
+                ifConditionStatus = 0;
                 //strips value from dictionary splits it using delimeters then stores the result
                 string[] singleLine = pair.Value.Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 
@@ -77,420 +89,509 @@ namespace GraphicalProgrammingLanguage
 
                 foreach (string element in singleLine)
                 {
-                    //checks if element is one of the possible commands
-                    if (isPossibleCommand(possibleCommands, element) == true)
+                    //checks if singleLine[0] is one of the possible commands
+                    // || singleLine[1] == "="
+                    if (isPossibleCommand(possibleCommands, singleLine[0]) == true || singleLine[1] == "=")
                     {
-                        //increases if command is found
-                        commandInstance++;
-
-                        // checks if a single line has multiple commands, then dispays error if it does
-                        if (commandInstance > 1)
+                        if ((string)singleLine[0].ToUpper() == "IF")
                         {
-                            errorDisplayBox.Text += "\nOne line can contain only one command : " + lineNumber + " ";
-                            commandInstance = 0;
-                            breakLoopFlag = 1;
-                            break;
+                            int countArrayNum = singleLine.Length;
+                            int varToCompare = 0;
+                            string compOperator = "";
+                            int lastElement = 0;
+                            //int endIfLineNumber = 0;
+                            //int ifLineNumber = lineNumber;
+                            ifLineNumber = lineNumber;
+
+                            //check if line has 3 components beside the actual keyword
+                            if (countArrayNum - 1 == 3)
+                            {
+                                //get the line number of ENDIF
+                                foreach (var row in mainDictionary)
+                                {
+                                    //ENDIF bhetena bhane k garne
+                                    if (row.Value.ToUpper() == "ENDIF")
+                                    {
+                                        endIfLineNumber = row.Key;
+                                    }
+                                }
+
+                                //get the value of the variable
+                                string[] parameter = getValueFromDictionary(varDictionary, singleLine[1]);
+                                try
+                                {
+                                    //check if the value of variable is positive
+                                    if (int.Parse(parameter[0]) >= 0)
+                                    {
+                                        varToCompare = int.Parse(parameter[0]);
+
+                                        //check if statement has "=="
+                                        //|| singleLine[2].ToUpper() == ">=" || singleLine[2].ToUpper() == "<=" || singleLine[2].ToUpper() == "!="
+                                        if (singleLine[2].ToUpper() == "==")
+                                        {
+                                            compOperator = singleLine[2];
+
+                                            //check if RHS element is an integer
+                                            try
+                                            {
+                                                string[] rhsParam = getValueFromDictionary(varDictionary, singleLine[3]);
+                                                lastElement = int.Parse(rhsParam[0]);
+
+                                                //check if condition not true (aru condition() check garne using SWITCH CASE or IF ELSE)
+                                                if (varToCompare == lastElement)
+                                                {
+
+                                                }
+                                                else
+                                                {
+                                                    errorDisplayBox.Text += "\nIF condition false";
+                                                    ifConditionStatus = 1;
+                                                    //break;
+
+                                                    int tempLinenumber = lineNumber + 1;
+
+                                                }
+                                            }
+                                            catch (FormatException)
+                                            {
+                                                displayErrorMsg(errorDisplayBox, lineNumber, "right hand side of == should be number", "IF <variable> == <some integer value>");
+                                                breakLoopFlag = 1;
+                                                break;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            displayErrorMsg(errorDisplayBox, lineNumber, "Wrong comparison operator used", "== OR <= OR >= OR !=");
+                                            breakLoopFlag = 1;
+                                            break;
+                                        }
+                                    }
+                                }
+                                catch (FormatException)
+                                {
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "left hand side of == should be number", "IF <variable> == <some integer value>");
+                                    breakLoopFlag = 1;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                displayErrorMsg(errorDisplayBox, lineNumber, "Wrong syntax for IF statement", "IF <variable> == <some integer value>");
+                                breakLoopFlag = 1;
+                                break;
+                            }
                         }
-                        else
+                        ///////////////////////////////////////
+
+                        //if (ifConditionStatus== 1)
+                        //{
+                        //    break;
+                        //}
+
+
+
+
+
+
+
+
+
+
+                        //checks for moveto
+                        if ((string)singleLine[0].ToUpper() == "MOVETO")
                         {
-                            //checks for moveto
-                            if ((string)element.ToUpper() == "MOVETO")
+                            //gets the current length of line
+                            int countArrayNum = singleLine.Length;
+                            // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
+                            if (countArrayNum - 1 == 2)
                             {
-                                //gets the current length of line
-                                int countArrayNum = singleLine.Length;
-                                // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
-                                if (countArrayNum - 1 == 2)
+                                string[] parameter = getValueFromDictionary(varDictionary, singleLine[1], singleLine[2]);
+                                //checks if both the parameters passed are integers
+                                try
                                 {
-                                    string[] parameter = getValueFromDictionary(varDictionary, singleLine[1], singleLine[2]);
-                                    //checks if both the parameters passed are integers
-                                    try
+                                    if (int.Parse(parameter[0]) >= 0 && int.Parse(parameter[1]) >= 0)
                                     {
-                                        if (int.Parse(parameter[0]) >= 0 && int.Parse(parameter[1]) >= 0)
-                                        {
-                                            //stores params as coordinates
-                                            penX = int.Parse(parameter[0]);
-                                            penY = int.Parse(parameter[1]);
-                                        }
+                                        //stores params as coordinates
+                                        penX = int.Parse(parameter[0]);
+                                        penY = int.Parse(parameter[1]);
+                                    }
 
-                                    }
-                                    catch (IndexOutOfRangeException) 
-                                    { 
-                                        break; 
-                                    }
-                                    catch (FormatException)
-                                    //catch params that are not integers
-                                    {
-                                        displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be positive integer", "MOVETO x,y");
-                                        breakLoopFlag = 1;
-                                        break;
-                                    }
                                 }
-                                else
+                                catch (IndexOutOfRangeException)
                                 {
-                                    //if wrong number of parameters are passed
-                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword MOVETO", "MOVETO x,y");
+                                    break;
+                                }
+                                catch (FormatException)
+                                //catch params that are not integers
+                                {
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be positive integer", "MOVETO x,y");
                                     breakLoopFlag = 1;
                                     break;
                                 }
                             }
-
-                            //checks for CIRCLE
-                            if ((string)element.ToUpper() == "CIRCLE")
+                            else
                             {
-                                //gets the current length of line
-                                int countArrayNum = singleLine.Length;
-                                // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
-                                if (countArrayNum - 1 == 1)
+                                //if wrong number of parameters are passed
+                                displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword MOVETO", "MOVETO x,y");
+                                breakLoopFlag = 1;
+                                break;
+                            }
+                        }
+
+                        //checks for CIRCLE
+                        else if ((string)singleLine[0].ToUpper() == "CIRCLE")
+                        {
+                            //gets the current length of line
+                            int countArrayNum = singleLine.Length;
+                            // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
+                            if (countArrayNum - 1 == 1)
+                            {
+                                string[] parameter = getValueFromDictionary(varDictionary, singleLine[1]);
+                                try
                                 {
-                                    string[] parameter = getValueFromDictionary(varDictionary, singleLine[1]);
-                                    try
+                                    if (int.Parse(parameter[0]) >= 0)
                                     {
-                                        if (int.Parse(parameter[0]) >= 0)
-                                        {
-                                            int radius = int.Parse(parameter[0]); // stores radius
-                                            getAndAddShape(color, fill, factory, (string)element.ToUpper(), shapes, penX, penY, radius);//creates and adds the shape
-                                        }
-                                    }
-                                    catch (IndexOutOfRangeException) { break; }
-                                    catch (FormatException)
-                                    {
-                                        displayErrorMsg(errorDisplayBox, lineNumber, "Parameter should be of type integer", "CIRCLE radius");
-                                        breakLoopFlag = 1;
-                                        break;
+                                        int radius = int.Parse(parameter[0]); // stores radius
+                                        getAndAddShape(color, fill, factory, (string)singleLine[0].ToUpper(), shapes, penX, penY, radius);//creates and adds the shape
                                     }
                                 }
-                                //check if required number of parameters are passed
-                                else
+                                catch (IndexOutOfRangeException) { break; }
+                                catch (FormatException)
                                 {
-                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword CIRCLE", "CIRCLE radius");
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "Parameter should be of type integer", "CIRCLE radius");
                                     breakLoopFlag = 1;
                                     break;
                                 }
                             }
-
-                            //checks for RECTANGLE
-                            if ((string)element.ToUpper() == "RECTANGLE")
+                            //check if required number of parameters are passed
+                            else
                             {
-                                //gets the current length of line
-                                int countArrayNum = singleLine.Length;
-                                // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
-                                if (countArrayNum - 1 == 2)
+                                displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword CIRCLE", "CIRCLE radius");
+                                breakLoopFlag = 1;
+                                break;
+                            }
+                        }
+
+                        //checks for RECTANGLE
+                        else if ((string)singleLine[0].ToUpper() == "RECTANGLE")
+                        {
+                            //gets the current length of line
+                            int countArrayNum = singleLine.Length;
+                            // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
+                            if (countArrayNum - 1 == 2)
+                            {
+                                string[] parameter = getValueFromDictionary(varDictionary, singleLine[1], singleLine[2]);
+                                try
                                 {
-                                    string[] parameter = getValueFromDictionary(varDictionary, singleLine[1], singleLine[2]);
-                                    try
+                                    if (int.Parse(parameter[0]) >= 0 && int.Parse(parameter[1]) >= 0)
                                     {
-                                        if (int.Parse(parameter[0]) >= 0 && int.Parse(parameter[1]) >= 0)
-                                        {
-                                            int height = int.Parse(parameter[0]);
-                                            int width = int.Parse(parameter[1]);
-                                            getAndAddShape(color, fill, factory, (string)element.ToUpper(), shapes, penX, penY, height, width);//creates and adds the shape
-                                        }
-                                    }
-                                    catch (IndexOutOfRangeException) { break; }
-                                    catch (FormatException)
-                                    {
-                                        displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "RECTANGLE height, width");
-                                        breakLoopFlag = 1;
-                                        break;
+                                        int height = int.Parse(parameter[0]);
+                                        int width = int.Parse(parameter[1]);
+                                        getAndAddShape(color, fill, factory, (string)singleLine[0].ToUpper(), shapes, penX, penY, height, width);//creates and adds the shape
                                     }
                                 }
-                                else
+                                catch (IndexOutOfRangeException) { break; }
+                                catch (FormatException)
                                 {
-                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword RECTANGLE", "RECTANGLE height, width");
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "RECTANGLE height, width");
                                     breakLoopFlag = 1;
                                     break;
                                 }
                             }
-
-                            //checks for TRIANGLE
-                            if ((string)element.ToUpper() == "TRIANGLE")
+                            else
                             {
-                                int countArrayNum = singleLine.Length;
-                                if (countArrayNum - 1 == 2)
-                                {
-                                    string[] parameter = getValueFromDictionary(varDictionary, singleLine[1], singleLine[2]);
-                                    try
-                                    {
-                                        if (int.Parse(parameter[0]) >= 0 && int.Parse(parameter[1]) >= 0)
-                                        {
-                                            int bases = int.Parse(parameter[0]);
-                                            int height = int.Parse(parameter[1]);
-                                            getAndAddShape(color, fill, factory, (string)element.ToUpper(), shapes, penX, penY, bases, height);//creates and adds the shape
-                                        }
+                                displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword RECTANGLE", "RECTANGLE height, width");
+                                breakLoopFlag = 1;
+                                break;
+                            }
+                        }
 
-                                    }
-                                    catch (IndexOutOfRangeException) { break; }
-                                    catch (FormatException)
-                                    {
-                                        displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "TRIANGLE base, height");
-                                        breakLoopFlag = 1;
-                                        break;
-                                    }
-                                }
-                                else
+                        //checks for TRIANGLE
+                        else if ((string)singleLine[0].ToUpper() == "TRIANGLE")
+                        {
+                            int countArrayNum = singleLine.Length;
+                            if (countArrayNum - 1 == 2)
+                            {
+                                string[] parameter = getValueFromDictionary(varDictionary, singleLine[1], singleLine[2]);
+                                try
                                 {
-                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword TRIANGLE", "TRIANGLE base, height");
+                                    if (int.Parse(parameter[0]) >= 0 && int.Parse(parameter[1]) >= 0)
+                                    {
+                                        int bases = int.Parse(parameter[0]);
+                                        int height = int.Parse(parameter[1]);
+                                        getAndAddShape(color, fill, factory, (string)singleLine[0].ToUpper(), shapes, penX, penY, bases, height);//creates and adds the shape
+                                    }
+
+                                }
+                                catch (IndexOutOfRangeException) { break; }
+                                catch (FormatException)
+                                {
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "TRIANGLE base, height");
                                     breakLoopFlag = 1;
                                     break;
                                 }
                             }
-
-                            //checks for DRAWTO
-                            if ((string)element.ToUpper() == "DRAWTO")
+                            else
                             {
-                                int countArrayNum = singleLine.Length;
-                                if (countArrayNum - 1 == 2)
-                                {
-                                    string[] parameter = getValueFromDictionary(varDictionary, singleLine[1], singleLine[2]);
-                                    try
-                                    {
-                                        if (int.Parse(singleLine[1]) >= 0 && int.Parse(singleLine[2]) >= 0)
-                                        {
-                                            //if 'moveTo' is written before 'drawTo'
-                                            int drawFromX = penX;
-                                            int drawFromY = penY;
-
-                                            //store params
-                                            int drawToX = int.Parse(parameter[0]);
-                                            int drawToY = int.Parse(parameter[1]);
-
-                                            //the new co-ordinates for MOVETO params 
-                                            penX = drawToX;
-                                            penY = drawToY;
-
-                                            //creates and adds the shape
-                                            getAndAddShape(color, fill, factory, (string)element.ToUpper(), shapes, drawFromX, drawFromY, drawToX, drawToY);
-
-                                            //makes the ending point of the previous drawTo the starting point of the next drawTo
-                                            drawFromX = drawToX;
-                                            drawFromY = drawToY;
-                                        }
-                                    }
-                                    catch (IndexOutOfRangeException) { break; }
-                                    catch (FormatException)
-                                    {
-                                        displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "DRAWTO x,y");
-                                        breakLoopFlag = 1;
-                                        break;
-                                    }
-                                }
-                                else
-                                {
-                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword DRAWTO", "DRAWTO x,y");
-                                    breakLoopFlag = 1;
-                                    break;
-                                }
+                                displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword TRIANGLE", "TRIANGLE base, height");
+                                breakLoopFlag = 1;
+                                break;
                             }
+                        }
 
-                            if ((string)element.ToUpper() == "PEN")
+                        else if ((string)singleLine[0].ToUpper() == "POLYGON")
+                        {
+                            int countArrayNum = singleLine.Length;
+                            shape = factory.getShape((string)singleLine[0].ToUpper());
+
+                            if (countArrayNum - 1 >= 2)
                             {
-                                int countArrayNum = singleLine.Length;
-                                if (countArrayNum - 1 == 1)
+                                polyArray = new int[countArrayNum - 1];
+                                //errorDisplayBox.Text += "\npoly array size : " + polyArray.Length;
+
+                                string[] parameter = new string[singleLine.Length - 1];
+                                //errorDisplayBox.Text += "\nparameter array size : " + parameter.Length;
+
+                                for (int index = 0; index < singleLine.Length - 1; index++)
                                 {
+                                    string tempVar = singleLine[index + 1].Trim().ToUpper();
 
-                                    if (singleLine[1].ToUpper() == "RED" || singleLine[1].ToUpper() == "YELLOW" || singleLine[1].ToUpper() == "BLUE")
+                                    if (varDictionary.ContainsKey(tempVar))
                                     {
-
-                                        if (singleLine[1].ToUpper() == "RED")
-                                        {
-                                            color = Color.Red;
-                                        }
-                                        if (singleLine[1].ToUpper() == "YELLOW")
-                                        {
-                                            color = Color.Yellow;
-                                        }
-                                        if (singleLine[1].ToUpper() == "BLUE")
-                                        {
-                                            color = Color.Blue;
-                                        }
+                                        int valueOfOperand = varDictionary[tempVar];
+                                        parameter[index] = tempVar.Replace(tempVar, valueOfOperand.ToString());
                                     }
                                     else
                                     {
-                                        displayErrorMsg(errorDisplayBox, lineNumber, "Such color doesnt exist " , "red OR green OR blue");
-                                        breakLoopFlag = 1;
-                                        break;
+                                        parameter[index] = tempVar;
                                     }
-
                                 }
-                                else
-                                {
-                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword DRAWTO", "PEN red");
-                                    breakLoopFlag = 1;
-                                    break;
-                                }
-                            }
 
-                            if ((string)element.ToUpper() == "FILL")
-                            {
-                                int countArrayNum = singleLine.Length;
-                                if (countArrayNum - 1 == 1)
+                                for (int index = 0; index < parameter.Length; index++)
                                 {
-                                    if (singleLine[1].ToUpper() == "ON" || singleLine[1].ToUpper() == "OFF")
+                                    try
                                     {
-                                        if (singleLine[1].ToUpper() == "ON")
+                                        if (int.Parse(parameter[index]) >= 0)
                                         {
-                                            fill = true;
-                                        }
-                                        if (singleLine[1].ToUpper() == "OFF")
-                                        {
-                                            fill = false;
+                                            polyArray[index] = int.Parse(parameter[index]);
                                         }
                                     }
-                                    else
+                                    catch (ArgumentNullException)
                                     {
-                                        displayErrorMsg(errorDisplayBox, lineNumber, "Wrong parameter for keyword FILL", "FILL on");
+                                        displayErrorMsg(errorDisplayBox, lineNumber, "ARGUMENT NULL EXCEPTION", "");
                                         breakLoopFlag = 1;
                                         break;
                                     }
                                 }
-                                else
-                                {
-                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword FILL", "FILL on");
-                                    breakLoopFlag = 1;
-                                    break;
-                                }
 
+                                shape.setPoly(color, fill, penX, penY, polyArray);
+                                shapes.Add(shape);
                             }
-
-                            if ((string)element.ToUpper() == "POLYGON")
+                            else
                             {
-                                int countArrayNum = singleLine.Length;
-                                shape = factory.getShape((string)element.ToUpper());
+                                displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword POLYGON", "POLYGON  23,2,32,5");
+                                breakLoopFlag = 1;
+                                break;
+                            }
+                        }
 
-                                if (countArrayNum - 1 >= 2)
+                        //checks for DRAWTO
+                        else if ((string)singleLine[0].ToUpper() == "DRAWTO")
+                        {
+                            int countArrayNum = singleLine.Length;
+                            if (countArrayNum - 1 == 2)
+                            {
+                                string[] parameter = getValueFromDictionary(varDictionary, singleLine[1], singleLine[2]);
+                                try
                                 {
-                                    polyArray = new int[countArrayNum - 1];
-
-                                    for (int index = 0; index < singleLine.Length - 1; index++)
+                                    if (int.Parse(singleLine[1]) >= 0 && int.Parse(singleLine[2]) >= 0)
                                     {
-                                        if (int.Parse(singleLine[index+1]) >= 0)
-                                        {
-                                            polyArray[index] = int.Parse(singleLine[index+1]);
-                                        }
+                                        //if 'moveTo' is written before 'drawTo'
+                                        int drawFromX = penX;
+                                        int drawFromY = penY;
+
+                                        //store params
+                                        int drawToX = int.Parse(parameter[0]);
+                                        int drawToY = int.Parse(parameter[1]);
+
+                                        //the new co-ordinates for MOVETO params 
+                                        penX = drawToX;
+                                        penY = drawToY;
+
+                                        //creates and adds the shape
+                                        getAndAddShape(color, fill, factory, (string)singleLine[0].ToUpper(), shapes, drawFromX, drawFromY, drawToX, drawToY);
+
+                                        //makes the ending point of the previous drawTo the starting point of the next drawTo
+                                        drawFromX = drawToX;
+                                        drawFromY = drawToY;
                                     }
-                                    shape.setPoly(color, fill, penX, penY, polyArray);
-                                    shapes.Add(shape);
                                 }
-                                else
+                                catch (IndexOutOfRangeException) { break; }
+                                catch (FormatException)
                                 {
-                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword POLYGON", "POLYGON  23,2,32,5");
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "DRAWTO x,y");
                                     breakLoopFlag = 1;
                                     break;
                                 }
                             }
-                        }
-                    }
-                    
-                    else if(singleLine[1] == "=")
-                    //checks for variables
-                    {
-                        int indexOfEqualsSign = Array.IndexOf(singleLine, "=");
-                        string varName = "";
-                        string output = ""; //to store all the things that need to be calculated
-
-                        //create string to calculate value to put in the dictionary
-                        string[] varValueArray = new string[100];
-                        Array.Copy(singleLine, indexOfEqualsSign +1, varValueArray, 0, singleLine.Length - 2);
-                        foreach (string input in varValueArray)
-                        {
-                            //stores something like : 10+20+30 OR height+20
-                            output += input;
-                        }
-
-                        //replace variable with its value
-                        string[] splitOutput = output.Split(new char[] { '+', '-', '/', '*' });
-                        
-                        foreach(string operand in splitOutput)
-                        {
-                            string opp = operand.Trim().ToUpper();
-                            if (varDictionary.ContainsKey(opp))
+                            else
                             {
-                                int valueOfOperand = varDictionary[opp];
-                                output = output.Replace(operand, valueOfOperand.ToString());
+                                displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword DRAWTO", "DRAWTO x,y");
+                                breakLoopFlag = 1;
+                                break;
                             }
                         }
 
-                        //compute variable name and value for dictionary
+
+                        else if ((string)singleLine[0].ToUpper() == "PEN")
+                        {
+                            int countArrayNum = singleLine.Length;
+                            if (countArrayNum - 1 == 1)
+                            {
+
+                                if (singleLine[1].ToUpper() == "RED" || singleLine[1].ToUpper() == "YELLOW" || singleLine[1].ToUpper() == "BLUE")
+                                {
+
+                                    if (singleLine[1].ToUpper() == "RED")
+                                    {
+                                        color = Color.Red;
+                                    }
+                                    if (singleLine[1].ToUpper() == "YELLOW")
+                                    {
+                                        color = Color.Yellow;
+                                    }
+                                    if (singleLine[1].ToUpper() == "BLUE")
+                                    {
+                                        color = Color.Blue;
+                                    }
+                                }
+                                else
+                                {
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "Such color doesnt exist ", "red OR green OR blue");
+                                    breakLoopFlag = 1;
+                                    break;
+                                }
+
+                            }
+                            else
+                            {
+                                displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword DRAWTO", "PEN red");
+                                breakLoopFlag = 1;
+                                break;
+                            }
+                        }
+
+                        else if ((string)singleLine[0].ToUpper() == "FILL")
+                        {
+                            int countArrayNum = singleLine.Length;
+                            if (countArrayNum - 1 == 1)
+                            {
+                                if (singleLine[1].ToUpper() == "ON" || singleLine[1].ToUpper() == "OFF")
+                                {
+                                    if (singleLine[1].ToUpper() == "ON")
+                                    {
+                                        fill = true;
+                                    }
+                                    if (singleLine[1].ToUpper() == "OFF")
+                                    {
+                                        fill = false;
+                                    }
+                                }
+                                else
+                                {
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "Wrong parameter for keyword FILL", "FILL on");
+                                    breakLoopFlag = 1;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword FILL", "FILL on");
+                                breakLoopFlag = 1;
+                                break;
+                            }
+                        }
+
                         try
                         {
-                            var result = new DataTable().Compute(output, null);
-                            varName = singleLine[indexOfEqualsSign - 1];
-
-                            //check if result returns a positive integer
-                            if (Convert.ToInt32(result) >= 0)
+                            //variable chalna chodyo bhane else hataune if matra rakhne
+                            if (singleLine[1] == "=")
+                            //checks for variabless
                             {
-                                //store the result
-                                int varValue = Convert.ToInt32(result);
+                                int indexOfEqualsSign = Array.IndexOf(singleLine, "="); //var = 10+20+30
+                                string varName = "";
+                                string output = ""; //to store all the things that need to be calculated
 
-                                //check if variable already exists
-                                if (varDictionary.ContainsKey(varName.Trim().ToUpper()))
+                                //create string to calculate value to put in the dictionary
+                                string[] varValueArray = new string[100];
+                                Array.Copy(singleLine, indexOfEqualsSign + 1, varValueArray, 0, singleLine.Length - 2);
+                                foreach (string input in varValueArray)
                                 {
-                                    //update value
-                                    varDictionary[varName.Trim().ToUpper()] = varValue;
+                                    //stores something like : 10+20+30 OR height+20
+                                    output += input;
                                 }
-                                else
+
+                                //replace variable with its value
+                                string[] splitOutput = output.Split(new char[] { '+', '-', '/', '*' });
+
+                                foreach (string operand in splitOutput)
                                 {
-                                    //add value
-                                    varDictionary.Add(varName.Trim().ToUpper(), varValue);
+                                    string opp = operand.Trim().ToUpper();
+                                    if (varDictionary.ContainsKey(opp))
+                                    {
+                                        int valueOfOperand = varDictionary[opp];
+                                        output = output.Replace(operand, valueOfOperand.ToString());
+                                    }
+                                }
+
+                                //compute variable name and value for dictionary
+                                try
+                                {
+                                    var result = new DataTable().Compute(output, null);
+                                    varName = singleLine[indexOfEqualsSign - 1];
+
+                                    //check if result returns a positive integer
+                                    if (Convert.ToInt32(result) >= 0)
+                                    {
+                                        //store the result
+                                        int varValue = Convert.ToInt32(result);
+
+                                        //check if variable already exists
+                                        if (varDictionary.ContainsKey(varName.Trim().ToUpper()))
+                                        {
+                                            //update value
+                                            varDictionary[varName.Trim().ToUpper()] = varValue;
+                                        }
+                                        else
+                                        {
+                                            //add value
+                                            varDictionary.Add(varName.Trim().ToUpper(), varValue);
+                                        }
+                                    }
+                                }
+                                catch (FormatException)
+                                {
+                                    displayErrorMsg(errorDisplayBox, lineNumber, "variable names cannot be a number", "VAR count = 10");
+                                    breakLoopFlag = 1;
+                                    break;
                                 }
                             }
                         }
-                        catch (FormatException)
+                        catch (IndexOutOfRangeException)
                         {
-                            displayErrorMsg(errorDisplayBox, lineNumber, "variable names cannot be a number", "VAR count = 10");
-                            breakLoopFlag = 1;
-                            break;
-                        }
-                        catch (InvalidCastException)
-                        {
-                            displayErrorMsg(errorDisplayBox, lineNumber, "invalid cat exception", "VAR count = 10");
-                            breakLoopFlag = 1;
-                            break;
-                        }
-                        catch (SyntaxErrorException)
-                        {
-                            displayErrorMsg(errorDisplayBox, lineNumber, "syntax exception", "VAR count = 10");
-                            breakLoopFlag = 1;
-                            break;
-                        }
-                        catch (EvaluateException)
-                        {
-                            displayErrorMsg(errorDisplayBox, lineNumber, "evaluate exception", "VAR count = 10");
-                            breakLoopFlag = 1;
-                            break;
+
                         }
                     }
-
-                    //else
-                    ////checks for invalid keywords
-                    //{
-                    //    try
-                    //    {
-                    //        if (singleLine[0].ToUpper() == "RED" || singleLine[0].ToUpper() == "BLUE" || singleLine[0].ToUpper() == "YELLOW" || singleLine[0].ToUpper() == "ON" || singleLine[0].ToUpper() == "OFF")
-                    //        {
-                    //            displayErrorMsg(errorDisplayBox, lineNumber, "Keyword does not exist", "circle OR triangle OR rectangle OR drawto OR moveto");
-                    //            breakLoopFlag = 1;
-                    //            break;
-                    //        }
-                    //        if (element.ToUpper() == "RED" || element.ToUpper() == "YELLOW" || element.ToUpper() == "BLUE" || element.ToUpper() == "ON" || element.ToUpper() == "OFF")
-                    //        {
-
-                    //        }
-                    //        else if (int.Parse(element) > 0)
-                    //        {
-
-                    //        }
-                    //    }
-                    //    //check if keyword exists
-                    //    catch (FormatException)
-                    //    {
-                    //        displayErrorMsg(errorDisplayBox, lineNumber, "Keyword does not exist", "circle OR triangle OR rectangle OR drawto OR moveto");
-                    //        breakLoopFlag = 1;
-                    //        break;
-                    //    }
-                    //}
+                    else
+                    //checks for invalid keywords
+                    {
+                        displayErrorMsg(errorDisplayBox, lineNumber, "Keyword does not exist", "circle OR triangle OR rectangle OR drawto OR moveto");
+                        breakLoopFlag = 1;
+                        break;
+                    }
                 }
-                if (breakLoopFlag == 1)
+                //|| ifConditionStatus== 1
+                if (breakLoopFlag == 1 )
                 {
                     break;
                 }
@@ -512,7 +613,7 @@ namespace GraphicalProgrammingLanguage
 
             //reset dictionary and pictureBox
             drawingArea.Refresh();
-            dictionary.Clear();
+            mainDictionary.Clear();
         }
 
 
@@ -611,37 +712,7 @@ namespace GraphicalProgrammingLanguage
                     ParamNumList[i] = tempVar;
                 }
             }
-
             return ParamNumList;
-
-
-
-
-            //var firstParam = first;
-            //var secondParam = second;
-
-            //string firstVariable = firstParam.Trim().ToUpper();
-            //string secondVariable = secondParam.Trim().ToUpper();
-
-            //if (varDictionary.ContainsKey(firstVariable))
-            //{
-            //    int valueOfOperand = varDictionary[firstVariable];
-            //    firstParamNum = firstParam.Replace(firstParam, valueOfOperand.ToString());
-            //}
-            //else
-            //{
-            //    firstParamNum = firstParam;
-            //}
-
-            //if (varDictionary.ContainsKey(secondVariable))
-            //{
-            //    int valueOfOperand = varDictionary[secondVariable];
-            //    secondParamNum = secondParam.Replace(secondParam, valueOfOperand.ToString());
-            //}
-            //else
-            //{
-            //    secondParamNum = secondParam;
-            //}
         }
     }
 }
