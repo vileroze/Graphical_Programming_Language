@@ -52,6 +52,7 @@ namespace GraphicalProgrammingLanguage
             return false;
         }
 
+
         /// <summary>
         /// extract lineNUmber and all commands from data dictionary, catches and displays errors, displays shapes and reads commandLine
         /// </summary>
@@ -85,7 +86,7 @@ namespace GraphicalProgrammingLanguage
                         // checks if a single line has multiple commands, then dispays error if it does
                         if (commandInstance > 1)
                         {
-                            errorDisplayBox.Text += "\n Cannot enter more than 1 command in this line : " + lineNumber + " ";
+                            errorDisplayBox.Text += "\nOne line can contain only one command : " + lineNumber + " ";
                             commandInstance = 0;
                             breakLoopFlag = 1;
                             break;
@@ -100,45 +101,29 @@ namespace GraphicalProgrammingLanguage
                                 // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
                                 if (countArrayNum - 1 == 2)
                                 {
+                                    string[] parameter = getValueFromDictionary(varDictionary, singleLine[1], singleLine[2]);
                                     //checks if both the parameters passed are integers
                                     try
                                     {
-                                        var firstParam = singleLine[1];
-                                        var secondParam = singleLine[2];
-
-                                        string firstVariable = firstParam.Trim().ToUpper();
-                                        string secondVariable = firstParam.Trim().ToUpper();
-
-                                        if (varDictionary.ContainsKey(firstVariable))
-                                        {
-                                            int valueOfOperand = varDictionary[firstVariable];
-                                            firstParam = firstParam.Replace(firstParam, valueOfOperand.ToString());
-                                        }
-
-                                        if (varDictionary.ContainsKey(secondVariable))
-                                        {
-                                            int valueOfOperand = varDictionary[secondVariable];
-                                            secondParam = secondParam.Replace(secondParam, valueOfOperand.ToString());
-                                        }
-
-                                        if (int.Parse(firstParam) >= 0 && int.Parse(secondParam) >= 0)
+                                        if (int.Parse(parameter[0]) >= 0 && int.Parse(parameter[1]) >= 0)
                                         {
                                             //stores params as coordinates
-                                            penX = int.Parse(firstParam); 
-                                            penY = int.Parse(secondParam);
+                                            penX = int.Parse(parameter[0]);
+                                            penY = int.Parse(parameter[1]);
                                         }
+
                                     }
                                     catch (IndexOutOfRangeException) 
                                     { 
                                         break; 
                                     }
-                                    //catch (FormatException)
-                                    ////catch params that are not integers
-                                    //{
-                                    //    displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be positive integer", "MOVETO x,y");
-                                    //    breakLoopFlag = 1;
-                                    //    break;
-                                    //}
+                                    catch (FormatException)
+                                    //catch params that are not integers
+                                    {
+                                        displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be positive integer", "MOVETO x,y");
+                                        breakLoopFlag = 1;
+                                        break;
+                                    }
                                 }
                                 else
                                 {
@@ -157,11 +142,12 @@ namespace GraphicalProgrammingLanguage
                                 // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
                                 if (countArrayNum - 1 == 1)
                                 {
+                                    string[] parameter = getValueFromDictionary(varDictionary, singleLine[1]);
                                     try
                                     {
-                                        if (int.Parse(singleLine[1]) >= 0)
+                                        if (int.Parse(parameter[0]) >= 0)
                                         {
-                                            int radius = int.Parse(singleLine[1]); // stores radius
+                                            int radius = int.Parse(parameter[0]); // stores radius
                                             getAndAddShape(color, fill, factory, (string)element.ToUpper(), shapes, penX, penY, radius);//creates and adds the shape
                                         }
                                     }
@@ -190,15 +176,15 @@ namespace GraphicalProgrammingLanguage
                                 // checks if the required number of parameters are met (i.e. array.length - 1 = number of parameters)
                                 if (countArrayNum - 1 == 2)
                                 {
+                                    string[] parameter = getValueFromDictionary(varDictionary, singleLine[1], singleLine[2]);
                                     try
                                     {
-                                        if (int.Parse(singleLine[1]) >= 0 && int.Parse(singleLine[2]) >= 0)
+                                        if (int.Parse(parameter[0]) >= 0 && int.Parse(parameter[1]) >= 0)
                                         {
-                                            int height = int.Parse(singleLine[1]);
-                                            int width = int.Parse(singleLine[2]); 
+                                            int height = int.Parse(parameter[0]);
+                                            int width = int.Parse(parameter[1]);
                                             getAndAddShape(color, fill, factory, (string)element.ToUpper(), shapes, penX, penY, height, width);//creates and adds the shape
                                         }
-
                                     }
                                     catch (IndexOutOfRangeException) { break; }
                                     catch (FormatException)
@@ -222,12 +208,13 @@ namespace GraphicalProgrammingLanguage
                                 int countArrayNum = singleLine.Length;
                                 if (countArrayNum - 1 == 2)
                                 {
+                                    string[] parameter = getValueFromDictionary(varDictionary, singleLine[1], singleLine[2]);
                                     try
                                     {
-                                        if (int.Parse(singleLine[1]) >= 0)
+                                        if (int.Parse(parameter[0]) >= 0 && int.Parse(parameter[1]) >= 0)
                                         {
-                                            int bases = int.Parse(singleLine[1]);
-                                            int height = int.Parse(singleLine[2]);
+                                            int bases = int.Parse(parameter[0]);
+                                            int height = int.Parse(parameter[1]);
                                             getAndAddShape(color, fill, factory, (string)element.ToUpper(), shapes, penX, penY, bases, height);//creates and adds the shape
                                         }
 
@@ -254,6 +241,7 @@ namespace GraphicalProgrammingLanguage
                                 int countArrayNum = singleLine.Length;
                                 if (countArrayNum - 1 == 2)
                                 {
+                                    string[] parameter = getValueFromDictionary(varDictionary, singleLine[1], singleLine[2]);
                                     try
                                     {
                                         if (int.Parse(singleLine[1]) >= 0 && int.Parse(singleLine[2]) >= 0)
@@ -263,8 +251,8 @@ namespace GraphicalProgrammingLanguage
                                             int drawFromY = penY;
 
                                             //store params
-                                            int drawToX = int.Parse(singleLine[1]);
-                                            int drawToY = int.Parse(singleLine[2]);
+                                            int drawToX = int.Parse(parameter[0]);
+                                            int drawToY = int.Parse(parameter[1]);
 
                                             //the new co-ordinates for MOVETO params 
                                             penX = drawToX;
@@ -473,34 +461,34 @@ namespace GraphicalProgrammingLanguage
                         }
                     }
 
-                    else
-                    //checks for invalid keywords
-                    {
-                        try
-                        {
-                            if (singleLine[0].ToUpper() == "RED" || singleLine[0].ToUpper() == "BLUE" || singleLine[0].ToUpper() == "YELLOW" || singleLine[0].ToUpper() == "ON" || singleLine[0].ToUpper() == "OFF")
-                            {
-                                displayErrorMsg(errorDisplayBox, lineNumber, "Keyword does not exist", "circle OR triangle OR rectangle OR drawto OR moveto");
-                                breakLoopFlag = 1;
-                                break;
-                            }
-                            if (element.ToUpper() == "RED" || element.ToUpper() == "YELLOW" || element.ToUpper() == "BLUE" || element.ToUpper() == "ON" || element.ToUpper() == "OFF")
-                            {
+                    //else
+                    ////checks for invalid keywords
+                    //{
+                    //    try
+                    //    {
+                    //        if (singleLine[0].ToUpper() == "RED" || singleLine[0].ToUpper() == "BLUE" || singleLine[0].ToUpper() == "YELLOW" || singleLine[0].ToUpper() == "ON" || singleLine[0].ToUpper() == "OFF")
+                    //        {
+                    //            displayErrorMsg(errorDisplayBox, lineNumber, "Keyword does not exist", "circle OR triangle OR rectangle OR drawto OR moveto");
+                    //            breakLoopFlag = 1;
+                    //            break;
+                    //        }
+                    //        if (element.ToUpper() == "RED" || element.ToUpper() == "YELLOW" || element.ToUpper() == "BLUE" || element.ToUpper() == "ON" || element.ToUpper() == "OFF")
+                    //        {
 
-                            }
-                            else if (int.Parse(element) > 0)
-                            {
+                    //        }
+                    //        else if (int.Parse(element) > 0)
+                    //        {
 
-                            }
-                        }
-                        //check if keyword exists
-                        catch (FormatException)
-                        {
-                            displayErrorMsg(errorDisplayBox, lineNumber, "Keyword does not exist", "circle OR triangle OR rectangle OR drawto OR moveto");
-                            breakLoopFlag = 1;
-                            break;
-                        }
-                    }
+                    //        }
+                    //    }
+                    //    //check if keyword exists
+                    //    catch (FormatException)
+                    //    {
+                    //        displayErrorMsg(errorDisplayBox, lineNumber, "Keyword does not exist", "circle OR triangle OR rectangle OR drawto OR moveto");
+                    //        breakLoopFlag = 1;
+                    //        break;
+                    //    }
+                    //}
                 }
                 if (breakLoopFlag == 1)
                 {
@@ -600,6 +588,60 @@ namespace GraphicalProgrammingLanguage
 
             //add shape to the array
             shapes.Add(shape);
+        }
+
+
+
+        
+        public static string[] getValueFromDictionary( Dictionary<string, int> varDictionary, params string[] list)
+        {
+            string[] ParamNumList = new string[100];
+
+            for (int i = 0; i<list.Length;i++)
+            {
+                string tempVar = list[i].Trim().ToUpper();
+
+                if (varDictionary.ContainsKey(tempVar))
+                {
+                    int valueOfOperand = varDictionary[tempVar];
+                    ParamNumList[i] = tempVar.Replace(tempVar, valueOfOperand.ToString());
+                }
+                else
+                {
+                    ParamNumList[i] = tempVar;
+                }
+            }
+
+            return ParamNumList;
+
+
+
+
+            //var firstParam = first;
+            //var secondParam = second;
+
+            //string firstVariable = firstParam.Trim().ToUpper();
+            //string secondVariable = secondParam.Trim().ToUpper();
+
+            //if (varDictionary.ContainsKey(firstVariable))
+            //{
+            //    int valueOfOperand = varDictionary[firstVariable];
+            //    firstParamNum = firstParam.Replace(firstParam, valueOfOperand.ToString());
+            //}
+            //else
+            //{
+            //    firstParamNum = firstParam;
+            //}
+
+            //if (varDictionary.ContainsKey(secondVariable))
+            //{
+            //    int valueOfOperand = varDictionary[secondVariable];
+            //    secondParamNum = secondParam.Replace(secondParam, valueOfOperand.ToString());
+            //}
+            //else
+            //{
+            //    secondParamNum = secondParam;
+            //}
         }
     }
 }
