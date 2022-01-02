@@ -101,8 +101,8 @@ namespace GraphicalProgrammingLanguage
             else if (commandLineInput.Equals("clear", StringComparison.InvariantCultureIgnoreCase))
             {
                 //resets PEN color to default and FILL to off
-                parser.color = Color.Black;
-                parser.fill = false;
+                //parser.color = Color.Black;
+                //parser.fill = false;
                 parser.varDictionary.Clear();
 
                 //clears all the sahpes in the array then refreshes the pictureBox so everything dissapears

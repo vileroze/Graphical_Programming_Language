@@ -72,15 +72,14 @@ namespace GraphicalProgrammingLanguage
             
             foreach (KeyValuePair<int, string> pair in mainDictionary)
             {
-                if (ifConditionStatus == 1)
+                //1 -> false | pair.key -> lineNumber
+                if (ifConditionStatus == 1 && (pair.Key > ifLineNumber && pair.Key <= endIfLineNumber))
                 {
-                    if (pair.Key < endIfLineNumber && pair.Key > ifLineNumber)
-                    {
-                        continue;
-                    }
+                    ifConditionStatus = 0;
+                    continue;
                 }
 
-                ifConditionStatus = 0;
+
                 //strips value from dictionary splits it using delimeters then stores the result
                 string[] singleLine = pair.Value.Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 
@@ -99,8 +98,6 @@ namespace GraphicalProgrammingLanguage
                             int varToCompare = 0;
                             string compOperator = "";
                             int lastElement = 0;
-                            //int endIfLineNumber = 0;
-                            //int ifLineNumber = lineNumber;
                             ifLineNumber = lineNumber;
 
                             //check if line has 3 components beside the actual keyword
@@ -112,7 +109,12 @@ namespace GraphicalProgrammingLanguage
                                     //ENDIF bhetena bhane k garne
                                     if (row.Value.ToUpper() == "ENDIF")
                                     {
-                                        endIfLineNumber = row.Key;
+                                        if(row.Key > lineNumber)
+                                        {
+                                            endIfLineNumber = row.Key;
+                                            Debug.WriteLine("\n end if ko line: " + endIfLineNumber);
+                                        }
+                                        
                                     }
                                 }
 
@@ -144,12 +146,7 @@ namespace GraphicalProgrammingLanguage
                                                 }
                                                 else
                                                 {
-                                                    errorDisplayBox.Text += "\nIF condition false";
                                                     ifConditionStatus = 1;
-                                                    //break;
-
-                                                    int tempLinenumber = lineNumber + 1;
-
                                                 }
                                             }
                                             catch (FormatException)
@@ -181,19 +178,12 @@ namespace GraphicalProgrammingLanguage
                                 break;
                             }
                         }
-                        ///////////////////////////////////////
 
-                        //if (ifConditionStatus== 1)
-                        //{
-                        //    break;
-                        //}
+                        if ((string)singleLine[0].ToUpper() == "WHILE")
+                        {
 
 
-
-
-
-
-
+                        }
 
 
 
@@ -344,10 +334,9 @@ namespace GraphicalProgrammingLanguage
                             int countArrayNum = singleLine.Length;
                             shape = factory.getShape((string)singleLine[0].ToUpper());
 
-                            if (countArrayNum - 1 >= 2)
+                            if (((countArrayNum - 1) % 2) == 0)
                             {
                                 polyArray = new int[countArrayNum - 1];
-                                //errorDisplayBox.Text += "\npoly array size : " + polyArray.Length;
 
                                 string[] parameter = new string[singleLine.Length - 1];
                                 //errorDisplayBox.Text += "\nparameter array size : " + parameter.Length;

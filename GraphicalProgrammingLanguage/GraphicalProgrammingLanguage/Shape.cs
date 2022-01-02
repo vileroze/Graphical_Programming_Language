@@ -9,7 +9,7 @@ namespace GraphicalProgrammingLanguage
 {
     public abstract class Shape : ShapeInterface
     {
-        protected Color colour = Color.Black;
+        public Color colour = Color.Black;
         protected Boolean fill;
         protected int x, y;
         protected int[] polyArray = new int[40];

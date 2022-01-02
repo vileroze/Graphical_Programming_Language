@@ -26,18 +26,17 @@ namespace GraphicalProgrammingLanguage
             //list[0] is x, list[1] is y, list[2] is radius
             base.set(colour, fill, list[0], list[1]);
             this.radius = list[2];
-
         }
 
         public override void draw(Graphics g, Boolean fill)
         {
             SolidBrush brush = new SolidBrush(Color.Transparent);
             Pen pen = new Pen(base.colour, 2);
+
             if (base.fill == true)
             {
                 brush = new SolidBrush(base.colour);
             }
-
             else
             {
                 brush = new SolidBrush(Color.Transparent);
