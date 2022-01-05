@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace GraphicalProgrammingLanguage
         SaveFileDialog saveFile = new SaveFileDialog();
 
         CommandParser parser = new CommandParser();
+        CustomMethods custom = new CustomMethods();
+
         Dictionary<int, string> dictionary = new Dictionary<int, string>();
         ArrayList singleLineCommand = new ArrayList();
 
@@ -26,7 +29,7 @@ namespace GraphicalProgrammingLanguage
         static int flag = 0;
 
         // stores all possible commands
-        public string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE", "PEN", "FILL", "POLYGON", "IF", "ENDIF", "WHILE"};
+        public string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE", "PEN", "FILL", "POLYGON", "IF", "ENDIF", "WHILE", "ENDLOOP"};
 
         public Form1()
         {
@@ -41,8 +44,12 @@ namespace GraphicalProgrammingLanguage
         public void startExecution( String input)
         {
             //for multi line codes i.e codeArea
-            if(flag == 1)
+            CommandParser.breakLoopFlag = 0;
+            CheckConditionalStatements.checkLoops = 0;
+
+            if (flag == 1)
             {
+
                 errorDisplayBox.Text = "";
                 string code = input;
                 dictionary.Clear();
@@ -56,6 +63,7 @@ namespace GraphicalProgrammingLanguage
                 {
                     // add the entire line as value and the lineNumber as key
                     dictionary.Add(lineNumber, line);
+                    Debug.WriteLine(line);
                     lineNumber++;
                 }
             }
@@ -63,7 +71,7 @@ namespace GraphicalProgrammingLanguage
             //for single line codes i.e commandLine
             if (flag == 2)
             {
-                if (parser.shapes.Count > 0) { singleLineCommand.Clear(); }
+                if (CommandParser.shapes.Count > 0) { singleLineCommand.Clear(); }
                 errorDisplayBox.Text = "";
 
                 //take input
@@ -84,7 +92,7 @@ namespace GraphicalProgrammingLanguage
             }
 
             // main execution part of the program (see xml file for full specifications)
-            parser.checkForKeywords(possibleCommands, dictionary, errorDisplayBox, drawingArea, commandLine);
+            parser.mainParser(possibleCommands, dictionary, errorDisplayBox, drawingArea, commandLine);
         }
 
         private void runCode_Click(object sender, EventArgs e)
@@ -93,9 +101,10 @@ namespace GraphicalProgrammingLanguage
 
             if (commandLineInput.Equals("run", StringComparison.InvariantCultureIgnoreCase))
             {
-                parser.color = Color.Black;
+                //CommandParser.color = Color.Black;
                 String codeAreaInput = codeArea.Text;
                 flag = 1;
+                //CommandParser.checkCondition = false;
                 startExecution(codeAreaInput);
             }
             else if (commandLineInput.Equals("clear", StringComparison.InvariantCultureIgnoreCase))
@@ -104,9 +113,10 @@ namespace GraphicalProgrammingLanguage
                 //parser.color = Color.Black;
                 //parser.fill = false;
                 parser.varDictionary.Clear();
+                errorDisplayBox.Clear();
 
                 //clears all the sahpes in the array then refreshes the pictureBox so everything dissapears
-                parser.shapes.Clear();
+                CommandParser.shapes.Clear();
                 drawingArea.Refresh();
             }
             else if (commandLineInput.Equals("reset", StringComparison.InvariantCultureIgnoreCase))
@@ -125,7 +135,6 @@ namespace GraphicalProgrammingLanguage
             else
             {
                 flag = 2;
-
                 //runs the command like a multiline command
                 startExecution(commandLineInput);
             }
@@ -150,12 +159,12 @@ namespace GraphicalProgrammingLanguage
         private void DrawingArea_Paint(object sender, PaintEventArgs e)
         {
             //draws a 3 by 3 rectangle to help visualize the current position of the 'Moveto' object
-            parser.drawCurrMoveToPos(e, CommandParser.penX, CommandParser.penY);
+            custom.drawCurrMoveToPos(e, CommandParser.penX, CommandParser.penY);
 
             CommandParser.draw = e.Graphics;
 
             //draw all shapes stored in the 'shapes' arralist
-            parser.drawShapes(parser.shapes, parser.shape, CommandParser.draw, parser.fill);
+            custom.drawShapes(CommandParser.shapes, parser.shape, CommandParser.draw, CommandParser.fill);
         }
 
 

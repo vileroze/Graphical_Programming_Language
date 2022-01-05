@@ -202,7 +202,7 @@ namespace GraphicalProgrammingLanguage
             this.textBox2.BackColor = System.Drawing.Color.NavajoWhite;
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox2.Location = new System.Drawing.Point(365, 589);
+            this.textBox2.Location = new System.Drawing.Point(365, 610);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(1331, 15);
