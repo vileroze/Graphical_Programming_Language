@@ -49,8 +49,6 @@ namespace GraphicalProgrammingLanguage
                             {
                                 if (mainDictionary[tempLineNumber + 1].Split(' ')[0].Trim().ToUpper() == "IF")
                                 {
-                                    // breakSingleLineLoop = 1;
-                                    //breakLoopFlag = 1;
                                     break;
                                 }
                             }
@@ -69,7 +67,6 @@ namespace GraphicalProgrammingLanguage
                         custom.displayErrorMsg(errorDisplayBox, lineNumber, "IF statement was never ended", "IF <some integer value> == <some integer value> ....... ENDIF");
                         CommandParser.breakFlag = 1;
                         CommandParser.breakLoopFlag = 1;
-                        //break;
                     }
 
 
@@ -96,7 +93,6 @@ namespace GraphicalProgrammingLanguage
                                     bool checkCondition = false;
 
                                     //check if condition not true accordint to the operators used
-                                    //custom.checkOperator(singleLine[2], varToCompare, lastElement, checkCondition);
                                     if (singleLine[2].ToUpper() == "==")
                                     {
                                         if (varToCompare == lastElement)
@@ -178,16 +174,7 @@ namespace GraphicalProgrammingLanguage
 
             //---------------------WHILE STATEMENT-------------------------------
             if ((string)singleLine[0].ToUpper() == "WHILE")
-            {
-                //checkAgain:
-                //Debug.WriteLine("pheri check garyo");
-                //varDictionary.TryGetValue("VAR1", out int value);
-                //Debug.WriteLine("var1 value : " + value);
-                //CheckVariable checkVar = new CheckVariable();
-                //checkVar.checkForVariables(singleLine, varDictionary, errorDisplayBox, lineNumber);
-                //while (CommandParser.whileConditionStatus == 0)
-                //{
-                    
+            { 
                 int countArrayNum = singleLine.Length;
                 int varToCompare = 0;
                 string compOperator = "";
@@ -216,8 +203,6 @@ namespace GraphicalProgrammingLanguage
                             {
                                 if (mainDictionary[tempLineNumber + 1].Split(' ')[0].Trim().ToUpper() == "WHILE")
                                 {
-                                    //breakSingleLineLoop = 1;
-                                    //breakLoopFlag = 1;
                                     break;
                                 }
                             }
@@ -233,12 +218,11 @@ namespace GraphicalProgrammingLanguage
                     //runs when only one IF statement
                     if (tempEndLoop == 0)
                     {
-                        custom.displayErrorMsg(errorDisplayBox, lineNumber, "WHILE statement was never ended", "WHILW <some integer value> > <some integer value> ....... ENDIF");
-                        CommandParser.breakFlag = 1;
+                        custom.displayErrorMsg(errorDisplayBox, lineNumber, "WHILE statement was never ended", "WHILE <some integer value> > <some integer value> ....... ENDIF");
+                        
                         CommandParser.breakLoopFlag = 1;
+                        CommandParser.breakFlag = 1;
                     }
-
-
 
                     //check while condition
                     //get the value of the variable
@@ -315,24 +299,6 @@ namespace GraphicalProgrammingLanguage
                                     {
                                         checkLoops = 1;
                                     }
-                                    //else if (CommandParser.whileConditionStatus == 0 && CommandParser.endLoopLineNumber == tempEndLoop)
-                                    //{
-                                    //    Debug.WriteLine("endLoopLineNumber : " + CommandParser.endLoopLineNumber);
-                                    //    Debug.WriteLine("tempEndLoop : " + tempEndLoop);
-                                    //    goto checkAgain;
-                                    //}
-
-                                    //if (whilecheckCondition == true)
-                                    //{
-                                    //endloop - 1 samma kei nagarne
-                                    //whileConditionStatus = 2;
-
-                                    //goto checkAgain;
-
-                                    //endloop ayepachi pheri condition check -> false -> whileConditionStatus = 1;
-                                    //true -> whileLineNumber + 1
-                                    //while 
-                                    //}
                                 }
                                 catch (FormatException)
                                 {
@@ -358,10 +324,7 @@ namespace GraphicalProgrammingLanguage
                     custom.displayErrorMsg(errorDisplayBox, lineNumber, "Wrong syntax for WHILE statement", "WHILE <variable> > <some integer value>");
                     CommandParser.breakLoopFlag = 1;
                 }
-               // }
-                
             }
-
         }
     }
 }

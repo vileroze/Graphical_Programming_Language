@@ -8,6 +8,7 @@ namespace ProgrammingLanguage
     {
         ShapeFactory factory = new ShapeFactory();
         CommandParser parser = new CommandParser();
+        CustomMethods custom = new CustomMethods();
         //Form1 form = new();
 
 
@@ -31,7 +32,7 @@ namespace ProgrammingLanguage
             bool isCommand = false;
 
             //Act
-            isCommand = parser.isPossibleCommand(possibleCommands, givenCommand);
+            isCommand = custom.isPossibleCommand(possibleCommands, givenCommand);
 
             //Assert
             Assert.IsFalse(isCommand);

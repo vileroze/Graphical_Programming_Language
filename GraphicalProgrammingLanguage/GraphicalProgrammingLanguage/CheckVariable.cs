@@ -15,7 +15,6 @@ namespace GraphicalProgrammingLanguage
     {
         CustomMethods custom = new CustomMethods();
 
-
         public void checkForVariables(string[] singleLine, Dictionary<string, int> varDictionary, RichTextBox errorDisplayBox, int lineNumber)
         {
             try
@@ -65,6 +64,7 @@ namespace GraphicalProgrammingLanguage
                             var result = new DataTable().Compute(output, null);
                             Debug.WriteLine("result : " + result);
 
+                            //check if variable name is a string
                             bool isVarString = int.TryParse(singleLine[indexOfEqualsSign - 1], out int varrName);
 
                             if (isVarString == false)
@@ -73,46 +73,55 @@ namespace GraphicalProgrammingLanguage
                             }
                             else
                             {
-                                custom.displayErrorMsg(errorDisplayBox, lineNumber, "variable names cannot be a number", "count = 10");
+                                custom.displayErrorMsg(errorDisplayBox, lineNumber, "variable names cannot be a number", "<variable name> = <some integer>");
                                 CommandParser.breakLoopFlag = 1;
                                 //break;
                             }
 
-                            //check if result returns a positive integer
-                            if (Convert.ToInt32(result) >= 0)
+                            try
                             {
-                                //store the result
-                                int varValue = Convert.ToInt32(result);
+                                //check if result returns a positive integer
+                                if (Convert.ToInt32(result) >= 0)
+                                {
+                                    //store the result
+                                    int varValue = Convert.ToInt32(result);
 
-                                //check if variable already exists
-                                if (varDictionary.ContainsKey(varName.Trim().ToUpper()))
-                                {
-                                    //update value
-                                    varDictionary[varName.Trim().ToUpper()] = varValue;
-                                }
-                                else
-                                {
-                                    //add value
-                                    varDictionary.Add(varName.Trim().ToUpper(), varValue);
+                                    //check if variable already exists
+                                    if (varDictionary.ContainsKey(varName.Trim().ToUpper()))
+                                    {
+                                        //update value
+                                        varDictionary[varName.Trim().ToUpper()] = varValue;
+                                    }
+                                    else
+                                    {
+                                        //add value
+                                        varDictionary.Add(varName.Trim().ToUpper(), varValue);
+                                    }
                                 }
                             }
+                            catch (InvalidCastException)
+                            {
+                                custom.displayErrorMsg(errorDisplayBox, lineNumber, "Variable value cannot be empty", "<variable name> = <some integer>");
+                                CommandParser.breakLoopFlag = 1;
+                            }
+                            
                         }
                         catch (FormatException)
                         {
-                            custom.displayErrorMsg(errorDisplayBox, lineNumber, "variable names cannot be a number", "count = 10");
+                            custom.displayErrorMsg(errorDisplayBox, lineNumber, "variable names cannot be a number", "<variable name> = <some integer>");
                             CommandParser.breakLoopFlag = 1;
                             //break;
                         }
                         // asdf = asdf
                         catch (EvaluateException)
                         {
-                            custom.displayErrorMsg(errorDisplayBox, lineNumber, "varaibles cannot store strings", "count = 10");
+                            custom.displayErrorMsg(errorDisplayBox, lineNumber, "varaibles cannot store strings", "<variable name> = <some integer>");
                             CommandParser.breakLoopFlag = 1;
                             //break;
                         }
                         catch (SyntaxErrorException)
                         {
-                            custom.displayErrorMsg(errorDisplayBox, lineNumber, "varaibles cannot store strings", "count = 10");
+                            custom.displayErrorMsg(errorDisplayBox, lineNumber, "varaibles cannot store strings", "<variable name> = <some integer>");
                             CommandParser.breakLoopFlag = 1;
                             //break;
                         }
@@ -129,6 +138,8 @@ namespace GraphicalProgrammingLanguage
             {
                 errorDisplayBox.Text += "\naaaaaaaaaaaaaaaaaaaaa";
             }
+
+            
         }
     }
 }

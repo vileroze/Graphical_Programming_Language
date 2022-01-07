@@ -11,60 +11,11 @@ using System.Windows.Forms;
 
 namespace GraphicalProgrammingLanguage
 {
-    class CustomMethods
+    public class CustomMethods
     {
         public Shape shape;//shape of type Shape
 
 
-        public void checkOperator(String opr, int varToCompare, int lastElement, bool checkCondition)
-        {
-            if (opr.ToUpper() == "==")
-            {
-                if (varToCompare == lastElement)
-                {
-                    checkCondition = true;
-                }
-            }
-            else if (opr.ToUpper() == ">")
-            {
-                if (varToCompare > lastElement)
-                {
-                    checkCondition = true;
-                }
-            }
-            else if (opr.ToUpper() == "<")
-            {
-                if (varToCompare < lastElement)
-                {
-                    checkCondition = true;
-                }
-            }
-            else if (opr.ToUpper() == ">=")
-            {
-                if (varToCompare >= lastElement)
-                {
-                    checkCondition = true;
-                }
-            }
-            else if (opr.ToUpper() == "<=")
-            {
-                if (varToCompare <= lastElement)
-                {
-                    checkCondition = true;
-                }
-            }
-            else if (opr.ToUpper() == "!=")
-            {
-                if (varToCompare != lastElement)
-                {
-                    checkCondition = true;
-                }
-            }
-            //else
-            //{
-            //    checkCondition = false;
-            //}
-        }
 
         /// <summary>
         /// checks if command passed is within possibleCommand array
@@ -80,6 +31,7 @@ namespace GraphicalProgrammingLanguage
             }
             return false;
         }
+
 
         /// <summary>
         /// displays the error message along with line number and the correct format in the specified textBox with some extra formatting
@@ -174,6 +126,22 @@ namespace GraphicalProgrammingLanguage
                 }
             }
             return ParamNumList;
+        }
+
+        public Boolean hasWhile(Dictionary<int, string> dictionary)
+        {
+            Boolean whileExists = true;
+            foreach (KeyValuePair<int, string> res in dictionary)
+            {
+                string allLines = "";
+                allLines += res.Value;
+
+                string[] alllinesArray = allLines.Trim().ToUpper().Split(new char[] { ' ', '+', '=', '+', '-', '/', '*', '<', '>', '!', ',' },
+                                                                                StringSplitOptions.RemoveEmptyEntries);
+                if (alllinesArray.Contains("WHILE")) { whileExists = true; break; }
+                else { whileExists = false; }
+            }
+            return whileExists;
         }
     }
 }

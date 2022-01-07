@@ -21,8 +21,9 @@ namespace GraphicalProgrammingLanguage
 
         CommandParser parser = new CommandParser();
         CustomMethods custom = new CustomMethods();
+        CheckKeyword chkKeyword = new CheckKeyword();
 
-        Dictionary<int, string> dictionary = new Dictionary<int, string>();
+        public static Dictionary<int, string> mainDictionary = new Dictionary<int, string>();
         ArrayList singleLineCommand = new ArrayList();
 
         //flag set to determine if command is from commandLine or codeArea (i.e 1 for codeArea and 2 for commandLine)
@@ -30,7 +31,7 @@ namespace GraphicalProgrammingLanguage
 
         // stores all possible commands
         public string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE", "PEN", "FILL", "POLYGON", "IF", "ENDIF", "WHILE", "ENDLOOP"};
-
+        public string[] possibleComplexCommands = {"METHOD", "ENDMETHOD"};
         public Form1()
         {
             InitializeComponent();
@@ -52,17 +53,16 @@ namespace GraphicalProgrammingLanguage
 
                 errorDisplayBox.Text = "";
                 string code = input;
-                dictionary.Clear();
+                //CheckMethod.methodTuple.Clear();
+                mainDictionary.Clear();
                 
-                
-
                 // split lines 
                 string[] splitLine = code.Split(new char[] { '\n' });
                 int lineNumber = 1;
                 foreach (string line in splitLine)
                 {
                     // add the entire line as value and the lineNumber as key
-                    dictionary.Add(lineNumber, line);
+                    mainDictionary.Add(lineNumber, line);
                     Debug.WriteLine(line);
                     lineNumber++;
                 }
@@ -71,7 +71,7 @@ namespace GraphicalProgrammingLanguage
             //for single line codes i.e commandLine
             if (flag == 2)
             {
-                if (CommandParser.shapes.Count > 0) { singleLineCommand.Clear(); }
+                if (CheckKeyword.shapes.Count > 0) { singleLineCommand.Clear(); }
                 errorDisplayBox.Text = "";
 
                 //take input
@@ -86,22 +86,25 @@ namespace GraphicalProgrammingLanguage
                 // for every line add the lineNumber as key and entire line as value
                 foreach (string line in singleLineCommand)
                 {
-                    dictionary.Add(lineNumber, line);
+                    mainDictionary.Add(lineNumber, line);
                     lineNumber++;
                 }
             }
 
             // main execution part of the program (see xml file for full specifications)
-            parser.mainParser(possibleCommands, dictionary, errorDisplayBox, drawingArea, commandLine);
+            parser.mainParser(possibleCommands, possibleComplexCommands, mainDictionary, errorDisplayBox, drawingArea, commandLine);
         }
 
         private void runCode_Click(object sender, EventArgs e)
         {
             String commandLineInput = commandLine.Text; //reads the command in the 'commandLine'
+            
 
             if (commandLineInput.Equals("run", StringComparison.InvariantCultureIgnoreCase))
             {
                 //CommandParser.color = Color.Black;
+                CheckMethod.methodTuple.Clear();
+                CheckMethod.parameters.Clear();
                 String codeAreaInput = codeArea.Text;
                 flag = 1;
                 //CommandParser.checkCondition = false;
@@ -109,14 +112,12 @@ namespace GraphicalProgrammingLanguage
             }
             else if (commandLineInput.Equals("clear", StringComparison.InvariantCultureIgnoreCase))
             {
-                //resets PEN color to default and FILL to off
-                //parser.color = Color.Black;
-                //parser.fill = false;
-                parser.varDictionary.Clear();
+                //parser.varDictionary.Clear();
+                CommandParser.varDictionary.Clear();
                 errorDisplayBox.Clear();
 
                 //clears all the sahpes in the array then refreshes the pictureBox so everything dissapears
-                CommandParser.shapes.Clear();
+                CheckKeyword.shapes.Clear();
                 drawingArea.Refresh();
             }
             else if (commandLineInput.Equals("reset", StringComparison.InvariantCultureIgnoreCase))
@@ -164,7 +165,7 @@ namespace GraphicalProgrammingLanguage
             CommandParser.draw = e.Graphics;
 
             //draw all shapes stored in the 'shapes' arralist
-            custom.drawShapes(CommandParser.shapes, parser.shape, CommandParser.draw, CommandParser.fill);
+            custom.drawShapes(CheckKeyword.shapes, chkKeyword.shape, CommandParser.draw, CommandParser.fill);
         }
 
 
