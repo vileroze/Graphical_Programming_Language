@@ -30,7 +30,7 @@ namespace GraphicalProgrammingLanguage
                     //checks if both the parameters passed are integers
                     try
                     {
-                        if (int.Parse(parameter[0]) >= 0 && int.Parse(parameter[1]) >= 0)
+                        if (isPositiveNumber(int.Parse(parameter[0])) && isPositiveNumber(int.Parse(parameter[1])))
                         {
                             //stores params as coordinates
                             CommandParser.penX = int.Parse(parameter[0]);
@@ -45,7 +45,13 @@ namespace GraphicalProgrammingLanguage
                     catch (FormatException)
                     //catch params that are not integers
                     {
-                        custom.displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be positive integer", "MOVETO x,y");
+                        custom.displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be integer", "MOVETO x,y");
+                        CommandParser.breakLoopFlag = 1;
+                        CommandParser.breakFlag = 1;
+                    }
+                    catch (NegativeNumberException)
+                    {
+                        custom.displayErrorMsg(errorDisplayBox, lineNumber, "Parameters should be positive integer", "MOVETO x,y");
                         CommandParser.breakLoopFlag = 1;
                         CommandParser.breakFlag = 1;
                     }
@@ -70,20 +76,27 @@ namespace GraphicalProgrammingLanguage
                     string[] parameter = CustomMethods.getValueFromDictionary(varDictionary, singleLine[1]);
                     try
                     {
-                        if (int.Parse(parameter[0]) >= 0)
+                        if (isPositiveNumber(int.Parse(parameter[0])))
                         {
                             int radius = int.Parse(parameter[0]); // stores radius
                             custom.getAndAddShape(CommandParser.color, CommandParser.fill, factory, (string)singleLine[0].ToUpper(), shapes, CommandParser.penX, CommandParser.penY, radius);//creates and adds the shape
                         }
                     }
-                    catch (IndexOutOfRangeException) { CommandParser.breakLoopFlag = 1; }
+                    catch (IndexOutOfRangeException) 
+                    { 
+                        CommandParser.breakLoopFlag = 1; 
+                    }
                     catch (FormatException)
                     {
                         custom.displayErrorMsg(errorDisplayBox, lineNumber, "Parameter should be of type integer", "CIRCLE radius");
-                        
                         CommandParser.breakLoopFlag = 1;
                         CommandParser.breakFlag = 1;
-
+                    }
+                    catch (NegativeNumberException)
+                    {
+                        custom.displayErrorMsg(errorDisplayBox, lineNumber, "Parameters should be positive integer", "CIRCLE radius");
+                        CommandParser.breakLoopFlag = 1;
+                        CommandParser.breakFlag = 1;
                     }
                 }
                 //check if required number of parameters are passed
@@ -108,17 +121,28 @@ namespace GraphicalProgrammingLanguage
                     string[] parameter = CustomMethods.getValueFromDictionary(varDictionary, singleLine[1], singleLine[2]);
                     try
                     {
-                        if (int.Parse(parameter[0]) >= 0 && int.Parse(parameter[1]) >= 0)
+                        //isPositiveNumber(int.Parse(parameter[0]));
+                        //if (int.Parse(parameter[0]) >= 0 && int.Parse(parameter[1]) >= 0)
+                        if (isPositiveNumber(int.Parse(parameter[0])) && isPositiveNumber(int.Parse(parameter[1])))
                         {
                             int height = int.Parse(parameter[0]);
                             int width = int.Parse(parameter[1]);
                             custom.getAndAddShape(CommandParser.color, CommandParser.fill, factory, (string)singleLine[0].ToUpper(), shapes, CommandParser.penX, CommandParser.penY, height, width);//creates and adds the shape
                         }
                     }
-                    catch (IndexOutOfRangeException) { CommandParser.breakLoopFlag = 1; }
+                    catch (IndexOutOfRangeException) 
+                    { 
+                        CommandParser.breakLoopFlag = 1; 
+                    }
                     catch (FormatException)
                     {
                         custom.displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "RECTANGLE height, width");
+                        CommandParser.breakLoopFlag = 1;
+                        CommandParser.breakFlag = 1;
+                    }
+                    catch (NegativeNumberException)
+                    {
+                        custom.displayErrorMsg(errorDisplayBox, lineNumber, "Parameters should be positive integer", "RECTANGLE height, width");
                         CommandParser.breakLoopFlag = 1;
                         CommandParser.breakFlag = 1;
                     }
@@ -140,7 +164,7 @@ namespace GraphicalProgrammingLanguage
                     string[] parameter = CustomMethods.getValueFromDictionary(varDictionary, singleLine[1], singleLine[2]);
                     try
                     {
-                        if (int.Parse(parameter[0]) >= 0 && int.Parse(parameter[1]) >= 0)
+                        if (isPositiveNumber(int.Parse(parameter[0])) && isPositiveNumber(int.Parse(parameter[1])))
                         {
                             int bases = int.Parse(parameter[0]);
                             int height = int.Parse(parameter[1]);
@@ -148,10 +172,19 @@ namespace GraphicalProgrammingLanguage
                         }
 
                     }
-                    catch (IndexOutOfRangeException) { CommandParser.breakLoopFlag = 1; }
+                    catch (IndexOutOfRangeException) 
+                    { 
+                        CommandParser.breakLoopFlag = 1; 
+                    }
                     catch (FormatException)
                     {
                         custom.displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "TRIANGLE base, height");
+                        CommandParser.breakLoopFlag = 1;
+                        CommandParser.breakFlag = 1;
+                    }
+                    catch (NegativeNumberException)
+                    {
+                        custom.displayErrorMsg(errorDisplayBox, lineNumber, "Parameters should be positive integer", "TRIANGLE base, height");
                         CommandParser.breakLoopFlag = 1;
                         CommandParser.breakFlag = 1;
                     }
@@ -197,7 +230,7 @@ namespace GraphicalProgrammingLanguage
                     {
                         try
                         {
-                            if (int.Parse(parameter[index]) >= 0)
+                            if (isPositiveNumber(int.Parse(parameter[0])))
                             {
                                 polyArray[index] = int.Parse(parameter[index]);
                             }
@@ -211,6 +244,12 @@ namespace GraphicalProgrammingLanguage
                         catch (FormatException)
                         {
                             custom.displayErrorMsg(errorDisplayBox, lineNumber, "Parameter '" + parameter[index] + "' was never declared", "");
+                            CommandParser.breakLoopFlag = 1;
+                            CommandParser.breakFlag = 1;
+                        }
+                        catch (NegativeNumberException)
+                        {
+                            custom.displayErrorMsg(errorDisplayBox, lineNumber, "Parameters should be positive integer", "Polygon x,y,x,y");
                             CommandParser.breakLoopFlag = 1;
                             CommandParser.breakFlag = 1;
                         }
@@ -236,7 +275,8 @@ namespace GraphicalProgrammingLanguage
                     string[] parameter = CustomMethods.getValueFromDictionary(varDictionary, singleLine[1], singleLine[2]);
                     try
                     {
-                        if (int.Parse(singleLine[1]) >= 0 && int.Parse(singleLine[2]) >= 0)
+                        //isPositiveNumber(int.Parse(parameter[0]))
+                        if (isPositiveNumber(int.Parse(singleLine[1])) && isPositiveNumber(int.Parse(singleLine[2])))
                         {
                             //if 'moveTo' is written before 'drawTo'
                             int drawFromX = CommandParser.penX;
@@ -258,10 +298,19 @@ namespace GraphicalProgrammingLanguage
                             drawFromY = drawToY;
                         }
                     }
-                    catch (IndexOutOfRangeException) { CommandParser.breakLoopFlag = 1; }
+                    catch (IndexOutOfRangeException) 
+                    { 
+                        CommandParser.breakLoopFlag = 1; 
+                    }
                     catch (FormatException)
                     {
                         custom.displayErrorMsg(errorDisplayBox, lineNumber, "Both parameters should be of type integer", "DRAWTO x,y");
+                        CommandParser.breakLoopFlag = 1;
+                        CommandParser.breakFlag = 1;
+                    }
+                    catch (NegativeNumberException)
+                    {
+                        custom.displayErrorMsg(errorDisplayBox, lineNumber, "Parameters should be positive integer", "DRAWTO x,y");
                         CommandParser.breakLoopFlag = 1;
                         CommandParser.breakFlag = 1;
                     }
@@ -343,8 +392,24 @@ namespace GraphicalProgrammingLanguage
                     CommandParser.breakFlag = 1;
                 }
             }
+        }
 
 
+        /// <summary>
+        /// method that throws user defined exception if negative number is passed
+        /// </summary>
+        /// <param name="param">an integer</param>
+        /// <returns></returns>
+        static bool isPositiveNumber(int param)
+        {
+            if (param < 0)
+            {
+                throw new NegativeNumberException("The prameter has to be a positive number");
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }

@@ -53,7 +53,6 @@ namespace GraphicalProgrammingLanguage
                                 int valueOfOperand = varDictionary[opp];
 
                                 output = output.Replace(operand, valueOfOperand.ToString());
-                                Debug.WriteLine("output : " + output);
                             }
                         }
 
@@ -62,7 +61,6 @@ namespace GraphicalProgrammingLanguage
                         try
                         {
                             var result = new DataTable().Compute(output, null);
-                            Debug.WriteLine("result : " + result);
 
                             //check if variable name is a string
                             bool isVarString = int.TryParse(singleLine[indexOfEqualsSign - 1], out int varrName);
@@ -110,7 +108,6 @@ namespace GraphicalProgrammingLanguage
                         {
                             custom.displayErrorMsg(errorDisplayBox, lineNumber, "variable names cannot be a number", "<variable name> = <some integer>");
                             CommandParser.breakLoopFlag = 1;
-                            //break;
                         }
                         // asdf = asdf
                         catch (EvaluateException)

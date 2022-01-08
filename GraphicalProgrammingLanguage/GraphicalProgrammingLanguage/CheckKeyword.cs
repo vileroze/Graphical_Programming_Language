@@ -23,14 +23,15 @@ namespace GraphicalProgrammingLanguage
         public Shape shape; //shape of type Shape
         public int[] polyArray; //store all points of polygon
 
+
         /// <summary>
         /// extract lineNUmber and all commands from data dictionary, catches and displays errors, displays shapes and reads commandLine
         /// </summary>
-        /// <param name="possibleCommands">all possible commands</param>
-        /// <param name="dictionary">dictionary that holds</param>
+        /// <param name="possibleCommands">array of all possible commands</param>
+        /// <param name="mainDictionary">dictionary that holds each line to be executed</param>
         /// <param name="errorDisplayBox">textBox to display all errors</param>
-        /// <param name="drawingArea">pictureBox to display all shapes</param>
-        /// <param name="commandLine">get instance of single line command</param>
+        /// <param name="lineNumber">line number of exch command</param>
+        /// <param name="singleLine">on single line from the dictionary</param>
         public void checkForKeywords(string[] possibleCommands, Dictionary<int, string> mainDictionary, RichTextBox errorDisplayBox, int lineNumber, string[] singleLine)
         {
             foreach (string element in singleLine)

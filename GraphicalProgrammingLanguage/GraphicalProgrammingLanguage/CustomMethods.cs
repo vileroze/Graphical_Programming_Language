@@ -15,8 +15,6 @@ namespace GraphicalProgrammingLanguage
     {
         public Shape shape;//shape of type Shape
 
-
-
         /// <summary>
         /// checks if command passed is within possibleCommand array
         /// </summary>
@@ -107,6 +105,12 @@ namespace GraphicalProgrammingLanguage
             shapes.Add(shape);
         }
 
+        /// <summary>
+        /// checks if the dictionary contains the list passed, if it does returns its numerical value , if not returns the list as is
+        /// </summary>
+        /// <param name="varDictionary">dictionary that contains all variables and its value</param>
+        /// <param name="list">all variables that we need the value of</param>
+        /// <returns></returns>
         public static string[] getValueFromDictionary(Dictionary<string, int> varDictionary, params string[] list)
         {
             string[] ParamNumList = new string[100];
@@ -128,6 +132,11 @@ namespace GraphicalProgrammingLanguage
             return ParamNumList;
         }
 
+        /// <summary>
+        /// checks if the dictionary passed contains a WHILE statement
+        /// </summary>
+        /// <param name="dictionary">dictionary to be checked</param>
+        /// <returns></returns>
         public Boolean hasWhile(Dictionary<int, string> dictionary)
         {
             Boolean whileExists = true;
@@ -143,5 +152,59 @@ namespace GraphicalProgrammingLanguage
             }
             return whileExists;
         }
+
+
+        //string[] singleLine;
+        //CheckKeyword checkKeyword = new CheckKeyword();
+        //CheckMethod checkMethod = new CheckMethod();
+        //CheckMethodCall checkCall = new CheckMethodCall();
+        //CheckVariable checkVar = new CheckVariable();
+
+        //public void loopWithoutWhile(string[] possibleCommands, string[] complexCommands, Dictionary<int, string> mainDictionary, RichTextBox errorDisplayBox)
+        //{
+        //    foreach (KeyValuePair<int, string> pair in mainDictionary)
+        //    {
+        //        if (CommandParser.ifConditionStatus == 1 && (pair.Key > CommandParser.ifLineNumber && pair.Key <= CommandParser.endIfLineNumber))
+        //        {
+        //            continue;
+        //        }
+
+        //        if (CommandParser.methodConditionStatus == 1 && (pair.Key > CommandParser.methodLineNumber && pair.Key <= CommandParser.endMethodLineNumber))
+        //        {
+        //            continue;
+        //        }
+
+        //        CommandParser.lineNumber = pair.Key;
+        //        CommandParser.singleLine = pair.Value.Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+        //        if (pair.Value.Length != 0)
+        //        {
+        //            if (possibleCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
+        //            {
+        //                //all shapes
+        //                checkKeyword.checkForKeywords(possibleCommands, mainDictionary, errorDisplayBox, CommandParser.lineNumber, CommandParser.singleLine);
+        //            }
+        //            else if (complexCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
+        //            {
+        //                checkMethod.checkForMethods(CommandParser.singleLine, mainDictionary, CommandParser.varDictionary, errorDisplayBox, CommandParser.lineNumber);
+        //            }
+        //            else if (CheckMethod.methodNames.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
+        //            {
+        //                checkCall.checkForMethodCall(possibleCommands, mainDictionary, CommandParser.singleLine, CommandParser.varDictionary, errorDisplayBox, CommandParser.lineNumber);
+        //            }
+        //            else
+        //            {
+        //                //check for variables
+        //                checkVar.checkForVariables(CommandParser.singleLine, CommandParser.varDictionary, errorDisplayBox, CommandParser.lineNumber);
+        //            }
+
+        //            //breaks the loop for mainDictionary
+        //            if (CommandParser.breakLoopFlag == 1)
+        //            {
+        //                break;
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

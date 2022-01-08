@@ -42,6 +42,7 @@ namespace GraphicalProgrammingLanguage
             this.codeArea = new System.Windows.Forms.RichTextBox();
             this.displayLineNumber = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
+            this.debugButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.drawingArea)).BeginInit();
             this.SuspendLayout();
@@ -56,7 +57,7 @@ namespace GraphicalProgrammingLanguage
             this.commandLine.Location = new System.Drawing.Point(33, 728);
             this.commandLine.Margin = new System.Windows.Forms.Padding(2);
             this.commandLine.Name = "commandLine";
-            this.commandLine.Size = new System.Drawing.Size(209, 23);
+            this.commandLine.Size = new System.Drawing.Size(193, 23);
             this.commandLine.TabIndex = 2;
             this.commandLine.KeyDown += new System.Windows.Forms.KeyEventHandler(this.commandLine_KeyDown);
             // 
@@ -64,11 +65,12 @@ namespace GraphicalProgrammingLanguage
             // 
             this.runCode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.runCode.BackColor = System.Drawing.Color.NavajoWhite;
+            this.runCode.Enabled = false;
             this.runCode.Font = new System.Drawing.Font("Microsoft Tai Le", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.runCode.Location = new System.Drawing.Point(246, 727);
+            this.runCode.Location = new System.Drawing.Point(230, 727);
             this.runCode.Margin = new System.Windows.Forms.Padding(2);
             this.runCode.Name = "runCode";
-            this.runCode.Size = new System.Drawing.Size(112, 25);
+            this.runCode.Size = new System.Drawing.Size(80, 25);
             this.runCode.TabIndex = 3;
             this.runCode.Text = "EXECUTE";
             this.runCode.UseVisualStyleBackColor = false;
@@ -141,10 +143,10 @@ namespace GraphicalProgrammingLanguage
             | System.Windows.Forms.AnchorStyles.Right)));
             this.drawingArea.BackColor = System.Drawing.Color.MistyRose;
             this.drawingArea.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.drawingArea.Location = new System.Drawing.Point(363, 42);
+            this.drawingArea.Location = new System.Drawing.Point(392, 42);
             this.drawingArea.Margin = new System.Windows.Forms.Padding(2);
             this.drawingArea.Name = "drawingArea";
-            this.drawingArea.Size = new System.Drawing.Size(1334, 562);
+            this.drawingArea.Size = new System.Drawing.Size(1305, 562);
             this.drawingArea.TabIndex = 0;
             this.drawingArea.TabStop = false;
             this.drawingArea.Paint += new System.Windows.Forms.PaintEventHandler(this.DrawingArea_Paint);
@@ -156,11 +158,11 @@ namespace GraphicalProgrammingLanguage
             this.errorDisplayBox.BackColor = System.Drawing.Color.OldLace;
             this.errorDisplayBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.errorDisplayBox.ForeColor = System.Drawing.Color.Red;
-            this.errorDisplayBox.Location = new System.Drawing.Point(363, 608);
+            this.errorDisplayBox.Location = new System.Drawing.Point(392, 608);
             this.errorDisplayBox.Margin = new System.Windows.Forms.Padding(2);
             this.errorDisplayBox.Name = "errorDisplayBox";
             this.errorDisplayBox.ReadOnly = true;
-            this.errorDisplayBox.Size = new System.Drawing.Size(1334, 144);
+            this.errorDisplayBox.Size = new System.Drawing.Size(1305, 145);
             this.errorDisplayBox.TabIndex = 4;
             this.errorDisplayBox.Text = "";
             // 
@@ -173,7 +175,7 @@ namespace GraphicalProgrammingLanguage
             this.codeArea.Font = new System.Drawing.Font("Cascadia Code SemiBold", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.codeArea.Location = new System.Drawing.Point(33, 42);
             this.codeArea.Name = "codeArea";
-            this.codeArea.Size = new System.Drawing.Size(325, 686);
+            this.codeArea.Size = new System.Drawing.Size(354, 686);
             this.codeArea.TabIndex = 1;
             this.codeArea.Text = "";
             this.codeArea.VScroll += new System.EventHandler(this.codeArea_VScroll);
@@ -201,13 +203,27 @@ namespace GraphicalProgrammingLanguage
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox2.BackColor = System.Drawing.Color.NavajoWhite;
             this.textBox2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox2.Location = new System.Drawing.Point(364, 588);
+            this.textBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox2.Location = new System.Drawing.Point(394, 610);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(1331, 15);
+            this.textBox2.Size = new System.Drawing.Size(1302, 17);
             this.textBox2.TabIndex = 7;
             this.textBox2.Text = " Error List";
+            // 
+            // debugButton
+            // 
+            this.debugButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.debugButton.BackColor = System.Drawing.Color.NavajoWhite;
+            this.debugButton.Font = new System.Drawing.Font("Microsoft Tai Le", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.debugButton.Location = new System.Drawing.Point(314, 728);
+            this.debugButton.Margin = new System.Windows.Forms.Padding(2);
+            this.debugButton.Name = "debugButton";
+            this.debugButton.Size = new System.Drawing.Size(73, 25);
+            this.debugButton.TabIndex = 8;
+            this.debugButton.Text = "DEBUG";
+            this.debugButton.UseVisualStyleBackColor = false;
+            this.debugButton.Click += new System.EventHandler(this.debugButton_Click);
             // 
             // Form1
             // 
@@ -215,6 +231,7 @@ namespace GraphicalProgrammingLanguage
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(1708, 763);
+            this.Controls.Add(this.debugButton);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.displayLineNumber);
             this.Controls.Add(this.codeArea);
@@ -251,6 +268,7 @@ namespace GraphicalProgrammingLanguage
         private System.Windows.Forms.RichTextBox codeArea;
         private System.Windows.Forms.TextBox displayLineNumber;
         private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button debugButton;
     }
 }
 

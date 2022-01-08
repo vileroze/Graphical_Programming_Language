@@ -14,9 +14,11 @@ namespace GraphicalProgrammingLanguage
     class CheckConditionalStatements
     {
         CustomMethods custom = new CustomMethods();
+        //public static List<Tuple< int, string>> whileTuple = new List<Tuple< int, string>>(); //  lineNumber, everything inside while
+        //CheckKeyword checkKeyword = new CheckKeyword();
         public static int checkLoops = 0;
 
-        public void checkForConditionalStatements(string[] singleLine, Dictionary<int, string> mainDictionary, Dictionary<string, int> varDictionary, RichTextBox errorDisplayBox, int lineNumber)
+        public void checkForConditionalStatements( string[] singleLine, Dictionary<int, string> mainDictionary, Dictionary<string, int> varDictionary, RichTextBox errorDisplayBox, int lineNumber)
         {
             //--------------------IF STATEMENT--------------------------------
             if ((string)singleLine[0].ToUpper() == "IF")
@@ -295,6 +297,38 @@ namespace GraphicalProgrammingLanguage
                                     {
                                         checkLoops = 1;
                                     }
+                                    //else
+                                    //{
+                                    //    checkLoops = 1;
+                                        
+
+                                    //    //while (checkLoops == 1)
+                                    //    //{
+                                    //        foreach (var row in mainDictionary)
+                                    //        {
+                                    //            if (row.Key > CommandParser.whileLineNumber && row.Key < CommandParser.endLoopLineNumber)
+                                    //            {
+                                    //                whileTuple.Add(new Tuple<int, string>(row.Key, row.Value));
+                                    //            }
+                                    //        }
+
+                                    //    foreach (var tuple in whileTuple)
+                                    //    {
+                                    //        Console.WriteLine("while bhitra kokura {0} - {1} - {2}", tuple.Item1, tuple.Item2);
+                                    //    }
+
+                                    //        //foreach (var tuple in whileTuple)
+                                    //        //{
+                                    //        //    //grab only those tuples have the name of the praticualr method
+                                    //        //    //if (tuple.Item1.Trim().ToUpper() == methodName)
+                                    //        //    //{
+                                    //        //        //split line once more beofre parsing
+                                    //        //        string[] whileCallLine = tuple.Item2.Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    //        //        checkKeyword.checkForKeywords( mainDictionary, errorDisplayBox, tuple.Item1, whileCallLine);
+                                    //        //    //}
+                                    //        //}
+                                    //    //}
+                                    //}
                                 }
                                 catch (FormatException)
                                 {

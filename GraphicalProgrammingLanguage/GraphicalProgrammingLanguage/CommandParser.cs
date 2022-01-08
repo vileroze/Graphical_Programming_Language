@@ -47,17 +47,25 @@ namespace GraphicalProgrammingLanguage
         CheckMethod checkMethod = new CheckMethod();
         CheckMethodCall checkCall = new CheckMethodCall();
 
-        string[] singleLine;
+        public static string[] singleLine;
 
         // kei bgiryo bhane static hataune
         public static Dictionary<string, int> varDictionary = new Dictionary<string, int>();
-        //public Dictionary<string, int> methodDictionary = new Dictionary<string, int>();
 
         CustomMethods custom = new CustomMethods();
         CheckVariable checkVar = new CheckVariable();
         
         static int breakWhileLoop = 0;
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="possibleCommands">array of all possible commands</param>
+        /// <param name="complexCommands">array that contains all complex commands like METHOD</param>
+        /// <param name="mainDictionary">dictionary that holds each line to be executed</param>
+        /// <param name="errorDisplayBox">textBox to display all errors</param>
+        /// <param name="drawingArea">pictureBox where all the shapes are drawn</param>
+        /// <param name="commandLine">textbox at the bottom of the codeArea</param>
         public void mainParser(string[] possibleCommands, string[] complexCommands, Dictionary<int, string> mainDictionary, RichTextBox errorDisplayBox, PictureBox drawingArea, TextBox commandLine)
         {
             ifConditionStatus = 0;
@@ -65,41 +73,58 @@ namespace GraphicalProgrammingLanguage
             methodConditionStatus = 0;
             bool containsLoop = custom.hasWhile(mainDictionary);
 
-            /////////////while ko lagi chai chaldaina
-            foreach (KeyValuePair<int, string> pair in mainDictionary)
+            //checks if input has a WHILE loop
+            if (containsLoop)
             {
-                if (ifConditionStatus == 1 && (pair.Key > ifLineNumber && pair.Key <= endIfLineNumber))
+                while (whileConditionStatus == 0)
                 {
-                    continue;
-                }
+                    foreach (KeyValuePair<int, string> pair in mainDictionary)
+                    {
+                        if (CheckConditionalStatements.checkLoops == 1 && (pair.Key < whileLineNumber || pair.Key > endLoopLineNumber))
+                        {
+                            continue;
+                        }
 
-                if (methodConditionStatus == 1 && (pair.Key > methodLineNumber && pair.Key <= endMethodLineNumber))
-                {
-                    continue;
-                }
+                        if (ifConditionStatus == 1 && (pair.Key > ifLineNumber && pair.Key <= endIfLineNumber))
+                        {
+                            continue;
+                        }
 
-                lineNumber = pair.Key;
-                singleLine = pair.Value.Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        if (whileConditionStatus == 1 && (pair.Key > whileLineNumber && pair.Key <= endLoopLineNumber))
+                        {
+                            continue;
+                        }
 
-                if (pair.Value.Length != 0)
-                {
-                    if (possibleCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
-                    {
-                        //all shapes
-                        checkKeyword.checkForKeywords(possibleCommands, mainDictionary, errorDisplayBox, lineNumber, singleLine);
-                    }
-                    else if (complexCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
-                    {
-                        checkMethod.checkForMethods(singleLine, mainDictionary, CommandParser.varDictionary, errorDisplayBox, lineNumber);
-                    }
-                    else if (CheckMethod.methodNames.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
-                    {
-                        checkCall.checkForMethodCall(possibleCommands, mainDictionary, singleLine, varDictionary, errorDisplayBox, lineNumber);
-                    }
-                    else
-                    {
-                        //check for variables
-                        checkVar.checkForVariables(singleLine, varDictionary, errorDisplayBox, lineNumber);
+                        lineNumber = pair.Key;
+                        singleLine = pair.Value.Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (pair.Value.Length != 0)
+                        {
+                            if (possibleCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
+                            {
+                                //all shapes
+                                checkKeyword.checkForKeywords(possibleCommands, mainDictionary, errorDisplayBox, lineNumber, singleLine);
+                            }
+                            else if (complexCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
+                            {
+                                checkMethod.checkForMethods(singleLine, mainDictionary, CommandParser.varDictionary, errorDisplayBox, lineNumber);
+                            }
+                            else if (CheckMethod.methodNames.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
+                            {
+                                checkCall.checkForMethodCall(possibleCommands, mainDictionary, singleLine, varDictionary, errorDisplayBox, lineNumber);
+                            }
+                            else
+                            {
+                                //check for variables
+                                checkVar.checkForVariables(singleLine, varDictionary, errorDisplayBox, lineNumber);
+                            }
+
+                            //breaks the loop for mainDictionary
+                            if (breakLoopFlag == 1)
+                            {
+                                break;
+                            }
+                        }
                     }
 
                     //breaks the loop for mainDictionary
@@ -108,8 +133,16 @@ namespace GraphicalProgrammingLanguage
                         break;
                     }
                 }
+
+                //for input without loop 
+                loopWithoutWhile(possibleCommands, complexCommands, mainDictionary, errorDisplayBox);
             }
-            
+            else
+            {
+                //for input without loop 
+                loopWithoutWhile(possibleCommands, complexCommands, mainDictionary, errorDisplayBox);
+            }
+
 
 
             Debug.WriteLine("\n=============");
@@ -133,157 +166,61 @@ namespace GraphicalProgrammingLanguage
             //reset dictionary and pictureBox
             drawingArea.Refresh();
             mainDictionary.Clear();
-
-            //////////////////////////////////////////////////////////////
-            /////if (containsLoop)
-            //{
-            //    while (whileConditionStatus == 0)
-            //    {
-            //        foreach (KeyValuePair<int, string> pair in mainDictionary)
-            //        {
-            //            if (CheckConditionalStatements.checkLoops == 1 && (pair.Key < whileLineNumber || pair.Key > endLoopLineNumber))
-            //            {
-            //                continue;
-            //            }
-
-            //            if (ifConditionStatus == 1 && (pair.Key > ifLineNumber && pair.Key <= endIfLineNumber))
-            //            {
-            //                continue;
-            //            }
-
-            //            if (whileConditionStatus == 1 && (pair.Key > whileLineNumber && pair.Key <= endLoopLineNumber))
-            //            {
-            //                continue;
-            //            }
-
-            //            lineNumber = pair.Key;
-            //            singleLine = pair.Value.Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            //            if (pair.Value.Length != 0)
-            //            {
-            //                if (possibleCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
-            //                {
-            //                    //all shapes
-            //                    checkForKeywords(possibleCommands, mainDictionary, errorDisplayBox, drawingArea, commandLine, lineNumber, singleLine);
-            //                }
-            //                else
-            //                {
-            //                    //check for variables
-            //                    checkVar.checkForVariables(singleLine, varDictionary, errorDisplayBox, lineNumber, runCode);
-            //                }
-            //            }
-            //        }
-
-            //        //breaks the loop for mainDictionary
-            //        if (breakLoopFlag == 1)
-            //        {
-            //            break;
-            //        }
-            //    }
+        }
 
 
-            //    foreach (KeyValuePair<int, string> pair in mainDictionary)
-            //    {
+        /// <summary>
+        /// defines what should be done if no WHILE LOOP is detected
+        /// </summary>
+        /// <param name="possibleCommands"></param>
+        /// <param name="complexCommands"></param>
+        /// <param name="mainDictionary"></param>
+        /// <param name="errorDisplayBox"></param>
+        public void loopWithoutWhile(string[] possibleCommands, string[] complexCommands, Dictionary<int, string> mainDictionary, RichTextBox errorDisplayBox)
+        {
+            foreach (KeyValuePair<int, string> pair in mainDictionary)
+            {
+                if (CommandParser.ifConditionStatus == 1 && (pair.Key > CommandParser.ifLineNumber && pair.Key <= CommandParser.endIfLineNumber))
+                {
+                    continue;
+                }
 
-            //        if (ifConditionStatus == 1 && (pair.Key > ifLineNumber && pair.Key <= endIfLineNumber))
-            //        {
-            //            continue;
-            //        }
+                if (CommandParser.methodConditionStatus == 1 && (pair.Key > CommandParser.methodLineNumber && pair.Key <= CommandParser.endMethodLineNumber))
+                {
+                    continue;
+                }
 
-            //        lineNumber = pair.Key;
-            //        singleLine = pair.Value.Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                CommandParser.lineNumber = pair.Key;
+                CommandParser.singleLine = pair.Value.Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            //        if (pair.Value.Length != 0)
-            //        {
-            //            if (possibleCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
-            //            {
-            //                //all shapes
-            //                checkForKeywords(possibleCommands, mainDictionary, errorDisplayBox, drawingArea, commandLine, lineNumber, singleLine);
-            //            }
-            //            else
-            //            {
-            //                //check for variables
-            //                checkVar.checkForVariables(singleLine, varDictionary, errorDisplayBox, lineNumber, runCode);
-            //            }
+                if (pair.Value.Length != 0)
+                {
+                    if (possibleCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
+                    {
+                        //all shapes
+                        checkKeyword.checkForKeywords(possibleCommands, mainDictionary, errorDisplayBox, CommandParser.lineNumber, CommandParser.singleLine);
+                    }
+                    else if (complexCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
+                    {
+                        checkMethod.checkForMethods(CommandParser.singleLine, mainDictionary, CommandParser.varDictionary, errorDisplayBox, CommandParser.lineNumber);
+                    }
+                    else if (CheckMethod.methodNames.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
+                    {
+                        checkCall.checkForMethodCall(possibleCommands, mainDictionary, CommandParser.singleLine, CommandParser.varDictionary, errorDisplayBox, CommandParser.lineNumber);
+                    }
+                    else
+                    {
+                        //check for variables
+                        checkVar.checkForVariables(CommandParser.singleLine, CommandParser.varDictionary, errorDisplayBox, CommandParser.lineNumber);
+                    }
 
-            //            //breaks the loop for mainDictionary
-            //            if (breakLoopFlag == 1)
-            //            {
-            //                break;
-            //            }
-            //        }
-            //    }
-            //}
-            //else
-            //{
-            //    foreach (KeyValuePair<int, string> pair in mainDictionary)
-            //    {
-            //        if (ifConditionStatus == 1 && (pair.Key > ifLineNumber && pair.Key <= endIfLineNumber))
-            //        {
-            //            continue;
-            //        }
-
-            //        lineNumber = pair.Key;
-            //        singleLine = pair.Value.Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            //        if (pair.Value.Length != 0)
-            //        {
-            //            if (possibleCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
-            //            {
-            //                //all shapes
-            //                checkForKeywords(possibleCommands, mainDictionary, errorDisplayBox, drawingArea, commandLine, lineNumber, singleLine);
-            //            }
-            //            else
-            //            {
-            //                //check for variables
-            //                checkVar.checkForVariables(singleLine, varDictionary, errorDisplayBox, lineNumber, runCode);
-            //            }
-
-            //            //breaks the loop for mainDictionary
-            //            if (breakLoopFlag == 1)
-            //            {
-            //                break;
-            //            }
-            //        }
-            //    }
-            //}
-
-            //List<int> ids = mainDictionary.Keys.ToList();
-            //foreach (int idKey in ids)
-            //{
-            //    if (ifConditionStatus == 1 && (idKey > ifLineNumber && idKey <= endIfLineNumber))
-            //    {
-            //        continue;
-            //    }
-
-            //    if (methodConditionStatus == 1 && (idKey > methodLineNumber && idKey <= endMethodLineNumber))
-            //    {
-            //        continue;
-            //    }
-
-            //    lineNumber = idKey;
-            //    singleLine = mainDictionary[idKey].Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            //    if (singleLine.Length != 0)
-            //    {
-            //        if (possibleCommands.Contains(singleLine[0].Trim().ToUpper()))
-            //        {
-            //            //all shapes
-            //            checkForKeywords(possibleCommands, mainDictionary, errorDisplayBox, drawingArea, commandLine, lineNumber, singleLine);
-            //        }
-            //        else
-            //        {
-            //            //check for variables
-            //            checkVar.checkForVariables(singleLine, varDictionary, errorDisplayBox, lineNumber, runCode);
-            //        }
-
-            //        //breaks the loop for mainDictionary
-            //        if (breakLoopFlag == 1)
-            //        {
-            //            break;
-            //        }
-            //    }
-            //}
+                    //breaks the loop for mainDictionary
+                    if (CommandParser.breakLoopFlag == 1)
+                    {
+                        break;
+                    }
+                }
+            }
         }
     }
 }

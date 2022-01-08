@@ -28,6 +28,7 @@ namespace GraphicalProgrammingLanguage
 
         //flag set to determine if command is from commandLine or codeArea (i.e 1 for codeArea and 2 for commandLine)
         static int flag = 0;
+        static int debugFlag = 0;
 
         // stores all possible commands
         public string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE", "PEN", "FILL", "POLYGON", "IF", "ENDIF", "WHILE", "ENDLOOP"};
@@ -96,8 +97,20 @@ namespace GraphicalProgrammingLanguage
 
         private void runCode_Click(object sender, EventArgs e)
         {
+            if (CommandParser.breakLoopFlag == 0)
+            {
+                debugFlag = 1;
+                forExecution();
+            }
+            else
+            {
+                runCode.Enabled = false;
+            }
+        }
+
+        public void forExecution()
+        {
             String commandLineInput = commandLine.Text; //reads the command in the 'commandLine'
-            
 
             if (commandLineInput.Equals("run", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -158,13 +171,17 @@ namespace GraphicalProgrammingLanguage
 
         private void DrawingArea_Paint(object sender, PaintEventArgs e)
         {
-            //draws a 3 by 3 rectangle to help visualize the current position of the 'Moveto' object
-            custom.drawCurrMoveToPos(e, CommandParser.penX, CommandParser.penY);
+            if(debugFlag == 1)
+            {
+                //draws a 3 by 3 rectangle to help visualize the current position of the 'Moveto' object
+                custom.drawCurrMoveToPos(e, CommandParser.penX, CommandParser.penY);
 
-            CommandParser.draw = e.Graphics;
+                CommandParser.draw = e.Graphics;
 
-            //draw all shapes stored in the 'shapes' arralist
-            custom.drawShapes(CheckKeyword.shapes, chkKeyword.shape, CommandParser.draw, CommandParser.fill);
+                //draw all shapes stored in the 'shapes' arralist
+                custom.drawShapes(CheckKeyword.shapes, chkKeyword.shape, CommandParser.draw, CommandParser.fill);
+            }
+            
         }
 
 
@@ -313,6 +330,20 @@ namespace GraphicalProgrammingLanguage
             }
             //refreshes line numbers after scroll
             displayLineNumber.Refresh();
+        }
+
+        private void debugButton_Click(object sender, EventArgs e)
+        {
+            debugFlag = 0;
+            forExecution();
+            if (CommandParser.breakLoopFlag == 0)
+            {
+                runCode.Enabled = true;
+            }
+            else
+            {
+                runCode.Enabled = false;
+            }
         }
     }
 }
