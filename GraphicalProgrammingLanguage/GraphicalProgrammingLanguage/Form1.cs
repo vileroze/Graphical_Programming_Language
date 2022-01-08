@@ -53,7 +53,6 @@ namespace GraphicalProgrammingLanguage
 
                 errorDisplayBox.Text = "";
                 string code = input;
-                //CheckMethod.methodTuple.Clear();
                 mainDictionary.Clear();
                 
                 // split lines 
@@ -102,12 +101,12 @@ namespace GraphicalProgrammingLanguage
 
             if (commandLineInput.Equals("run", StringComparison.InvariantCultureIgnoreCase))
             {
-                //CommandParser.color = Color.Black;
                 CheckMethod.methodTuple.Clear();
                 CheckMethod.parameters.Clear();
+                ////////////////////////////
+                mainDictionary.Clear();
                 String codeAreaInput = codeArea.Text;
                 flag = 1;
-                //CommandParser.checkCondition = false;
                 startExecution(codeAreaInput);
             }
             else if (commandLineInput.Equals("clear", StringComparison.InvariantCultureIgnoreCase))
@@ -131,7 +130,7 @@ namespace GraphicalProgrammingLanguage
             }
             else if ((string.IsNullOrWhiteSpace(commandLineInput) && commandLine.Text.Length > 0) || commandLine.Text == "")
             {
-                errorDisplayBox.Text = "\n⚠️ No command given on the command parser (try: run, clear, reset)";
+                errorDisplayBox.Text = "\n⚠️ No command given on the command parser (try: run, clear, reset or any of the other possible commands)";
             }
             else
             {
@@ -184,7 +183,7 @@ namespace GraphicalProgrammingLanguage
                     String filename = Path.GetFileName(fileExplorer.FileName);
                     String message = "Work saved to : " + filename;
                     message += "\nLocation: " + fileExplorer.FileName;
-                    MessageBox.Show(message, "ALERT");
+                    MessageBox.Show(message, "ALERT", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (System.ArgumentException)
@@ -208,7 +207,7 @@ namespace GraphicalProgrammingLanguage
                         String message = "Work saved to : " + filename;
                         //displays the location where the file was saved
                         message += "\nLocation: " + saveFile.FileName;
-                        MessageBox.Show(message, "ALERT");
+                        MessageBox.Show(message, "ALERT" ,MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 catch (IOException)
@@ -247,15 +246,15 @@ namespace GraphicalProgrammingLanguage
 
             catch (System.ArgumentException)
             {
-                MessageBox.Show("NO FILE CHOSEN !!", "ALERT");
+                MessageBox.Show("NO FILE CHOSEN !!", "ALERT", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (FileNotFoundException)
             {
-                MessageBox.Show("FILE NOT FOUND !!", "ERROR");
+                MessageBox.Show("FILE NOT FOUND !!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             catch (IOException)
             {
-                MessageBox.Show("Something went wrong, try again !!", "ERROR");
+                MessageBox.Show("Something went wrong, try again !!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -293,7 +292,9 @@ namespace GraphicalProgrammingLanguage
         }
 
         private void codeArea_VScroll(object sender, EventArgs e)
+        //realign line numbers when codeArea is scrolled
         {
+
             displayLineNumber.Text = "";
 
             //gets the current number of lines using charIndex

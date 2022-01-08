@@ -221,7 +221,7 @@ namespace GraphicalProgrammingLanguage
                 }
                 else
                 {
-                    custom.displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword POLYGON", "POLYGON  23,2,32,5");
+                    custom.displayErrorMsg(errorDisplayBox, lineNumber, "Wrong number of parameters for keyword POLYGON", "POLYGON  23,2,32,5 (must be in pairs (i.e divisible by two))");
                     CommandParser.breakLoopFlag = 1;
                     CommandParser.breakFlag = 1;
                 }

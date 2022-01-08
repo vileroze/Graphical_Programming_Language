@@ -20,8 +20,8 @@ namespace GraphicalProgrammingLanguage
 
         ShapeFactory factory = new ShapeFactory(); //to return the shapes 
         public static ArrayList shapes = new ArrayList(); //stores shapes
-        public Shape shape;//shape of type Shape
-        public int[] polyArray;
+        public Shape shape; //shape of type Shape
+        public int[] polyArray; //store all points of polygon
 
         /// <summary>
         /// extract lineNUmber and all commands from data dictionary, catches and displays errors, displays shapes and reads commandLine
@@ -31,16 +31,13 @@ namespace GraphicalProgrammingLanguage
         /// <param name="errorDisplayBox">textBox to display all errors</param>
         /// <param name="drawingArea">pictureBox to display all shapes</param>
         /// <param name="commandLine">get instance of single line command</param>
-        public void checkForKeywords(string[] possibleCommands, Dictionary<int, string> mainDictionary, RichTextBox errorDisplayBox, PictureBox drawingArea, TextBox commandLine, int lineNumber, string[] singleLine)
+        public void checkForKeywords(string[] possibleCommands, Dictionary<int, string> mainDictionary, RichTextBox errorDisplayBox, int lineNumber, string[] singleLine)
         {
             foreach (string element in singleLine)
             {
                 //checks if singleLine[0] is one of the possible commands
                 if (custom.isPossibleCommand(possibleCommands, singleLine[0]) == true)
                 {
-                    // check for methods
-                    //checkMethod.checkForMethods(singleLine, mainDictionary, CommandParser.varDictionary, errorDisplayBox, lineNumber);
-
                     // check for conditional statements
                     checkStatement.checkForConditionalStatements(singleLine, mainDictionary, CommandParser.varDictionary, errorDisplayBox, lineNumber);
 

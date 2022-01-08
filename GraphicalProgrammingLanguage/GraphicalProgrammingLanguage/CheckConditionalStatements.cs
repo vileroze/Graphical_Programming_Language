@@ -145,14 +145,12 @@ namespace GraphicalProgrammingLanguage
                                 {
                                     custom.displayErrorMsg(errorDisplayBox, lineNumber, "Right hand side of operator should be number", "IF <variable> == <some integer value>");
                                     CommandParser.breakLoopFlag = 1;
-                                    //break;
                                 }
                             }
                             else
                             {
                                 custom.displayErrorMsg(errorDisplayBox, lineNumber, "Comparison operator not recognized", "== OR <= OR >= OR != OR > OR <");
                                 CommandParser.breakLoopFlag = 1;
-                               // break;
                             }
                         }
                     }
@@ -160,14 +158,12 @@ namespace GraphicalProgrammingLanguage
                     {
                         custom.displayErrorMsg(errorDisplayBox, lineNumber, "Left hand side of operator should be number", "IF <variable> == <some integer value>");
                         CommandParser.breakLoopFlag = 1;
-                        //break;
                     }
                 }
                 else
                 {
                     custom.displayErrorMsg(errorDisplayBox, lineNumber, "Wrong syntax for IF statement", "IF <variable> == <some integer value>");
                     CommandParser.breakLoopFlag = 1;
-                    //break;
                 }
             }
 
@@ -186,10 +182,10 @@ namespace GraphicalProgrammingLanguage
                 if (countArrayNum - 1 == 3)
                 {
                     //get the line number of ENDLOOP
-
                     int tempEndLoop = 0;
                     foreach (var row in mainDictionary)
                     {
+                        //ensures   ENDLOOP comes after WHILE and breaks
                         if (row.Key > CommandParser.whileLineNumber)
                         {
                             if (row.Value.ToUpper() == "ENDLOOP")
@@ -215,7 +211,7 @@ namespace GraphicalProgrammingLanguage
                     }
                     CommandParser.whileConditionStatus = 0;
 
-                    //runs when only one IF statement
+                    //displays error if ENDLOOP is not found
                     if (tempEndLoop == 0)
                     {
                         custom.displayErrorMsg(errorDisplayBox, lineNumber, "WHILE statement was never ended", "WHILE <some integer value> > <some integer value> ....... ENDIF");
@@ -225,7 +221,6 @@ namespace GraphicalProgrammingLanguage
                     }
 
                     //check while condition
-                    //get the value of the variable
                     string[] parameter = CustomMethods.getValueFromDictionary(varDictionary, singleLine[1]);
                     try
                     {
@@ -242,6 +237,7 @@ namespace GraphicalProgrammingLanguage
                                 //check if RHS element is an integer
                                 try
                                 {
+                                    //get the value of the variable
                                     string[] rhsParam = CustomMethods.getValueFromDictionary(varDictionary, singleLine[3]);
                                     lastElement = int.Parse(rhsParam[0]);
 

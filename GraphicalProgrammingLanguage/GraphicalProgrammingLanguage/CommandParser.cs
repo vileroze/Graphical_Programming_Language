@@ -86,7 +86,7 @@ namespace GraphicalProgrammingLanguage
                     if (possibleCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
                     {
                         //all shapes
-                        checkKeyword.checkForKeywords(possibleCommands, mainDictionary, errorDisplayBox, drawingArea, commandLine, lineNumber, singleLine);
+                        checkKeyword.checkForKeywords(possibleCommands, mainDictionary, errorDisplayBox, lineNumber, singleLine);
                     }
                     else if (complexCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
                     {
@@ -94,7 +94,7 @@ namespace GraphicalProgrammingLanguage
                     }
                     else if (CheckMethod.methodNames.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
                     {
-                        checkCall.checkForMethodCall(possibleCommands, mainDictionary, drawingArea, commandLine, singleLine, varDictionary, errorDisplayBox, lineNumber);
+                        checkCall.checkForMethodCall(possibleCommands, mainDictionary, singleLine, varDictionary, errorDisplayBox, lineNumber);
                     }
                     else
                     {

@@ -14,18 +14,28 @@ namespace GraphicalProgrammingLanguage
     class CheckMethod
     {
         CustomMethods custom = new CustomMethods();
-        public static List<string> parameters = new List<string>();
-        public static List<string> methodNames = new List<string>();
+        public static List<string> parameters = new List<string>(); // strores all params
+        public static Dictionary<string, int> methodAndNumberOfParams = new Dictionary<string, int>(); //
+        public static List<string> methodNames = new List<string>(); // stores all method name
+        public static List<Tuple<string, int, string>> methodTuple = new List<Tuple<string, int, string>>(); // store methodname, lineNumber, everything inside method
 
-        //mthodname, lineNumber, everything inside method
-        public static List<Tuple<string, int, string>> methodTuple = new List<Tuple<string, int, string>>();
 
+        /// <summary>
+        /// Check for the lines that start with the Keyword METHOD and check and display errors. If no error found then store every line in method inside a Tuple
+        /// </summary>
+        /// <param name="singleLine">single line from the mainDictionary</param>
+        /// <param name="mainDictionary">holds info about the input</param>
+        /// <param name="varDictionary">dictionary that sotres all variables</param>
+        /// <param name="errorDisplayBox">to display errors</param>
+        /// <param name="lineNumber">current line number</param>
         public void checkForMethods(string[] singleLine, Dictionary<int, string> mainDictionary, Dictionary<string, int> varDictionary, RichTextBox errorDisplayBox, int lineNumber)
         {
 
             if ((string)singleLine[0].ToUpper() == "METHOD")
             {
-                
+                //List<string> parameters = new List<string>();
+                parameters.Clear();
+
                 int countArrayNum = singleLine.Length;
                 string methodName = "";
                 int tempEndMethod = 0;
@@ -79,60 +89,41 @@ namespace GraphicalProgrammingLanguage
 
                         if (allowedName == false)
                         {
-                            methodName = singleLine[1];
+                            methodName = singleLine[1].Trim().ToUpper();
                             methodNames.Add(methodName.ToUpper());
 
-                            //if emthods with no parameter in called
-                            //if (singleLine.Length == 4)
-                            //{
-                            //    Debug.WriteLine("parameter chaina: ");
-                            //    foreach (var row in mainDictionary)
-                            //    {
-                            //        if (row.Key > CommandParser.methodLineNumber && row.Key < CommandParser.endMethodLineNumber)
-                            //        {
-                            //            methodTuple.Add(new Tuple<string, int, string>(methodName, row.Key, row.Value));
-                            //        }
-                            //    }
-                            //}
-                            //else if(singleLine.Length > 4)
-                           // {
 
-                                for (int i = 3; i < singleLine.Length - 1; i++)
+                            //check for parameters
+                            for (int i = 3; i < singleLine.Length - 1; i++)
+                            {
+                                bool paramIsInt = int.TryParse(singleLine[i], out int ssd);
+
+                                if (paramIsInt == false)
                                 {
-                                    //if (!string.IsNullOrEmpty(singleLine[i]))
-                                    //{
-                                        bool paramIsInt = int.TryParse(singleLine[i], out int ssd);
-
-                                        if (paramIsInt == false)
-                                        {
-                                            //Debug.WriteLine("singleLine[i]: " + singleLine[i]);
-                                            parameters.Add(singleLine[i].ToUpper());
-                                            varDictionary[singleLine[i].ToUpper()] = 0;
-                                        }
-                                        else
-                                        {
-                                            custom.displayErrorMsg(errorDisplayBox, lineNumber, "Parameter list cannot be integers", "Method <method name> ( parameter list ) ....... ENDMETHOD");
-                                            CommandParser.breakLoopFlag = 1;
-                                            CommandParser.breakFlag = 1;
-                                            break;
-                                        }
-                                    //}
+                                    //add it to the list of parameters and also the varDictionary
+                                    parameters.Add(singleLine[i].Trim().ToUpper());
+                                    varDictionary[singleLine[i].Trim().ToUpper()] = 0;
                                 }
-
-                            Debug.WriteLine("parameters: " + parameters.Count);
-
-                                //only distinct parameters
-                                parameters = parameters.Distinct().ToList();
-
-                                //get methodname, lineNumber, everything inside method
-                                foreach (var row in mainDictionary)
+                                else
                                 {
-                                    if (row.Key > CommandParser.methodLineNumber && row.Key < CommandParser.endMethodLineNumber)
-                                    {
-                                        methodTuple.Add(new Tuple<string, int, string>(methodName, row.Key, row.Value));
-                                    }
+                                    custom.displayErrorMsg(errorDisplayBox, lineNumber, "Parameter list cannot be integers", "Method <method name> ( parameter list ) ....... ENDMETHOD");
+                                    CommandParser.breakLoopFlag = 1;
+                                    CommandParser.breakFlag = 1;
+                                    break;
                                 }
-                            //}
+                            }
+
+                            //set the name of the method and the number of parameters it contains
+                            methodAndNumberOfParams[methodName] = parameters.Count();
+
+                            //get methodname, lineNumber and every line inside method besides endmethod
+                            foreach (var row in mainDictionary)
+                            {
+                                if (row.Key >= CommandParser.methodLineNumber && row.Key < CommandParser.endMethodLineNumber)
+                                {
+                                    methodTuple.Add(new Tuple<string, int, string>(methodName, row.Key, row.Value));
+                                }
+                            }
                         }
                         else
                         {
@@ -154,6 +145,8 @@ namespace GraphicalProgrammingLanguage
                     CommandParser.breakLoopFlag = 1;
                     CommandParser.breakFlag = 1;
                 }
+
+                //make it 1 becasude we want to skip the method unless called
                 CommandParser.methodConditionStatus = 1;
             }
         }
