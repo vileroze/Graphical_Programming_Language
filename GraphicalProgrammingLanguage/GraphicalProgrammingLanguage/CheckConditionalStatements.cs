@@ -14,8 +14,6 @@ namespace GraphicalProgrammingLanguage
     class CheckConditionalStatements
     {
         CustomMethods custom = new CustomMethods();
-        //public static List<Tuple< int, string>> whileTuple = new List<Tuple< int, string>>(); //  lineNumber, everything inside while
-        //CheckKeyword checkKeyword = new CheckKeyword();
         public static int checkLoops = 0;
 
         public void checkForConditionalStatements( string[] singleLine, Dictionary<int, string> mainDictionary, Dictionary<string, int> varDictionary, RichTextBox errorDisplayBox, int lineNumber)
@@ -95,48 +93,7 @@ namespace GraphicalProgrammingLanguage
                                     bool checkCondition = false;
 
                                     //check if condition not true accordint to the operators used
-                                    if (singleLine[2].ToUpper() == "==")
-                                    {
-                                        if (varToCompare == lastElement)
-                                        {
-                                            checkCondition = true;
-                                        }
-                                    }
-                                    else if (singleLine[2].ToUpper() == ">")
-                                    {
-                                        if (varToCompare > lastElement)
-                                        {
-                                            checkCondition = true;
-                                        }
-                                    }
-                                    else if (singleLine[2].ToUpper() == "<")
-                                    {
-                                        if (varToCompare < lastElement)
-                                        {
-                                            checkCondition = true;
-                                        }
-                                    }
-                                    else if (singleLine[2].ToUpper() == ">=")
-                                    {
-                                        if (varToCompare >= lastElement)
-                                        {
-                                            checkCondition = true;
-                                        }
-                                    }
-                                    else if (singleLine[2].ToUpper() == "<=")
-                                    {
-                                        if (varToCompare <= lastElement)
-                                        {
-                                            checkCondition = true;
-                                        }
-                                    }
-                                    else if (singleLine[2].ToUpper() == "!=")
-                                    {
-                                        if (varToCompare != lastElement)
-                                        {
-                                            checkCondition = true;
-                                        }
-                                    }
+                                    checkCondition = custom.checkForOperator(singleLine[2], varToCompare, lastElement);
 
                                     if (checkCondition == false)
                                     {
@@ -246,48 +203,7 @@ namespace GraphicalProgrammingLanguage
                                     bool whilecheckCondition = false;
 
                                     //check if condition true according to the operators used
-                                    if (singleLine[2].ToUpper() == "==")
-                                    {
-                                        if (varToCompare == lastElement)
-                                        {
-                                            whilecheckCondition = true;
-                                        }
-                                    }
-                                    else if (singleLine[2].ToUpper() == ">")
-                                    {
-                                        if (varToCompare > lastElement)
-                                        {
-                                            whilecheckCondition = true;
-                                        }
-                                    }
-                                    else if (singleLine[2].ToUpper() == "<")
-                                    {
-                                        if (varToCompare < lastElement)
-                                        {
-                                            whilecheckCondition = true;
-                                        }
-                                    }
-                                    else if (singleLine[2].ToUpper() == ">=")
-                                    {
-                                        if (varToCompare >= lastElement)
-                                        {
-                                            whilecheckCondition = true;
-                                        }
-                                    }
-                                    else if (singleLine[2].ToUpper() == "<=")
-                                    {
-                                        if (varToCompare <= lastElement)
-                                        {
-                                            whilecheckCondition = true;
-                                        }
-                                    }
-                                    else if (singleLine[2].ToUpper() == "!=")
-                                    {
-                                        if (varToCompare != lastElement)
-                                        {
-                                            whilecheckCondition = true;
-                                        }
-                                    }
+                                    whilecheckCondition = custom.checkForOperator(singleLine[2], varToCompare, lastElement);
 
                                     if (whilecheckCondition == false)
                                     {

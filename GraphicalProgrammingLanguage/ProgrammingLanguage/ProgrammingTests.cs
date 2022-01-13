@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GraphicalProgrammingLanguage;
+using System.Collections.Generic;
 
 namespace ProgrammingLanguage
 {
@@ -40,6 +41,41 @@ namespace ProgrammingLanguage
 
 
         [TestMethod]
+        public void isValidVariable()
+        {
+            //Arrange
+            string varName = "VAR2";
+            int expectedResult = 30;
+            Dictionary<string, int> varDictionary = new Dictionary<string, int>();
+            varDictionary.Add("VAR1", 20);
+            varDictionary.Add("VAR2", 30);
+            varDictionary.Add("VAR3", 40);
+
+            //Act
+            string[] parameter = CustomMethods.getValueFromDictionary(varDictionary, varName);
+            int resultVar = int.Parse(parameter[0]);
+
+            //Assert
+            Assert.AreEqual(resultVar, expectedResult);
+        }
+
+        [TestMethod]
+        public void testOperator()
+        {
+            //Arrange
+            string opperator = "<";
+            int num1 = 20;
+            int num2 = 100;
+            bool result = false;
+
+            //Act
+            result = custom.checkForOperator(opperator, num1, num2);
+
+            //Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
         public void is_Circle()
         {
             //Arrange
@@ -55,7 +91,6 @@ namespace ProgrammingLanguage
             //Assert
             Assert.IsTrue(isCircle);
         }
-
 
 
         [TestMethod]
@@ -76,7 +111,6 @@ namespace ProgrammingLanguage
         }
         
 
-
         [TestMethod]
         public void is_Triangle()
         {
@@ -93,6 +127,5 @@ namespace ProgrammingLanguage
             //Assert
             Assert.IsTrue(isTriangle);
         }
-
     }
 }

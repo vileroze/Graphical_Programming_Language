@@ -20,10 +20,10 @@ namespace GraphicalProgrammingLanguage
             this.polyArray = polyArray;
         }
 
-        public override void setPoly(Color colour, Boolean fill, int xAxis, int yAxis, int[] polyArray)
+        public override void setPoly(Color colour, Boolean fill, bool flash, Color primaryColor, Color secondaryColor, int xAxis, int yAxis, int[] polyArray)
         {
             base.colour = colour;
-            base.set(colour, fill, xAxis, yAxis);
+            base.set(colour, fill, flash, primaryColor, secondaryColor, xAxis, yAxis);
             base.polyArray = polyArray;
         }
 

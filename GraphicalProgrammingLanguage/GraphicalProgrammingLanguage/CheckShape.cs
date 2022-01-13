@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,6 +15,11 @@ namespace GraphicalProgrammingLanguage
     class CheckShape
     {
         CustomMethods custom = new CustomMethods();
+        public static int checkIfFlashIsCalled = 0;
+
+        public static bool flash = false;
+        public static Color primaryColor;
+        public static Color secondaryColor;
 
         public void checkForShape(string[] singleLine, Dictionary<string, int> varDictionary, ShapeFactory factory, ArrayList shapes,  RichTextBox errorDisplayBox, int lineNumber, Shape shape, int[] polyArray)
         {
@@ -79,7 +85,7 @@ namespace GraphicalProgrammingLanguage
                         if (isPositiveNumber(int.Parse(parameter[0])))
                         {
                             int radius = int.Parse(parameter[0]); // stores radius
-                            custom.getAndAddShape(CommandParser.color, CommandParser.fill, factory, (string)singleLine[0].ToUpper(), shapes, CommandParser.penX, CommandParser.penY, radius);//creates and adds the shape
+                            custom.getAndAddShape(CommandParser.color, CommandParser.fill, flash, primaryColor, secondaryColor, factory, (string)singleLine[0].ToUpper(), shapes, CommandParser.penX, CommandParser.penY, radius);//creates and adds the shape
                         }
                     }
                     catch (IndexOutOfRangeException) 
@@ -127,7 +133,7 @@ namespace GraphicalProgrammingLanguage
                         {
                             int height = int.Parse(parameter[0]);
                             int width = int.Parse(parameter[1]);
-                            custom.getAndAddShape(CommandParser.color, CommandParser.fill, factory, (string)singleLine[0].ToUpper(), shapes, CommandParser.penX, CommandParser.penY, height, width);//creates and adds the shape
+                            custom.getAndAddShape(CommandParser.color, CommandParser.fill, flash, primaryColor, secondaryColor, factory, (string)singleLine[0].ToUpper(), shapes, CommandParser.penX, CommandParser.penY, height, width);//creates and adds the shape
                         }
                     }
                     catch (IndexOutOfRangeException) 
@@ -168,7 +174,7 @@ namespace GraphicalProgrammingLanguage
                         {
                             int bases = int.Parse(parameter[0]);
                             int height = int.Parse(parameter[1]);
-                            custom.getAndAddShape(CommandParser.color, CommandParser.fill, factory, (string)singleLine[0].ToUpper(), shapes, CommandParser.penX, CommandParser.penY, bases, height);//creates and adds the shape
+                            custom.getAndAddShape(CommandParser.color, CommandParser.fill, flash, primaryColor, secondaryColor, factory, (string)singleLine[0].ToUpper(), shapes, CommandParser.penX, CommandParser.penY, bases, height);//creates and adds the shape
                         }
 
                     }
@@ -255,7 +261,7 @@ namespace GraphicalProgrammingLanguage
                         }
                     }
 
-                    shape.setPoly(CommandParser.color, CommandParser.fill, CommandParser.penX, CommandParser.penY, polyArray);
+                    shape.setPoly(CommandParser.color, CommandParser.fill, flash, primaryColor, secondaryColor, CommandParser.penX, CommandParser.penY, polyArray);
                     shapes.Add(shape);
                 }
                 else
@@ -291,7 +297,7 @@ namespace GraphicalProgrammingLanguage
                             CommandParser.penY = drawToY;
 
                             //creates and adds the shape
-                            custom.getAndAddShape(CommandParser.color, CommandParser.fill, factory, (string)singleLine[0].ToUpper(), shapes, drawFromX, drawFromY, drawToX, drawToY);
+                            custom.getAndAddShape(CommandParser.color, CommandParser.fill, flash, primaryColor, secondaryColor, factory, (string)singleLine[0].ToUpper(), shapes, drawFromX, drawFromY, drawToX, drawToY);
 
                             //makes the ending point of the previous drawTo the starting point of the next drawTo
                             drawFromX = drawToX;
@@ -329,20 +335,36 @@ namespace GraphicalProgrammingLanguage
                 if (countArrayNum - 1 == 1)
                 {
 
-                    if (singleLine[1].ToUpper() == "RED" || singleLine[1].ToUpper() == "YELLOW" || singleLine[1].ToUpper() == "BLUE")
+                    if (singleLine[1].ToUpper() == "RED" || singleLine[1].ToUpper() == "YELLOW" || singleLine[1].ToUpper() == "BLUE" || singleLine[1].ToUpper() == "REDGREEN" || singleLine[1].ToUpper() == "BLACKWHITE")
                     {
 
                         if (singleLine[1].ToUpper() == "RED")
                         {
                             CommandParser.color = Color.Red;
                         }
+
                         if (singleLine[1].ToUpper() == "YELLOW")
                         {
                             CommandParser.color = Color.Yellow;
                         }
+
                         if (singleLine[1].ToUpper() == "BLUE")
                         {
                             CommandParser.color = Color.Blue;
+                        }
+
+                        if (singleLine[1].ToUpper() == "REDGREEN")
+                        {
+                            primaryColor = Color.Red;
+                            secondaryColor = Color.Green;
+                            flash = true;
+                        }
+
+                        if (singleLine[1].ToUpper() == "BLACKWHITE")
+                        {
+                            primaryColor = Color.Black;
+                            secondaryColor = Color.White;
+                            flash = true;
                         }
                     }
                     else
@@ -351,7 +373,6 @@ namespace GraphicalProgrammingLanguage
                         CommandParser.breakLoopFlag = 1;
                         CommandParser.breakFlag = 1;
                     }
-
                 }
                 else
                 {
@@ -411,5 +432,6 @@ namespace GraphicalProgrammingLanguage
                 return true;
             }
         }
+
     }
 }

@@ -51,6 +51,8 @@ namespace GraphicalProgrammingLanguage
 
         // kei bgiryo bhane static hataune
         public static Dictionary<string, int> varDictionary = new Dictionary<string, int>();
+        //xxxxxxx
+        //public ConcreteCollection varCollection = new ConcreteCollection();
 
         CustomMethods custom = new CustomMethods();
         CheckVariable checkVar = new CheckVariable();
@@ -107,10 +109,12 @@ namespace GraphicalProgrammingLanguage
                             }
                             else if (complexCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
                             {
+                                
                                 checkMethod.checkForMethods(singleLine, mainDictionary, CommandParser.varDictionary, errorDisplayBox, lineNumber);
                             }
                             else if (CheckMethod.methodNames.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
                             {
+                                //xxxxx
                                 checkCall.checkForMethodCall(possibleCommands, mainDictionary, singleLine, varDictionary, errorDisplayBox, lineNumber);
                             }
                             else
@@ -141,14 +145,6 @@ namespace GraphicalProgrammingLanguage
             {
                 //for input without loop 
                 loopWithoutWhile(possibleCommands, complexCommands, mainDictionary, errorDisplayBox);
-            }
-
-
-
-            Debug.WriteLine("\n=============");
-            foreach (KeyValuePair<string, int> dict in varDictionary)
-            {
-                Debug.WriteLine("\nkey: " + dict.Key + " value: " + dict.Value);
             }
 
             //display success message if no errors

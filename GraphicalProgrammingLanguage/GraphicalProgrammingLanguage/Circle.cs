@@ -20,11 +20,11 @@ namespace GraphicalProgrammingLanguage
             this.radius = radius; //the only thing that is different from shape
         }
 
-        public override void set(Color colour, Boolean fill, params int[] list)
+        public override void set(Color colour, Boolean fill, bool flash, Color primaryColor, Color secondaryColor, params int[] list)
         {
             base.colour = colour;
             //list[0] is x, list[1] is y, list[2] is radius
-            base.set(colour, fill, list[0], list[1]);
+            base.set(colour, fill, flash, primaryColor, secondaryColor, list[0], list[1]);
             this.radius = list[2];
         }
 

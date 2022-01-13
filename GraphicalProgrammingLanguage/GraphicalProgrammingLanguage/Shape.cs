@@ -10,9 +10,13 @@ namespace GraphicalProgrammingLanguage
     public abstract class Shape : ShapeInterface
     {
         public Color colour = Color.Black;
-        protected Boolean fill;
+        public  Boolean fill;
         protected int x, y;
         protected int[] polyArray = new int[40];
+        public Color primaryColor;
+        public Color secondaryColor;
+        public bool flash;
+
         public Shape()
         {
 
@@ -32,15 +36,19 @@ namespace GraphicalProgrammingLanguage
             throw new NotImplementedException();
         }
 
-        public virtual void set(Color colour, Boolean fill, params int[] list)
+        public virtual void set(Color colour, Boolean fill, bool flash, Color primaryColor, Color secondaryColor,  params int[] list)
         {
             this.fill = fill;
             this.colour = colour;
             this.x = list[0];
             this.y = list[1];
+
+            this.primaryColor = primaryColor;
+            this.secondaryColor = secondaryColor;
+            this.flash = flash;
         }
 
-        public virtual void setPoly(Color colour, Boolean fill, int x, int y, int[] polyArray)
+        public virtual void setPoly(Color colour, Boolean fill, bool flash, Color primaryColor, Color secondaryColor, int x, int y, int[] polyArray)
         {
             this.fill = fill;
             this.colour = colour;

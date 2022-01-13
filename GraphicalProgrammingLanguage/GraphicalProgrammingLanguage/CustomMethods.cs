@@ -31,6 +31,7 @@ namespace GraphicalProgrammingLanguage
         }
 
 
+
         /// <summary>
         /// displays the error message along with line number and the correct format in the specified textBox with some extra formatting
         /// </summary>
@@ -61,6 +62,31 @@ namespace GraphicalProgrammingLanguage
 
 
         /// <summary>
+        ///  gets the shapes from the factory class and stores it in a variable called shape of type Shape. Then sets the color and parameter of the shapes and finally adds it to the arraylist
+        /// </summary>
+        /// <param name="color">color of the shape</param>
+        /// <param name="fill">specifies the fill state of the shape</param>
+        /// <param name="flash">flash state of shape</param>
+        /// <param name="primaryColor">primary color for flash</param>
+        /// <param name="secondaryColor">secondary color for flash</param>
+        /// <param name="factory"> returns the shape</param>
+        /// <param name="keyword">the shape to be returned</param>
+        /// <param name="shapes">arraylis to store the shapes</param>
+        /// <param name="list">list of parameters for the given shape</param>
+        public void getAndAddShape(Color color, Boolean fill, bool flash, Color primaryColor, Color secondaryColor, ShapeFactory factory, String keyword, ArrayList shapes, params int[] list)
+        {
+            //get the specific shape from factory class
+            shape = factory.getShape((String)keyword);
+
+            //set the color and parameter of the shape
+            shape.set(color, fill, flash, primaryColor, secondaryColor, list);
+
+            //add shape to the array
+            shapes.Add(shape);
+        }
+
+
+        /// <summary>
         /// takes eah shape from arraylist and casts it to the type of 'Shape' and uses graphics to draw the actual shape
         /// </summary>
         /// <param name="shapes">array that stores the shapes</param>
@@ -83,27 +109,6 @@ namespace GraphicalProgrammingLanguage
             }
         }
 
-
-        /// <summary>
-        ///  gets the shapes from the factory class and stores it in a variable called shape of type Shape. Then sets the color and parameter of the shapes and finally adds it to the arraylist
-        /// </summary>
-        /// <param name="color">color of the shape</param>
-        /// <param name="fill">specifies the fill state of the shape</param>
-        /// <param name="factory"> returns the shape</param>
-        /// <param name="keyword">the shape to be returned</param>
-        /// <param name="shapes">arraylis to store the shapes</param>
-        /// <param name="list">list of parameters for the given shape</param>
-        public void getAndAddShape(Color color, Boolean fill, ShapeFactory factory, String keyword, ArrayList shapes, params int[] list)
-        {
-            //get the specific shape from factory class
-            shape = factory.getShape((String)keyword);
-
-            //set the color and parameter of the shape
-            shape.set(color, fill, list);
-
-            //add shape to the array
-            shapes.Add(shape);
-        }
 
         /// <summary>
         /// checks if the dictionary contains the list passed, if it does returns its numerical value , if not returns the list as is
@@ -132,6 +137,7 @@ namespace GraphicalProgrammingLanguage
             return ParamNumList;
         }
 
+
         /// <summary>
         /// checks if the dictionary passed contains a WHILE statement
         /// </summary>
@@ -154,57 +160,57 @@ namespace GraphicalProgrammingLanguage
         }
 
 
-        //string[] singleLine;
-        //CheckKeyword checkKeyword = new CheckKeyword();
-        //CheckMethod checkMethod = new CheckMethod();
-        //CheckMethodCall checkCall = new CheckMethodCall();
-        //CheckVariable checkVar = new CheckVariable();
+        public Boolean checkForOperator(string opp, int varToCompare , int lastElement)
+        {
+            Boolean chk = false;
+            if (opp.ToUpper() == "==")
+            {
+                if (varToCompare == lastElement)
+                {
+                    chk = true;
+                }
+            }
+            else if (opp.ToUpper() == ">")
+            {
+                if (varToCompare > lastElement)
+                {
+                    chk = true;
+                }
+            }
+            else if (opp.ToUpper() == "<")
+            {
+                if (varToCompare < lastElement)
+                {
+                    chk = true;
+                }
+            }
+            else if (opp.ToUpper() == ">=")
+            {
+                if (varToCompare >= lastElement)
+                {
+                    chk = true;
+                }
+            }
+            else if (opp.ToUpper() == "<=")
+            {
+                if (varToCompare <= lastElement)
+                {
+                    chk = true;
+                }
+            }
+            else if (opp.ToUpper() == "!=")
+            {
+                if (varToCompare != lastElement)
+                {
+                    chk = true;
+                }
+            }
+            else
+            {
+                chk = false;
+            }
 
-        //public void loopWithoutWhile(string[] possibleCommands, string[] complexCommands, Dictionary<int, string> mainDictionary, RichTextBox errorDisplayBox)
-        //{
-        //    foreach (KeyValuePair<int, string> pair in mainDictionary)
-        //    {
-        //        if (CommandParser.ifConditionStatus == 1 && (pair.Key > CommandParser.ifLineNumber && pair.Key <= CommandParser.endIfLineNumber))
-        //        {
-        //            continue;
-        //        }
-
-        //        if (CommandParser.methodConditionStatus == 1 && (pair.Key > CommandParser.methodLineNumber && pair.Key <= CommandParser.endMethodLineNumber))
-        //        {
-        //            continue;
-        //        }
-
-        //        CommandParser.lineNumber = pair.Key;
-        //        CommandParser.singleLine = pair.Value.Trim().Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-        //        if (pair.Value.Length != 0)
-        //        {
-        //            if (possibleCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
-        //            {
-        //                //all shapes
-        //                checkKeyword.checkForKeywords(possibleCommands, mainDictionary, errorDisplayBox, CommandParser.lineNumber, CommandParser.singleLine);
-        //            }
-        //            else if (complexCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
-        //            {
-        //                checkMethod.checkForMethods(CommandParser.singleLine, mainDictionary, CommandParser.varDictionary, errorDisplayBox, CommandParser.lineNumber);
-        //            }
-        //            else if (CheckMethod.methodNames.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
-        //            {
-        //                checkCall.checkForMethodCall(possibleCommands, mainDictionary, CommandParser.singleLine, CommandParser.varDictionary, errorDisplayBox, CommandParser.lineNumber);
-        //            }
-        //            else
-        //            {
-        //                //check for variables
-        //                checkVar.checkForVariables(CommandParser.singleLine, CommandParser.varDictionary, errorDisplayBox, CommandParser.lineNumber);
-        //            }
-
-        //            //breaks the loop for mainDictionary
-        //            if (CommandParser.breakLoopFlag == 1)
-        //            {
-        //                break;
-        //            }
-        //        }
-        //    }
-        //}
+            return chk;
+        }
     }
 }

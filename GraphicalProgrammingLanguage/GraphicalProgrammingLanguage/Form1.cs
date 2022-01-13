@@ -8,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -15,6 +16,11 @@ namespace GraphicalProgrammingLanguage
 {
     public partial class Form1 : Form
     {
+        public static Thread colorFlash;
+        bool flashFlag = false, running = false;
+        FlashShape flash;
+
+        CheckShape chShape = new CheckShape();
 
         OpenFileDialog fileExplorer = new OpenFileDialog();
         SaveFileDialog saveFile = new SaveFileDialog();
@@ -33,11 +39,23 @@ namespace GraphicalProgrammingLanguage
         // stores all possible commands
         public string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE", "PEN", "FILL", "POLYGON", "IF", "ENDIF", "WHILE", "ENDLOOP"};
         public string[] possibleComplexCommands = {"METHOD", "ENDMETHOD"};
+
         public Form1()
         {
+            PictureBox.CheckForIllegalCrossThreadCalls = false;
             InitializeComponent();
+            flash = new FlashShape(this, CheckKeyword.shapes);
         }
 
+        /// <summary>
+        /// made this so the PictureBox (drawingArea) 'refresh' method can be called on another class 
+        /// </summary>
+        public void refreshPictureBox()
+        {
+            drawingArea.Refresh();
+        }
+
+        
 
         /// <summary>
         /// takes input from either the commandLine or the actual code area depending on the commands passed in the commandLine
@@ -51,11 +69,10 @@ namespace GraphicalProgrammingLanguage
 
             if (flag == 1)
             {
-
                 errorDisplayBox.Text = "";
                 string code = input;
                 mainDictionary.Clear();
-                
+
                 // split lines 
                 string[] splitLine = code.Split(new char[] { '\n' });
                 int lineNumber = 1;
@@ -116,7 +133,6 @@ namespace GraphicalProgrammingLanguage
             {
                 CheckMethod.methodTuple.Clear();
                 CheckMethod.parameters.Clear();
-                ////////////////////////////
                 mainDictionary.Clear();
                 String codeAreaInput = codeArea.Text;
                 flag = 1;
@@ -131,6 +147,8 @@ namespace GraphicalProgrammingLanguage
                 //clears all the sahpes in the array then refreshes the pictureBox so everything dissapears
                 CheckKeyword.shapes.Clear();
                 drawingArea.Refresh();
+
+                
             }
             else if (commandLineInput.Equals("reset", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -277,10 +295,10 @@ namespace GraphicalProgrammingLanguage
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //if (MessageBox.Show("Are you sure you want to exit?", "My First Application", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-            //{
-            //    e.Cancel = true;
-            //}
+            if (MessageBox.Show("Are you sure you want to exit?", "My First Application", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+            {
+                e.Cancel = true;
+            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

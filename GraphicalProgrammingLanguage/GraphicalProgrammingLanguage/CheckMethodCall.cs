@@ -115,10 +115,21 @@ namespace GraphicalProgrammingLanguage
                                     storeParams.Add(splitTuple[i]);
                                 }
 
+                                //xxxxx
+                                //Iterator iterator = varDictionary.CreateIterator();
+                                //for (Variable variable = iterator.First(); !iterator.IsCompleted; variable = iterator.Next())
+                                //{
+                                //    Debug.WriteLine($"Name : {variable.name} & Value : {variable.value}");
+                                //}
+
                                 //add those parameters to the vardictionary
                                 for (int ii = 0; ii < storeParams.Count(); ii++)
                                 {
+                                    //xxxx
                                     varDictionary[storeParams[ii].ToUpper()] = allParams[ii];
+                                    //varDictionary[storeParams[ii].ToUpper()] = allParams[ii];
+
+
                                 }
 
                                 //pass all lines between method to command parser be parsed again
