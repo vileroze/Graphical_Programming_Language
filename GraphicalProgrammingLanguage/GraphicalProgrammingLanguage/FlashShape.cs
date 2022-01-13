@@ -13,7 +13,7 @@ namespace GraphicalProgrammingLanguage
         Form1 form;
         ArrayList shapes;
         bool flashFlag = false;
-        Thread thread;
+        public static Thread thread;
 
         public FlashShape(Form1 form, ArrayList shapes)
         {
@@ -47,14 +47,17 @@ namespace GraphicalProgrammingLanguage
                             shape.fill = true;
                             shape.colour = shape.secondaryColor;
                         }
-                        
                     }
-                   
                 }
                 
                 flashFlag = !flashFlag; //alternate colors
                 form.refreshPictureBox();
                 Thread.Sleep(100);
+
+                if (Form1.abortFlag == 1)
+                {
+                    break;
+                }
             }
         }
     }

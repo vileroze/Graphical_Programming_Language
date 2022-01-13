@@ -72,7 +72,7 @@ namespace GraphicalProgrammingLanguage
         /// <param name="factory"> returns the shape</param>
         /// <param name="keyword">the shape to be returned</param>
         /// <param name="shapes">arraylis to store the shapes</param>
-        /// <param name="list">list of parameters for the given shape</param>
+        /// <param name="list">list of parameters for the given shape (e.g. height, width, radius etc)</param>
         public void getAndAddShape(Color color, Boolean fill, bool flash, Color primaryColor, Color secondaryColor, ShapeFactory factory, String keyword, ArrayList shapes, params int[] list)
         {
             //get the specific shape from factory class
@@ -160,6 +160,13 @@ namespace GraphicalProgrammingLanguage
         }
 
 
+        /// <summary>
+        /// returns true if any of the condition mathces with the predefined IF conditions else returns false
+        /// </summary>
+        /// <param name="opp">the opertor to be used in the comparison</param>
+        /// <param name="varToCompare">one of the operands (LHS)</param>
+        /// <param name="lastElement">other operand (RHS)</param>
+        /// <returns></returns>
         public Boolean checkForOperator(string opp, int varToCompare , int lastElement)
         {
             Boolean chk = false;

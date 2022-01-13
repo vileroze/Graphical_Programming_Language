@@ -16,14 +16,14 @@ namespace GraphicalProgrammingLanguage
 {
     public partial class Form1 : Form
     {
-        public static Thread colorFlash;
+        //public static Thread colorFlash;
         bool flashFlag = false, running = false;
         FlashShape flash;
 
-        CheckShape chShape = new CheckShape();
+        //flag to stop flashing
+        public static int abortFlag = 0;
 
-        OpenFileDialog fileExplorer = new OpenFileDialog();
-        SaveFileDialog saveFile = new SaveFileDialog();
+        CheckShape chShape = new CheckShape();
 
         CommandParser parser = new CommandParser();
         CustomMethods custom = new CustomMethods();
@@ -40,11 +40,31 @@ namespace GraphicalProgrammingLanguage
         public string[] possibleCommands = { "DRAWTO", "MOVETO", "CIRCLE", "RECTANGLE", "TRIANGLE", "PEN", "FILL", "POLYGON", "IF", "ENDIF", "WHILE", "ENDLOOP"};
         public string[] possibleComplexCommands = {"METHOD", "ENDMETHOD"};
 
+
+        //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+        public static Menu menu = new Menu();
+        
+
+        public static MCommand loadCommand;
+        public static MCommand saveCommand;
+        public static MCommand closeCommand;
+        MenuOptions menuOpt;
+
+
+
         public Form1()
         {
+            //supresses cross thread call errros
             PictureBox.CheckForIllegalCrossThreadCalls = false;
             InitializeComponent();
             flash = new FlashShape(this, CheckKeyword.shapes);
+
+
+            loadCommand = new LoadCommand(menu, codeArea);
+            saveCommand = new SaveCommand(menu, codeArea);
+            closeCommand = new CloseCommand(menu);
+
+            menuOpt = new MenuOptions(loadCommand, saveCommand, closeCommand);
         }
 
         /// <summary>
@@ -136,6 +156,7 @@ namespace GraphicalProgrammingLanguage
                 mainDictionary.Clear();
                 String codeAreaInput = codeArea.Text;
                 flag = 1;
+                abortFlag = 0;
                 startExecution(codeAreaInput);
             }
             else if (commandLineInput.Equals("clear", StringComparison.InvariantCultureIgnoreCase))
@@ -146,9 +167,11 @@ namespace GraphicalProgrammingLanguage
 
                 //clears all the sahpes in the array then refreshes the pictureBox so everything dissapears
                 CheckKeyword.shapes.Clear();
-                drawingArea.Refresh();
 
-                
+                //stop the flashing if on
+                abortFlag = 1;
+
+                drawingArea.Refresh();
             }
             else if (commandLineInput.Equals("reset", StringComparison.InvariantCultureIgnoreCase))
             {
@@ -206,91 +229,12 @@ namespace GraphicalProgrammingLanguage
         //-----------------------MENU ITEMS------------------------------------------
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                //checks if a file is open and if its is, saves it to the same file 
-                using (StreamWriter outputFile = File.CreateText(fileExplorer.FileName))
-                {
-                    // Write the info to the file. 
-                    outputFile.WriteLine(codeArea.Text);
-                    outputFile.Close();
-
-                    String filename = Path.GetFileName(fileExplorer.FileName);
-                    String message = "Work saved to : " + filename;
-                    message += "\nLocation: " + fileExplorer.FileName;
-                    MessageBox.Show(message, "ALERT", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (System.ArgumentException)
-            {
-                //prompts user to save file, if no file is open
-                saveFile.RestoreDirectory = true;
-                saveFile.Title = "Where do you want to save your work?";
-                saveFile.InitialDirectory = @"C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\";
-                //saves file filter type
-                saveFile.Filter = "Text|*.txt|All|*.*";
-                try
-                {
-                    //displays dialog box and checks if user has selected a file
-                    if (saveFile.ShowDialog() == DialogResult.OK)
-                    {
-                        StreamWriter fWriter = File.CreateText(saveFile.FileName);
-                        fWriter.WriteLine(codeArea.Text);
-                        fWriter.Close();
-
-                        String filename = Path.GetFileName(saveFile.FileName);
-                        String message = "Work saved to : " + filename;
-                        //displays the location where the file was saved
-                        message += "\nLocation: " + saveFile.FileName;
-                        MessageBox.Show(message, "ALERT" ,MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                }
-                catch (IOException)
-                {
-                    MessageBox.Show("Error", "IO exception");
-                }
-            }
+            menuOpt.clickSave();
         }
 
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //filters for only text files
-            fileExplorer.Filter = "Text|*.txt|All|*.*";
-            //title for fie explorer
-            fileExplorer.Title = "Choose your file";
-            fileExplorer.FilterIndex = 1;
-            fileExplorer.InitialDirectory = @"C:\Users\DELL\OneDrive\Desktop\fourth year\semester 1\Advanced Software Engineering\";
-            //remembers last visited directory
-            fileExplorer.RestoreDirectory = true;
-            try
-            {
-                if (fileExplorer.ShowDialog() == DialogResult.OK)
-                {
-                    codeArea.Text = ""; //clears text box before loading file contents
-                    StreamReader reader = File.OpenText(fileExplorer.FileName);
-                    do
-                    {
-                        String line = reader.ReadLine();
-                        if (line == null) break; //breaks if end of file
-                        codeArea.Text += line;
-                        codeArea.AppendText(Environment.NewLine); // new line starting points are preserved
-                    } while (true);
-                    reader.Close();
-                }
-            }
-
-            catch (System.ArgumentException)
-            {
-                MessageBox.Show("NO FILE CHOSEN !!", "ALERT", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            catch (FileNotFoundException)
-            {
-                MessageBox.Show("FILE NOT FOUND !!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-            catch (IOException)
-            {
-                MessageBox.Show("Something went wrong, try again !!", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            menuOpt.clickLoad();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -299,12 +243,17 @@ namespace GraphicalProgrammingLanguage
             {
                 e.Cancel = true;
             }
+            else
+            {
+                //terminate thread
+                FlashShape.thread.Abort();
+            }
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //closes application
-            Application.Exit();
+            menuOpt.clickClose();
         }
 
 

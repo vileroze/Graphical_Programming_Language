@@ -109,12 +109,12 @@ namespace GraphicalProgrammingLanguage
                             }
                             else if (complexCommands.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
                             {
-                                
+                                //check for methods
                                 checkMethod.checkForMethods(singleLine, mainDictionary, CommandParser.varDictionary, errorDisplayBox, lineNumber);
                             }
                             else if (CheckMethod.methodNames.Contains(pair.Value.Split(' ')[0].Trim().ToUpper()))
                             {
-                                //xxxxx
+                                //check for method call
                                 checkCall.checkForMethodCall(possibleCommands, mainDictionary, singleLine, varDictionary, errorDisplayBox, lineNumber);
                             }
                             else
